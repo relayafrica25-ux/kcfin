@@ -6,17 +6,18 @@ const generateId = () => Math.random().toString(36).substr(2, 9);
 
 export const fetchFinancialNews = async (): Promise<NewsItem[]> => {
   try {
-    const apiKey = process.env.API_KEY;
-    if (!apiKey) {
+    // API key check remains to handle demo mode
+    if (!process.env.API_KEY) {
       console.warn("API Key is missing. Returning mock data.");
       return getMockNews();
     }
 
-    const ai = new GoogleGenAI({ apiKey });
+    // Initialize GoogleGenAI directly with process.env.API_KEY
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
-    // Using gemini-2.5-flash for speed and search capability
     const response = await ai.models.generateContent({
-      model: "gemini-2.5-flash",
+      // Use 'gemini-3-flash-preview' for text summarization and crawling tasks
+      model: "gemini-3-flash-preview",
       contents: `You are an AI Web Crawler for a financial portal. 
       Scan the web for the top 6 most important financial news stories right now.
       
@@ -29,19 +30,20 @@ export const fetchFinancialNews = async (): Promise<NewsItem[]> => {
       Title: [Headline - Punchy, < 10 words]
       Summary: [A concise 2-sentence summary focusing on the economic impact]
       Impact: [Bullish, Bearish, or Neutral]
-      Image: [Find a direct URL to a relevant news image or thumbnail from the source if available. If not found, leave this field empty.]
+      Image: [Find a direct URL to a relevant news image or thumbnail from the source if available. If not found, leave this file empty.]
       ---
       Title: [Headline 2]...
       `,
       config: {
+        // Search Grounding tool configuration
         tools: [{ googleSearch: {} }],
       },
     });
 
+    // Extract text output from response.text property
     const text = response.text || "";
     const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks as GroundingChunk[] || [];
 
-    // Parse the text manually
     const stories = text.split('---').map(block => block.trim()).filter(block => block.length > 0);
     
     const parsedNews: NewsItem[] = stories.map((story, index) => {
@@ -52,7 +54,6 @@ export const fetchFinancialNews = async (): Promise<NewsItem[]> => {
 
       let imageUrl = imageMatch ? imageMatch[1].trim() : undefined;
       
-      // Basic validation to ensure it's a URL and not text
       if (imageUrl && !imageUrl.startsWith('http')) {
         imageUrl = undefined;
       }
@@ -63,7 +64,7 @@ export const fetchFinancialNews = async (): Promise<NewsItem[]> => {
         summary: summaryMatch ? summaryMatch[1].trim() : "Latest movements in the continental financial sector.",
         impact: (impactMatch ? impactMatch[1].trim() : "Neutral") as 'Bullish' | 'Bearish' | 'Neutral',
         imageUrl: imageUrl,
-        // Attach source if available in the grounding metadata
+        // Extract sources from grounding metadata as required by guidelines
         sources: index < groundingChunks.length && groundingChunks[index]?.web 
           ? [groundingChunks[index].web!] 
           : index === 0 && groundingChunks.length > 0 ? [groundingChunks[0].web!] : []
@@ -83,40 +84,51 @@ export const sendChatMessage = async (
   newMessage: string
 ): Promise<string> => {
   try {
-    const apiKey = process.env.API_KEY;
-    if (!apiKey) {
+    if (!process.env.API_KEY) {
       return "I'm currently in demo mode (API Key missing). I can help you navigate the site, but I can't process live queries yet!";
     }
 
-    const ai = new GoogleGenAI({ apiKey });
+    // Initialize with named parameter as required
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
-    // Format history for the SDK
     const chatHistory = history.map(msg => ({
       role: msg.role,
       parts: [{ text: msg.text }]
     }));
 
     const chat = ai.chats.create({
-      model: "gemini-2.5-flash",
+      // Use 'gemini-3-flash-preview' for basic customer support chat
+      model: "gemini-3-flash-preview",
       config: {
-        systemInstruction: `You are 'Nova', the advanced AI support specialist for KC Financial Group. 
+        systemInstruction: `You are 'Nova', the advanced AI support specialist for CASIEC FINANCIALS & GSI. 
         Your persona is professional, knowledgeable, slightly futuristic, and helpful.
         
+        Identity & Values:
+        - Vision: To be the leading story and benchmark in finance & business support.
+        - Mission: Delivering credit, capital and enterprise support to stimulate business growth.
+        - Mandate: Fostering economic advancement through financial inclusion.
+        - "Words on the Marble": God’s Own Institution (GOI factor).
+        - Core Values: Growth & Professionalism, Opportunities & Resourcefulness, Innovation & Integrity.
+        
         Your Capabilities:
-        1. Explain KC Financial's services: Commercial Real Estate Loans, Business Term Loans, SBA Loans, and Business Support Advisory.
-        2. Provide general information about interest rates (e.g., Real Estate starts at 6.875%, Business Loans at 6.99%).
-        3. Guide users to the "Apply" button or "Contact" section for specific deals.
+        1. Explain services: Commercial Real Estate Loans, Business Term Loans, SBA Loans, and Business Support Advisory.
+        2. Provide contact info: 
+           - Strategic Alliances: +234 818-398-7171 (Dl)
+           - Customer Experience Center: +234 810-326-0048 or +234 810-537-5394
+        3. Guide users to the "Apply" button or "Contact" section.
         
         Guidelines:
-        - Keep responses concise (under 60 words) unless detailed explanation is asked.
-        - Do not give specific financial advice or guarantee approval.
-        - If you don't know an answer, politely suggest they contact a human advisor at support@kcfinancial.com.
+        - Keep responses concise (under 60 words).
+        - Do not give specific financial advice.
+        - If unsure, suggest emailing support@casiec.com.
         `,
       },
       history: chatHistory
     });
 
+    // sendMessage only accepts message parameter
     const result = await chat.sendMessage({ message: newMessage });
+    // Use .text property for content extraction
     return result.text || "I apologize, I'm having trouble accessing my neural network right now.";
   } catch (error) {
     console.error("Chat Error:", error);
@@ -124,7 +136,6 @@ export const sendChatMessage = async (
   }
 };
 
-// Fallback data if API key is missing or fails
 const getMockNews = (): NewsItem[] => [
   {
     id: "1",
@@ -143,23 +154,9 @@ const getMockNews = (): NewsItem[] => [
   },
   {
     id: "3",
-    title: "Inflation Pressures Persist in East Africa",
-    summary: "Central Banks in Kenya and Uganda hint at further rate hikes as fuel subsidies are removed and import costs rise.",
-    impact: "Bearish",
-    // No image for this one to test fallback
-  },
-  {
-    id: "4",
     title: "AfCFTA Implementation Enters Phase 2",
     summary: "New protocols for digital trade and investment under the African Continental Free Trade Area are expected to boost intra-Africa commerce by 15%.",
     impact: "Bullish",
     imageUrl: "https://images.unsplash.com/photo-1526304640152-d4619684e484?auto=format&fit=crop&q=80&w=800"
-  },
-  {
-    id: "5",
-    title: "Crypto Adoption Spikes in Sub-Saharan Africa",
-    summary: "Retail usage of stablecoins for cross-border payments has grown 40% YoY as businesses seek alternatives to volatile local currencies.",
-    impact: "Neutral",
-    imageUrl: "https://images.unsplash.com/photo-1518546305927-5a555bb7020d?auto=format&fit=crop&q=80&w=800"
   }
 ];

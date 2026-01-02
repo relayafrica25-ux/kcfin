@@ -1,10 +1,13 @@
+
 import React, { useState, useEffect } from 'react';
 import { X, Mail, Zap, CheckCircle2 } from 'lucide-react';
+import { storageService } from '../services/storageService';
 
 export const NewsletterPopup: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
   const [hasSubscribed, setHasSubscribed] = useState(false);
+  const [email, setEmail] = useState('');
 
   useEffect(() => {
     // Show after 2 seconds, every time the component mounts (page load)
@@ -26,6 +29,11 @@ export const NewsletterPopup: React.FC = () => {
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
+    if (!email.trim()) return;
+
+    // Persist subscription
+    storageService.saveNewsletterSubscription(email);
+    
     setHasSubscribed(true);
     // Close after showing success message for a bit
     setTimeout(() => {
@@ -76,6 +84,8 @@ export const NewsletterPopup: React.FC = () => {
                                 type="email" 
                                 placeholder="Enter your email address" 
                                 required
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                                 className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3.5 pl-11 text-white placeholder:text-gray-500 focus:outline-none focus:border-nova-400 focus:ring-1 focus:ring-nova-400/50 transition-all"
                             />
                             <Zap className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-nova-400 transition-colors" size={18} />

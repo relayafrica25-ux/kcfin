@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Activity, Menu, X, ChevronRight, Wallet, Briefcase, BookOpen } from 'lucide-react';
 
@@ -30,7 +31,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onApplyClick, currentView, onNav
                 <Activity className="h-6 w-6 text-white" />
               </div>
               <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-                KC Financial
+                CASIEC
               </span>
             </div>
             <div className="hidden md:block">
@@ -52,7 +53,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onApplyClick, currentView, onNav
               </div>
             </div>
           </div>
-          <div className="hidden md:block">
+          <div className="hidden md:flex items-center gap-4">
             <button 
               onClick={onApplyClick}
               className="bg-white text-nova-900 px-6 py-2.5 rounded-full font-semibold hover:bg-nova-400 hover:text-white transition-all duration-300 flex items-center gap-2"

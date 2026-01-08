@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Network, BrainCircuit, FileText, Scale, ArrowRight, Lightbulb, Users, Globe, Coins, LineChart, ShieldCheck, Database, Truck, BarChart3 } from 'lucide-react';
+import { Network, BrainCircuit, FileText, Scale, ArrowRight, Lightbulb, Users, Globe, Coins, LineChart, ShieldCheck, Database, Truck, BarChart3, Settings, Search, PackageSearch, Share2 } from 'lucide-react';
 
 interface BusinessSupportPageProps {
   onInquireClick: () => void;
@@ -12,58 +12,58 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
       title: "Business Support Services",
       icon: <Users className="text-purple-400" />,
       items: [
-        { label: "Business Development", desc: "Strategic growth mapping and pipeline optimization." },
-        { label: "Strategic Outsourcing", desc: "E-Management system optimization for leaner operations." },
-        { label: "Expert Advisory", desc: "Network management of high-tier industrial specialists." }
+        { label: "Business Development", desc: "Strategic mapping and pipeline expansion for emerging ventures and established firms." },
+        { label: "Strategic Outsourcing", desc: "E-Management System Optimization and leaner operational scaling strategies." },
+        { label: "Expert Advisory", desc: "Network management connecting you to industry-specific global specialists." }
       ]
     },
     {
-      title: "Corporate Finance (CFRA)",
+      title: "Corporate Finance, Research & Advisory",
       icon: <BarChart3 className="text-emerald-400" />,
       items: [
-        { label: "Credit & Capital Raise", desc: "Comprehensive financing solutions for scale." },
-        { label: "Capital Mapping", desc: "Identification and qualification of strategic investors." },
-        { label: "Investment Advisory", desc: "Data-backed guidance for institutional deployments." }
+        { label: "Credit & Capital Raise", desc: "Full-cycle financing solutions and structured capital infusion for complex projects." },
+        { label: "Market Research", desc: "Evidence-based market intelligence and feasibility studies for strategic planning." },
+        { label: "Investment Advisory", desc: "Strategic guidance for high-stakes deal flow and institutional capital mapping." }
       ]
     },
     {
-      title: "Supply Chain & Trading",
+      title: "Supply Chain, Commodity Trading & Distribution",
       icon: <Truck className="text-orange-400" />,
       items: [
-        { label: "Supply Chain Advisory", desc: "End-to-end logistics and procurement strategy." },
-        { label: "Commodity Trading", desc: "Global distribution networks for essential goods." }
+        { label: "Supply Chain Advisory", desc: "Optimizing logistics architecture and global procurement pipelines." },
+        { label: "Commodity Trading", desc: "Strategic positioning in global energy, agricultural, and mineral markets." },
+        { label: "Global Distribution", desc: "Integrated logistics networks for efficient continental product movement." }
       ]
     }
   ];
 
   return (
-    <div className="pt-24 min-h-screen bg-nova-900">
+    <div className="pt-24 min-h-screen bg-nova-900 selection:bg-purple-500">
       {/* Hero Section */}
       <div className="relative py-20 overflow-hidden">
         <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-purple-300 text-sm font-semibold mb-8 backdrop-blur-md">
             <Network size={16} />
-            <span>GSI STRATEGIC ALLIANCES</span>
+            <span>GSI STRATEGIC ALLIANCES (Broastreet DyDX)</span>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight text-white">
-            Architecture for <br/>
+          <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight text-white uppercase italic">
+            Institutional <br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-white to-emerald-400">
-              Corporate Alpha.
+              Backbone.
             </span>
           </h1>
           
-          <p className="text-xl text-gray-400 mb-10 max-w-3xl mx-auto leading-relaxed">
-            Beyond capital, we provide the strategic infrastructure. GSI Strategic Alliances integrates 
-            Business Support, Corporate Finance, and Global Commodity Distribution.
+          <p className="text-xl text-gray-400 mb-10 max-w-3xl mx-auto leading-relaxed font-light">
+            GSI STRATEGIC ALLIANCES (Broastreet DyDX) provides the corporate engineering required for enterprise sustainability through specialized advisory, finance research, and global trade distribution.
           </p>
           
           <button 
             onClick={onInquireClick}
-            className="px-10 py-4 rounded-full bg-purple-600 hover:bg-purple-500 text-white font-bold transition-all shadow-xl shadow-purple-600/20"
+            className="px-10 py-4 rounded-full bg-purple-600 hover:bg-purple-500 text-white font-black uppercase tracking-widest text-sm transition-all shadow-xl shadow-purple-600/20"
           >
-            Start Your Raise
+            Initiate Advisory
           </button>
         </div>
       </div>
@@ -72,16 +72,16 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-3 gap-8">
           {sections.map((section, idx) => (
-            <div key={idx} className="glass-panel p-10 rounded-[3rem] border border-white/5 flex flex-col hover:border-purple-500/30 transition-all duration-500">
-               <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-8">
+            <div key={idx} className="glass-panel p-10 rounded-[3rem] border border-white/5 flex flex-col hover:border-purple-500/30 transition-all duration-500 group">
+               <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                   {section.icon}
                </div>
-               <h3 className="text-2xl font-bold text-white mb-8 border-b border-white/5 pb-4">{section.title}</h3>
+               <h3 className="text-2xl font-bold text-white mb-8 border-b border-white/5 pb-4 tracking-tighter italic">{section.title}</h3>
                <div className="space-y-8 flex-grow">
                  {section.items.map((item, i) => (
                     <div key={i} className="group cursor-default">
-                       <div className="text-white font-bold mb-1 flex items-center gap-2">
-                          <div className="w-1 h-1 rounded-full bg-purple-500"></div>
+                       <div className="text-white font-bold mb-1 flex items-center gap-2 group-hover:text-purple-400 transition-colors">
+                          <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
                           {item.label}
                        </div>
                        <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
@@ -89,8 +89,8 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
                  ))}
                </div>
                <div className="mt-12 pt-6 border-t border-white/5">
-                  <button onClick={onInquireClick} className="text-sm font-bold text-purple-400 hover:text-white flex items-center gap-2">
-                     Learn More <ArrowRight size={14} />
+                  <button onClick={onInquireClick} className="text-[10px] font-black uppercase tracking-[0.2em] text-purple-400 hover:text-white flex items-center gap-2 transition-colors">
+                     Consult Experts <ArrowRight size={14} />
                   </button>
                </div>
             </div>
@@ -98,37 +98,59 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
         </div>
       </div>
 
-      {/* CFRA Specific Section */}
-      <section className="bg-black/40 py-24 border-t border-white/5">
-         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="flex flex-col lg:flex-row gap-16 items-center">
-               <div className="flex-1">
-                  <h2 className="text-4xl font-bold mb-6 text-white leading-tight">Corporate Finance, <br/> Research & Advisory (CFRA)</h2>
-                  <p className="text-gray-400 mb-8 leading-relaxed">
-                    Our CFRA pillar is the intelligence core of GSI. We identify capital gaps, map potential 
-                    investor interest, and structure financing solutions that align with long-term enterprise goals.
-                  </p>
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                     <div className="bg-white/5 p-4 rounded-xl border border-white/5">
-                        <ShieldCheck className="text-emerald-400 mb-2" size={20} />
-                        <div className="text-white font-bold text-sm">Capital Mapping</div>
+      {/* Detailed Services Focus */}
+      <section className="bg-black/40 py-24 border-t border-white/5 relative overflow-hidden">
+         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/grid-me.png')] opacity-[0.03]"></div>
+         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="grid md:grid-cols-2 gap-16 items-start">
+               <div className="animate-fade-in-up">
+                  <div className="flex items-center gap-4 mb-8">
+                    <Search className="text-purple-500" size={32} />
+                    <h2 className="text-3xl font-bold text-white uppercase tracking-tighter italic">Intelligence & Research</h2>
+                  </div>
+                  <div className="space-y-6">
+                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-purple-500/20 transition-all">
+                        <h4 className="font-bold text-purple-400 mb-2 uppercase tracking-tight">Market Feasibility</h4>
+                        <p className="text-gray-400 text-sm leading-relaxed">Deep-dive analytics for continental market entry, risk assessment, and scalability mapping for NMSEs and corporate giants.</p>
                      </div>
-                     <div className="bg-white/5 p-4 rounded-xl border border-white/5">
-                        <LineChart className="text-emerald-400 mb-2" size={20} />
-                        <div className="text-white font-bold text-sm">Investment Analysis</div>
+                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-purple-500/20 transition-all">
+                        <h4 className="font-bold text-purple-400 mb-2 uppercase tracking-tight">Financial Modeling</h4>
+                        <p className="text-gray-400 text-sm leading-relaxed">Precision forecasting and valuation models tailored for the unique dynamics of emerging African economies.</p>
                      </div>
                   </div>
                </div>
-               <div className="flex-1 w-full">
-                  <div className="glass-panel p-8 rounded-[2.5rem] bg-gradient-to-br from-gray-900 to-black relative overflow-hidden">
-                     <Database className="absolute -bottom-10 -right-10 text-white/5 w-60 h-60" />
-                     <h4 className="text-xs font-bold text-purple-400 uppercase tracking-widest mb-4">Strategic Impact</h4>
-                     <p className="text-2xl text-white italic mb-10 leading-relaxed">
-                       "Bridging the identification gap between ambitious African ventures and institutional capital."
-                     </p>
-                     <button onClick={onInquireClick} className="bg-white text-black px-8 py-3 rounded-full font-bold">Request Advisory</button>
+               <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+                  <div className="flex items-center gap-4 mb-8">
+                    <PackageSearch className="text-emerald-500" size={32} />
+                    <h2 className="text-3xl font-bold text-white uppercase tracking-tighter italic">Global Value Chain</h2>
+                  </div>
+                  <div className="space-y-6">
+                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-emerald-500/20 transition-all">
+                        <h4 className="font-bold text-emerald-400 mb-2 uppercase tracking-tight">Logistics Engineering</h4>
+                        <p className="text-gray-400 text-sm leading-relaxed">End-to-end supply chain optimization focusing on reducing lead times and operational overheads through GSI technology.</p>
+                     </div>
+                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-emerald-500/20 transition-all">
+                        <h4 className="font-bold text-emerald-400 mb-2 uppercase tracking-tight">Asset Monetization</h4>
+                        <p className="text-gray-400 text-sm leading-relaxed">Strategic advisory on leveraging physical assets and inventory for liquid capital injection and trade financing.</p>
+                     </div>
                   </div>
                </div>
+            </div>
+
+            <div className="mt-24 p-12 glass-panel rounded-[3rem] border border-white/5 text-center relative group overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <Share2 className="mx-auto text-purple-400 mb-6" size={40} />
+                <h3 className="text-3xl font-bold text-white mb-6 tracking-tight uppercase italic">The Broastreet DyDX Ecosystem</h3>
+                <p className="text-gray-400 max-w-2xl mx-auto leading-relaxed mb-10 font-light">
+                    Harnessing the proprietary DyDX framework, we bridge the gap between institutional research and real-world execution. 
+                    Your enterprise success is our primary corporate mandate.
+                </p>
+                <button 
+                  onClick={onInquireClick}
+                  className="px-8 py-3 bg-white text-nova-900 rounded-full font-black uppercase tracking-widest text-xs hover:bg-purple-500 hover:text-white transition-all shadow-2xl"
+                >
+                  Join the Alliance
+                </button>
             </div>
          </div>
       </section>

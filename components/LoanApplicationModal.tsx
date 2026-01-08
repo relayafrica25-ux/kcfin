@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { X, ChevronRight, ChevronLeft, Check, Building2, Wallet, User, Calculator, CheckCircle2, Briefcase, MapPin, UploadCloud, FileText, Trash2, Scale, BrainCircuit, Globe, Landmark, TrendingUp, Network } from 'lucide-react';
+import { X, ChevronRight, ChevronLeft, Check, Building2, Wallet, User, Calculator, CheckCircle2, Briefcase, MapPin, UploadCloud, FileText, Trash2, Scale, BrainCircuit, Globe, Landmark, TrendingUp, Network, AlertCircle, ShieldCheck, CheckSquare, Info } from 'lucide-react';
 import { storageService } from '../services/storageService';
 import { LoanApplication } from '../types';
 
@@ -25,6 +25,7 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
     description: '',
     businessName: '',
     cacNumber: '',
+    isCacRegistered: false,
     industry: 'General',
     state: 'Lagos',
     fullName: '',
@@ -44,7 +45,9 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
   if (!isOpen) return null;
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+    const { name, value, type } = e.target;
+    const val = type === 'checkbox' ? (e.target as HTMLInputElement).checked : value;
+    setFormData({ ...formData, [name]: val });
   };
 
   const handleSelectAppType = (type: ApplicationType) => {
@@ -67,7 +70,7 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
     storageService.saveApplication(application);
 
     await new Promise(resolve => setTimeout(resolve, 1500));
-    setStep(5);
+    setStep(6); // Success is now step 6
     setIsSubmitting(false);
   };
 
@@ -75,40 +78,43 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
   const prevStep = () => setStep(prev => prev - 1);
   const isFinancial = appType === 'financial';
 
+  // Total steps: 1: Path, 2: Product, 3: Profile, 4: Checklist (New), 5: Contact, 6: Success
+  const totalSteps = 5;
+
   return (
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose}></div>
-      <div className="relative w-full max-w-3xl bg-nova-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up">
+      <div className="relative w-full max-w-3xl bg-nova-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up font-sans">
         
         <div className="flex items-center justify-between p-6 border-b border-white/10 bg-white/5">
           <div>
-            <h2 className="text-xl font-bold text-white">
+            <h2 className="text-xl font-bold text-white tracking-tight">
                 {step === 1 ? 'Initiate Inquiry' : 
-                 isFinancial ? 'CASIEC Financial Support' : 'GSI Strategic Alliances Inquiry'}
+                 isFinancial ? 'CASIEC Financial Solutions' : 'GSI STRATEGIC ALLIANCES (Broastreet DyDX) Inquiry'}
             </h2>
-            <p className="text-sm text-gray-400">Step {step > 4 ? 4 : step} of 4</p>
+            <p className="text-sm text-gray-400">Step {step > totalSteps ? totalSteps : step} of {totalSteps}</p>
           </div>
-          <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full text-gray-400"><X size={20} /></button>
+          <button onClick={onClose} className="p-2 hover:bg-white/10 rounded-full text-gray-400 transition-colors"><X size={20} /></button>
         </div>
 
         <div className="h-1 w-full bg-nova-800">
-          <div className="h-full bg-gradient-to-r from-nova-500 to-purple-500 transition-all duration-500" style={{ width: step === 5 ? '100%' : `${((step - 1) / 4) * 100}%` }}></div>
+          <div className="h-full bg-gradient-to-r from-nova-500 to-purple-500 transition-all duration-500" style={{ width: step === 6 ? '100%' : `${((step - 1) / totalSteps) * 100}%` }}></div>
         </div>
 
         <div className="p-6 md:p-8 overflow-y-auto custom-scrollbar">
           {step === 1 && (
             <div className="space-y-8 py-4">
-              <h3 className="text-3xl font-bold text-white text-center mb-8">Select Your Path</h3>
+              <h3 className="text-3xl font-bold text-white text-center mb-8 tracking-tighter uppercase italic">Select Your Path</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div onClick={() => handleSelectAppType('financial')} className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white/5 p-8 border border-white/10 hover:border-nova-500 transition-all">
+                <div onClick={() => handleSelectAppType('financial')} className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white/5 p-8 border border-white/10 hover:border-nova-500 transition-all duration-300">
                   <div className="w-14 h-14 bg-nova-500/20 rounded-xl flex items-center justify-center text-nova-400 mb-6 group-hover:scale-110 transition-transform"><Landmark size={32} /></div>
-                  <h3 className="text-2xl font-bold text-white mb-2">Financial Support</h3>
-                  <p className="text-gray-400 text-sm">Credit, NMSE Lending, Consumer Finance, and Wealth Advisory via CASIEC.</p>
+                  <h3 className="text-2xl font-bold text-white mb-2">Financial Solutions</h3>
+                  <p className="text-gray-400 text-sm leading-relaxed">Asset Finance, Working Capital, Gender Credit, and specialized lending via CASIEC.</p>
                 </div>
-                <div onClick={() => handleSelectAppType('business_support')} className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white/5 p-8 border border-white/10 hover:border-purple-500 transition-all">
+                <div onClick={() => handleSelectAppType('business_support')} className="group relative cursor-pointer overflow-hidden rounded-2xl bg-white/5 p-8 border border-white/10 hover:border-purple-500 transition-all duration-300">
                   <div className="w-14 h-14 bg-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform"><Network size={32} /></div>
                   <h3 className="text-2xl font-bold text-white mb-2">Business Support</h3>
-                  <p className="text-gray-400 text-sm">Advisory, Corporate Finance (CFRA), and Supply Chain Distribution via GSI.</p>
+                  <p className="text-gray-400 text-sm leading-relaxed">Advisory, Corporate Finance (CFRA), and Supply Chain Distribution via GSI STRATEGIC ALLIANCES (Broastreet DyDX).</p>
                 </div>
               </div>
             </div>
@@ -116,18 +122,18 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
 
           {step === 2 && (
             <div className="space-y-6">
-              <h3 className="text-2xl font-bold text-white mb-6">{isFinancial ? 'Select Lending Program' : 'Select Advisory Pillar'}</h3>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-tight">{isFinancial ? 'Select Financial Product' : 'Select Advisory Pillar'}</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {isFinancial ? (
-                  ['Credit & Finance', 'NMSE Enterprise Lending', 'Consumer Credit', 'Supply Chain Financing', 'Wealth Management'].map((label) => (
-                    <div key={label} onClick={() => { setFormData({...formData, loanType: label}); setTimeout(nextStep, 200); }} className={`p-6 rounded-xl border cursor-pointer transition-all flex items-center gap-4 ${formData.loanType === label ? 'bg-nova-500/20 border-nova-500' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}>
-                      <span className="font-semibold text-lg">{label}</span>
+                  ['Asset Finance', 'Consumer Loan', 'Working Capital Loans', 'Group Loans', 'Gender Credit', 'Refinancing Credit', 'Creative Economy Loans', 'TOP Onlending Loans', 'Proof of Funds'].map((label) => (
+                    <div key={label} onClick={() => { setFormData({...formData, loanType: label}); setTimeout(nextStep, 200); }} className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center gap-3 ${formData.loanType === label ? 'bg-nova-500/20 border-nova-500' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}>
+                      <span className="font-bold text-sm tracking-tight">{label}</span>
                     </div>
                   ))
                 ) : (
-                  ['Business Support Services', 'Corporate Finance (CFRA)', 'Supply Chain Advisory', 'Commodity Distribution'].map((label) => (
+                  ['Business Support Services', 'Corporate Finance, Research & Advisory', 'Supply Chain, Commodity Trading & Distribution'].map((label) => (
                     <div key={label} onClick={() => { setFormData({...formData, serviceType: label}); setTimeout(nextStep, 200); }} className={`p-6 rounded-xl border cursor-pointer transition-all flex items-center gap-4 ${formData.serviceType === label ? 'bg-purple-500/20 border-purple-500' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}>
-                      <span className="font-semibold text-lg">{label}</span>
+                      <span className="font-bold text-base tracking-tight">{label}</span>
                     </div>
                   ))
                 )}
@@ -136,55 +142,144 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
           )}
 
           {step === 3 && (
-            <div className="space-y-6">
-              <h3 className="text-2xl font-bold text-white mb-6">Entity Profile</h3>
+            <div className="space-y-6 animate-fade-in-up">
+              <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-tight">Entity Profile</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">Business Name</label>
-                  <input type="text" name="businessName" value={formData.businessName} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white" />
+                <div className="col-span-full">
+                  <label className="flex items-center gap-3 p-4 bg-white/5 border border-white/10 rounded-2xl cursor-pointer hover:bg-white/10 transition-all">
+                    <input 
+                      type="checkbox" 
+                      name="isCacRegistered" 
+                      checked={formData.isCacRegistered} 
+                      onChange={handleInputChange}
+                      className="w-5 h-5 rounded border-white/20 bg-nova-800 text-nova-500 focus:ring-nova-500"
+                    />
+                    <span className="text-sm font-medium text-gray-200">My business is CAC Registered</span>
+                  </label>
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-400 mb-2">CAC / Registration No.</label>
-                  <input type="text" name="cacNumber" value={formData.cacNumber} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white" />
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">Business Name</label>
+                  <input type="text" name="businessName" value={formData.businessName} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">CAC / Registration No.</label>
+                  <input type="text" name="cacNumber" value={formData.cacNumber} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" placeholder={formData.isCacRegistered ? "Enter RC Number" : "Enter BN Number (if any)"} />
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-2">Narrative of Needs</label>
-                <textarea name="description" value={formData.description} onChange={handleInputChange} className="w-full h-32 bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white resize-none" placeholder="Explain your specific requirements..." />
+                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">Industry Focus</label>
+                <select name="industry" value={formData.industry} onChange={handleInputChange} className="w-full bg-nova-800 border border-white/10 rounded-lg py-3 px-4 text-white outline-none">
+                  <option value="General">General</option>
+                  <option value="Agriculture">Agriculture</option>
+                  <option value="Creative">Creative Arts & Media</option>
+                  <option value="Tech">Technology</option>
+                  <option value="Manufacturing">Manufacturing</option>
+                  <option value="Trade">Commodity Trade</option>
+                </select>
+              </div>
+              <div>
+                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">Detailed Requirements</label>
+                <textarea name="description" value={formData.description} onChange={handleInputChange} className="w-full h-32 bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white resize-none focus:border-nova-500 outline-none transition-all" placeholder="How can we help you succeed?" />
               </div>
             </div>
           )}
 
           {step === 4 && (
-            <form id="application-form" onSubmit={handleSubmit} className="space-y-6">
-              <h3 className="text-2xl font-bold text-white mb-6">Uplink Information</h3>
+            <div className="space-y-6 animate-fade-in-up">
+              <div className="flex items-center gap-3 mb-4">
+                <FileText className="text-nova-400" size={28} />
+                <h3 className="text-2xl font-bold text-white uppercase tracking-tight">Documentation Checklist</h3>
+              </div>
+              
+              <div className="p-4 bg-white/5 border-l-4 border-nova-500 rounded-r-2xl mb-6">
+                <p className="text-sm text-gray-300 leading-relaxed italic">
+                  To ensure a seamless processing experience, please acknowledge that you have or can provide the following documentation upon request.
+                </p>
+              </div>
+
+              <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
+                <div className="bg-white/5 p-6 rounded-3xl border border-white/5">
+                   <h4 className="text-[10px] font-black text-nova-400 uppercase tracking-[0.2em] mb-4">Lending Requirements</h4>
+                   <ul className="grid gap-3">
+                      {[
+                        "Completed Application letter (Form & Search Report)",
+                        "Bank Statement (6/12 months) or Financials (1 year)",
+                        "Valid ID (Passport/National ID/Driver's License) & Passport Photograph",
+                        "BVN and NIM (National Identification Number)",
+                        "Payment evidence of Search fee",
+                        "Guarantor(s) Form & Documentation",
+                        "Valid Cheque leaves (Guarantor and Borrower)",
+                        "Asset Debenture & Movable Stocks details",
+                        "Confirmed Address & Pledged Assets Verification",
+                        ...(formData.isCacRegistered ? [
+                          "CAC Registration Documents (Certificates/Status Reports)",
+                          "Valid Statutory Regulatory Certifications",
+                          "Transaction Brief / Business Plan (Recommended)"
+                        ] : [
+                          "Personal/Staff Support introduction letter (if applicable)",
+                          "Photocopy of valid Company ID card"
+                        ])
+                      ].map((item, i) => (
+                        <li key={i} className="flex gap-3 text-sm text-gray-400 items-start group">
+                           <CheckSquare size={16} className="text-nova-500 mt-0.5 flex-shrink-0" />
+                           <span className="group-hover:text-white transition-colors">{item}</span>
+                        </li>
+                      ))}
+                   </ul>
+                </div>
+
+                <div className="p-6 bg-nova-500/10 border border-nova-500/20 rounded-3xl flex items-start gap-4">
+                  <div className="p-2 bg-nova-500/20 rounded-xl text-nova-400">
+                    <Info size={20} />
+                  </div>
+                  <div>
+                    <h5 className="font-bold text-white mb-1">Fee Disclosure</h5>
+                    <p className="text-xs text-gray-400 leading-relaxed">
+                      An appraisal fee of <span className="text-white font-bold">1% (Flat Rate)</span> shall be charged upfront or deducted from source as a one-off charge based on the approved loan amount. This fee is non-refundable.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-4">
+                 <label className="flex items-center gap-4 p-5 bg-white/5 border border-nova-500/30 rounded-2xl cursor-pointer hover:bg-nova-500/10 transition-all">
+                    <input required type="checkbox" className="w-6 h-6 rounded border-white/20 bg-nova-800 text-nova-500 focus:ring-nova-500" />
+                    <span className="text-sm font-bold text-white">I acknowledge the documentation requirements and fee structure.</span>
+                 </label>
+              </div>
+            </div>
+          )}
+
+          {step === 5 && (
+            <form id="application-form" onSubmit={handleSubmit} className="space-y-6 animate-fade-in-up">
+              <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-tight">Uplink Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input required type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="Full Name" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white" />
-                <input required type="text" name="role" value={formData.role} onChange={handleInputChange} placeholder="Role" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white" />
-                <input required type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Email" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white" />
-                <input required type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white" />
+                <input required type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="Full Name" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
+                <input required type="text" name="role" value={formData.role} onChange={handleInputChange} placeholder="Designated Role" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
+                <input required type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Email" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
+                <input required type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
               </div>
             </form>
           )}
 
-          {step === 5 && (
-            <div className="text-center py-10">
+          {step === 6 && (
+            <div className="text-center py-10 animate-fade-in-up">
               <CheckCircle2 size={60} className="mx-auto text-green-400 mb-6" />
-              <h3 className="text-3xl font-bold text-white mb-4">Transmission Successful</h3>
-              <p className="text-gray-400 text-lg mb-8 max-w-md mx-auto">Our specialists will analyze your profile and contact you within 24-48 hours to discuss terms.</p>
-              <button onClick={onClose} className="bg-white text-nova-900 px-8 py-3 rounded-full font-bold">Exit Terminal</button>
+              <h3 className="text-3xl font-bold text-white mb-4 tracking-tighter">Transmission Successful</h3>
+              <p className="text-gray-400 text-lg mb-8 max-w-md mx-auto leading-relaxed">Our specialists will review your inquiry and initiate contact within 24-48 hours.</p>
+              <button onClick={onClose} className="bg-white text-nova-900 px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-nova-400 hover:text-white transition-all">Exit Terminal</button>
             </div>
           )}
         </div>
 
-        {step > 1 && step < 5 && (
+        {step > 1 && step < 6 && (
           <div className="p-6 border-t border-white/10 bg-white/5 flex justify-between items-center">
-            <button onClick={prevStep} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors"><ChevronLeft size={16} /> Back</button>
-            {step < 4 ? (
-              <button onClick={nextStep} className={`text-white px-6 py-2.5 rounded-full font-semibold ${isFinancial ? 'bg-nova-500' : 'bg-purple-600'}`}>Next Step <ChevronRight size={16} /></button>
+            <button onClick={prevStep} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-xs font-black uppercase tracking-widest"><ChevronLeft size={16} /> Back</button>
+            {step < 5 ? (
+              <button onClick={nextStep} className={`text-white px-8 py-2.5 rounded-full font-black text-xs uppercase tracking-widest flex items-center gap-2 shadow-lg ${isFinancial ? 'bg-nova-500 shadow-nova-500/20' : 'bg-purple-600 shadow-purple-600/20'}`}>Next Step <ChevronRight size={16} /></button>
             ) : (
-              <button form="application-form" type="submit" disabled={isSubmitting} className={`text-white px-8 py-2.5 rounded-full font-bold ${isFinancial ? 'bg-nova-500' : 'bg-purple-600'}`}>
-                {isSubmitting ? 'Syncing...' : 'Initiate Review'}
+              <button form="application-form" type="submit" disabled={isSubmitting} className={`text-white px-10 py-3 rounded-full font-black text-xs uppercase tracking-widest shadow-xl flex items-center gap-3 ${isFinancial ? 'bg-nova-500 shadow-nova-500/30' : 'bg-purple-600 shadow-purple-600/30'}`}>
+                {isSubmitting ? 'Syncing...' : 'Initiate Inquiry'} <Check size={16} />
               </button>
             )}
           </div>

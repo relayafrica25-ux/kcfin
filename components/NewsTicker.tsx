@@ -1,63 +1,96 @@
+
 import React, { useEffect, useState } from 'react';
 import { fetchFinancialNews } from '../services/geminiService';
-import { NewsItem } from '../types';
-import { TrendingUp, TrendingDown, Minus } from 'lucide-react';
+import { storageService } from '../services/storageService';
+import { NewsItem, TickerItem } from '../types';
+import { TrendingUp, TrendingDown, Minus, Zap } from 'lucide-react';
 
 export const NewsTicker: React.FC = () => {
-  const [news, setNews] = useState<NewsItem[]>([]);
+  const [tickerContent, setTickerContent] = useState<TickerItem[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadNews = async () => {
-      // In a real app, you might want a lighter weight API call for just headlines
-      // For now, we reuse the service but fallback to mock data immediately for the visual
+    const loadTickerData = async () => {
       try {
-        const data = await fetchFinancialNews();
-        setNews([...data, ...data]); // Duplicate for seamless scrolling loop
-      } catch (e) {
-        setNews(getMockTickerData());
+        // 1. Get Manual items from storage
+        const manualItems = storageService.getManualTickerItems();
+        
+        // 2. Get AI News from Gemini Webcrawler
+        let crawledItems: TickerItem[] = [];
+        try {
+          const newsData = await fetchFinancialNews();
+          crawledItems = newsData.map(news => ({
+            id: news.id,
+            label: news.title.length > 25 ? news.title.substring(0, 25) + '...' : news.title,
+            value: news.impact === 'Bullish' ? '+0.4%' : news.impact === 'Bearish' ? '-1.2%' : 'STABLE',
+            trend: news.impact,
+            isManual: false
+          }));
+        } catch (e) {
+          console.error("AI Crawler error:", e);
+        }
+
+        // Interleave: Manual -> AI -> Manual...
+        const mixed: TickerItem[] = [];
+        const maxLength = Math.max(manualItems.length, crawledItems.length);
+        for (let i = 0; i < maxLength; i++) {
+          if (manualItems[i]) mixed.push(manualItems[i]);
+          if (crawledItems[i]) mixed.push(crawledItems[i]);
+        }
+
+        // If empty, use fallback
+        if (mixed.length === 0) {
+          setTickerContent(getMockTickerItems());
+        } else {
+          // Double for seamless marquee loop
+          setTickerContent([...mixed, ...mixed]);
+        }
+      } catch (err) {
+        setTickerContent(getMockTickerItems());
       } finally {
         setLoading(false);
       }
     };
 
-    loadNews();
+    loadTickerData();
+    // Refresh ticker data every 5 minutes
+    const interval = setInterval(loadTickerData, 300000);
+    return () => clearInterval(interval);
   }, []);
 
-  const getImpactIcon = (impact: string) => {
-    switch (impact) {
+  const getImpactIcon = (trend: string) => {
+    switch (trend) {
       case 'Bullish': return <TrendingUp size={14} className="text-emerald-400" />;
       case 'Bearish': return <TrendingDown size={14} className="text-rose-400" />;
       default: return <Minus size={14} className="text-gray-400" />;
     }
   };
 
-  const getImpactColor = (impact: string) => {
-    switch (impact) {
+  const getImpactColor = (trend: string) => {
+    switch (trend) {
       case 'Bullish': return 'text-emerald-400';
       case 'Bearish': return 'text-rose-400';
       default: return 'text-gray-300';
     }
   };
 
-  const displayNews = news.length > 0 ? news : getMockTickerData();
-
   return (
     <div className="fixed top-20 left-0 w-full z-40 bg-nova-900/80 backdrop-blur-md border-b border-white/5 h-10 flex items-center overflow-hidden">
       <div className="flex items-center gap-2 px-4 bg-nova-900/90 z-20 h-full border-r border-white/10 shadow-lg">
         <div className="h-2 w-2 rounded-full bg-red-500 animate-pulse"></div>
-        <span className="text-xs font-bold text-white uppercase tracking-wider whitespace-nowrap">Live Market</span>
+        <span className="text-[10px] font-black text-white uppercase tracking-widest whitespace-nowrap">Market Live</span>
       </div>
       
       <div className="flex animate-marquee whitespace-nowrap items-center">
-        {displayNews.map((item, idx) => (
-          <div key={`${item.id}-${idx}`} className="flex items-center mx-6 gap-2">
-            <span className="text-xs text-gray-400 font-medium uppercase tracking-wide">{item.title}</span>
-            <span className={`text-xs font-bold flex items-center gap-1 ${getImpactColor(item.impact)}`}>
-               {getImpactIcon(item.impact)}
-               {item.impact === 'Bullish' ? '+0.4%' : item.impact === 'Bearish' ? '-1.2%' : '0.0%'}
+        {tickerContent.map((item, idx) => (
+          <div key={`${item.id}-${idx}`} className="flex items-center mx-8 gap-3">
+            {item.isManual && <Zap size={10} className="text-nova-400 animate-pulse" />}
+            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest">{item.label}</span>
+            <span className={`text-[10px] font-black flex items-center gap-1.5 ${getImpactColor(item.trend)}`}>
+               {getImpactIcon(item.trend)}
+               {item.value}
             </span>
-            <span className="text-gray-600 mx-2">|</span>
+            <span className="text-gray-800 ml-4 font-light opacity-50">/</span>
           </div>
         ))}
       </div>
@@ -65,16 +98,12 @@ export const NewsTicker: React.FC = () => {
   );
 };
 
-// Fallback data for immediate render
-const getMockTickerData = (): NewsItem[] => {
-  const baseItems = [
-    { id: 't1', title: 'S&P 500', summary: '', impact: 'Bullish' },
-    { id: 't2', title: 'NASDAQ', summary: '', impact: 'Bullish' },
-    { id: 't3', title: 'BTC/USD', summary: '', impact: 'Bearish' },
-    { id: 't4', title: '10Y Treasury', summary: '', impact: 'Neutral' },
-    { id: 't5', title: 'Gold Spot', summary: '', impact: 'Bullish' },
-    { id: 't6', title: 'EUR/USD', summary: '', impact: 'Bearish' },
-  ] as NewsItem[];
-  
-  return [...baseItems, ...baseItems, ...baseItems]; // Triple it for smooth loop
+const getMockTickerItems = (): TickerItem[] => {
+  const base = [
+    { id: 'm1', label: 'NGN/USD', value: '750.2', trend: 'Bearish', isManual: false },
+    { id: 'm2', label: 'ZAR/USD', value: '+2.1%', trend: 'Bullish', isManual: false },
+    { id: 'm3', label: 'S&P 500', value: '4508', trend: 'Bullish', isManual: false },
+    { id: 'm4', label: 'BTC', value: '-0.4%', trend: 'Bearish', isManual: false }
+  ] as TickerItem[];
+  return [...base, ...base];
 };

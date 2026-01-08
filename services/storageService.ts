@@ -1,10 +1,11 @@
 
-import { Article, LoanApplication, ContactInquiry, NewsletterSubscription } from '../types';
+import { Article, LoanApplication, ContactInquiry, NewsletterSubscription, TickerItem } from '../types';
 
 const ARTICLES_KEY = 'casiec_articles';
 const APPLICATIONS_KEY = 'casiec_applications';
 const INQUIRIES_KEY = 'casiec_inquiries';
 const NEWSLETTER_KEY = 'casiec_newsletter';
+const TICKER_KEY = 'casiec_ticker_manual';
 const USERS_KEY = 'casiec_admin_users';
 
 const INITIAL_ARTICLES: Article[] = [
@@ -89,6 +90,23 @@ export const storageService = {
     }
   },
 
+  // Ticker Management
+  getManualTickerItems: (): TickerItem[] => {
+    const saved = localStorage.getItem(TICKER_KEY);
+    return saved ? JSON.parse(saved) : [];
+  },
+
+  saveTickerItem: (item: TickerItem) => {
+    const items = storageService.getManualTickerItems();
+    items.unshift(item);
+    localStorage.setItem(TICKER_KEY, JSON.stringify(items));
+  },
+
+  deleteTickerItem: (id: string) => {
+    const items = storageService.getManualTickerItems().filter(i => i.id !== id);
+    localStorage.setItem(TICKER_KEY, JSON.stringify(items));
+  },
+
   // Newsletter Subscriptions
   getNewsletterSubscriptions: (): NewsletterSubscription[] => {
     const saved = localStorage.getItem(NEWSLETTER_KEY);
@@ -97,7 +115,6 @@ export const storageService = {
 
   saveNewsletterSubscription: (email: string) => {
     const subs = storageService.getNewsletterSubscriptions();
-    // Prevent duplicate emails
     if (subs.find(s => s.email.toLowerCase() === email.toLowerCase())) return;
     
     const newSub: NewsletterSubscription = {
@@ -131,7 +148,6 @@ export const storageService = {
 
   authenticateUser: (emailOrUsername: string, password: string) => {
     const users = storageService.getUsers();
-    // Support default admin login for convenience
     if (emailOrUsername === 'admin' && password === 'admin') return true;
     
     return users.some((u: any) => 

@@ -1,3 +1,4 @@
+
 import React, { useState } from 'react';
 import { Navbar } from './Navbar';
 import { NewsTicker } from './NewsTicker';
@@ -11,7 +12,9 @@ import { BusinessSupportPage } from './BusinessSupportPage';
 import { InvestmentPage } from './InvestmentPage';
 import { ArticleHubPage } from './ArticleHubPage';
 import { AdminDashboard } from './AdminDashboard';
-import { LayoutDashboard, Lock, ShieldCheck, Key, Settings } from 'lucide-react';
+import { AboutPage } from './AboutPage';
+import { TeamPage } from './TeamPage';
+import { LayoutDashboard, Lock, ShieldCheck, Key, Settings, Activity, Globe } from 'lucide-react';
 
 const App: React.FC = () => {
   const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
@@ -29,6 +32,10 @@ const App: React.FC = () => {
     switch (currentView) {
       case 'home':
         return <HomePage onApplyClick={openLoanModal} onNavigate={setCurrentView} />;
+      case 'about':
+        return <AboutPage />;
+      case 'team':
+        return <TeamPage />;
       case 'real-estate':
         return <RealEstatePage onApplyClick={openLoanModal} />;
       case 'financial-support':
@@ -82,21 +89,29 @@ const App: React.FC = () => {
                 {/* Brand Column */}
                 <div className="lg:col-span-1">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="bg-nova-500 p-2.5 rounded-xl shadow-lg shadow-nova-500/20">
-                      <div className="h-4 w-4 bg-white rounded-sm"></div>
+                    <div className="bg-nova-500 p-2 rounded-lg shadow-lg shadow-nova-500/20">
+                      <Activity className="h-5 w-5 text-white" />
                     </div>
-                    <span className="font-bold text-xl tracking-tight text-white">CASIEC</span>
+                    <div className="flex flex-col leading-[0.8]">
+                      <span className="font-bold text-lg tracking-tight text-white uppercase italic">CASIEC</span>
+                      <span className="text-[8px] font-bold text-gray-500 tracking-[0.3em] uppercase mt-1">FINANCIALS</span>
+                    </div>
                   </div>
-                  <p className="text-gray-500 text-sm leading-relaxed">
-                    CASIEC FINANCIALS & GSI: The intersection of institutional capital and entrepreneurial vision. Fostering economic advancement through financial inclusion.
+                  <p className="text-gray-500 text-xs leading-relaxed mb-4">
+                    CASIEC Financials focuses on financial intermediation and inclusion. In partnership with GSI STRATEGIC ALLIANCES (Broastreet DyDX), we drive enterprise sustainability and growth.
+                  </p>
+                  <p className="text-nova-400 font-bold italic text-sm">
+                    We lend, we support, You succeed.
                   </p>
                 </div>
                 
                 {/* Links Column 1 */}
                 <div>
-                  <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-[10px] opacity-50">Quick Links</h4>
+                  <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-[10px] opacity-50">Discovery</h4>
                   <ul className="space-y-4">
                     <li><button onClick={() => handleNavigate('home')} className="text-gray-400 hover:text-white transition-colors text-sm">Home</button></li>
+                    <li><button onClick={() => handleNavigate('about')} className="text-gray-400 hover:text-white transition-colors text-sm">About Us</button></li>
+                    <li><button onClick={() => handleNavigate('team')} className="text-gray-400 hover:text-white transition-colors text-sm">Our Team</button></li>
                     <li><button onClick={() => handleNavigate('financial-support')} className="text-gray-400 hover:text-white transition-colors text-sm">Funding Programs</button></li>
                     <li><button onClick={() => handleNavigate('insights')} className="text-gray-400 hover:text-white transition-colors text-sm">Insights Hub</button></li>
                   </ul>
@@ -104,35 +119,50 @@ const App: React.FC = () => {
 
                 {/* Links Column 2 */}
                 <div>
-                  <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-[10px] opacity-50">Contact Us</h4>
+                  <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-[10px] opacity-50">Communication</h4>
                   <ul className="space-y-4 text-sm text-gray-400">
-                    <li>Lagos, Nigeria</li>
-                    <li>support@casiec.com</li>
-                    <li className="font-mono text-xs">+234 818-398-7171 (Dl)</li>
-                    <li className="font-mono text-xs">+234 810-326-0048</li>
-                    <li className="font-mono text-xs">+234 810-537-5394</li>
+                    <li className="flex items-start gap-2">
+                       <Globe size={14} className="mt-1 text-nova-400" />
+                       <div className="flex flex-col gap-1">
+                          <a href="http://www.casiecfinancials.com/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">casiecfinancials.com</a>
+                          <a href="http://www.broastreet.africa/" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">broastreet.africa</a>
+                       </div>
+                    </li>
+                    <li>
+                      <div className="flex flex-col gap-1">
+                        <a href="mailto:info@casiecfinancials.com" className="hover:text-white transition-colors">info@casiecfinancials.com</a>
+                        <a href="mailto:info@broastreet.africa" className="hover:text-white transition-colors">info@broastreet.africa</a>
+                      </div>
+                    </li>
+                    <li className="font-mono text-xs pt-2">
+                      <div className="flex flex-col gap-1">
+                        <span>+234 818-398-7171 (Dl)</span>
+                        <span>+234 810-326-0048</span>
+                        <span>+234 810-537-5394</span>
+                      </div>
+                    </li>
                   </ul>
                 </div>
 
                 {/* Staff Access Column */}
                 <div className="flex flex-col">
-                  <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-[10px] opacity-50">Staff & Management</h4>
+                  <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-[10px] opacity-50">Operations</h4>
                   <button 
                     onClick={() => handleNavigate('admin')}
-                    className="group relative flex items-center justify-between gap-4 px-6 py-4 bg-white/5 border border-white/10 hover:border-nova-500 hover:bg-white/10 rounded-2xl transition-all duration-300 shadow-2xl overflow-hidden"
+                    className="group relative flex items-center justify-between gap-4 px-6 py-5 bg-white/5 border border-white/10 hover:border-nova-500 hover:bg-nova-500/5 rounded-[2rem] transition-all duration-500 shadow-2xl overflow-hidden hover:shadow-nova-500/20"
                   >
-                    <div className="flex items-center gap-3">
-                        <div className="p-2 bg-nova-500/20 rounded-lg text-nova-400 group-hover:bg-nova-500 group-hover:text-white transition-all">
-                            <Lock size={16} />
+                    <div className="flex items-center gap-4">
+                        <div className="p-3 bg-nova-500/20 rounded-2xl text-nova-400 group-hover:bg-nova-500 group-hover:text-white transition-all shadow-lg">
+                            <Lock size={20} />
                         </div>
                         <div className="text-left">
-                            <div className="text-sm font-bold text-white">Admin Portal</div>
-                            <div className="text-[10px] text-gray-500 group-hover:text-gray-400 transition-colors uppercase tracking-wider">Internal Login</div>
+                            <div className="text-base font-black text-white uppercase tracking-tight">Staff Portal</div>
+                            <div className="text-[9px] text-gray-500 group-hover:text-nova-400 transition-colors uppercase tracking-[0.3em] font-bold">Secure Authorization</div>
                         </div>
                     </div>
-                    <Settings size={18} className="text-gray-600 group-hover:rotate-90 group-hover:text-nova-400 transition-all duration-500" />
+                    <Settings size={20} className="text-gray-600 group-hover:rotate-180 group-hover:text-nova-400 transition-all duration-700" />
                   </button>
-                  <p className="mt-4 text-[10px] text-gray-600 italic">Strictly for authorized CASIEC personnel.</p>
+                  <p className="mt-4 text-[10px] text-gray-600 italic px-2">Institutional access only. Personnel ID required.</p>
                 </div>
               </div>
 
@@ -142,7 +172,13 @@ const App: React.FC = () => {
                   © 2024 CASIEC FINANCIALS & GSI. ALL RIGHTS RESERVED.
                 </div>
                 
-                <div className="flex items-center gap-6">
+                <div className="flex items-center gap-8">
+                   <button 
+                    onClick={() => handleNavigate('admin')}
+                    className="text-[9px] font-black uppercase tracking-widest text-gray-600 hover:text-nova-400 transition-colors flex items-center gap-2"
+                   >
+                     <ShieldCheck size={12} /> Personnel Login
+                   </button>
                    <div className="flex gap-4">
                       <div className="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 hover:text-white transition-colors cursor-pointer">
                         <span className="font-bold text-[10px]">IN</span>

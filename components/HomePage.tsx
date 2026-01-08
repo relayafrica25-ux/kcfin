@@ -3,7 +3,7 @@ import React, { useState } from 'react';
 import { Hero } from './Hero';
 import { FuturisticCarousel } from './FuturisticCarousel';
 import { FAQSection } from './FAQSection';
-import { Building, Hammer, Banknote, Briefcase, Truck, Landmark, Mail, Phone, MapPin, Wallet, BrainCircuit, Headphones, Sparkles, Target, Compass, ShieldCheck, Zap, Gem, Send, CheckCircle, Network, TrendingUp } from 'lucide-react';
+import { Building, Hammer, Banknote, Briefcase, Truck, Landmark, Mail, Phone, MapPin, Wallet, BrainCircuit, Headphones, Sparkles, Target, Compass, ShieldCheck, Zap, Gem, Send, CheckCircle, Network, TrendingUp, BarChart3, Database, Globe } from 'lucide-react';
 import { storageService } from '../services/storageService';
 import { ContactInquiry } from '../types';
 
@@ -54,18 +54,17 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
               <div className="text-center mb-16">
                  <h1 className="text-5xl lg:text-8xl font-bold tracking-tight text-white mb-6">
-                   Empowering <br/>
                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-nova-400 via-white to-purple-400">
-                     Continental Growth
+                     We lend, we support, <br/> You succeed.
                    </span>
                  </h1>
-                 <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-                   CASIEC & GSI STRATEGIC ALLIANCES: Providing integrated financial solutions and corporate advisory to stimulate enterprise advancement.
+                 <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
+                   Providing integrated financial solutions and corporate advisory to stimulate enterprise sustainability across continental markets.
                  </p>
               </div>
 
               <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                {/* Financial Support Card */}
+                {/* Financial Support Card (CASIEC) */}
                 <div className="group relative glass-card p-1 rounded-3xl hover:shadow-[0_0_50px_rgba(79,70,229,0.3)] transition-all duration-500">
                     <div className="absolute inset-0 bg-gradient-to-b from-nova-500/20 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div className="relative bg-nova-900/80 backdrop-blur-xl rounded-[22px] p-8 h-full flex flex-col items-center text-center border border-white/5 group-hover:border-nova-500/50 transition-colors">
@@ -74,9 +73,13 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
                         </div>
                         <h2 className="text-3xl font-bold text-white mb-2">Financial Support</h2>
                         <p className="text-nova-400 font-bold mb-4 uppercase tracking-widest text-[10px]">Managed by CASIEC</p>
-                        <p className="text-gray-400 mb-8 text-sm">
-                            Credit & Finance, Enterprise Lending (Nano, Micro, Small), Consumer Credit, and Supply Chain Financing solutions.
-                        </p>
+                        <div className="text-gray-400 mb-8 text-sm space-y-2 text-left w-full">
+                            <div className="flex items-center gap-2"><CheckCircle size={14} className="text-nova-500 flex-shrink-0" /> Credit & Finance</div>
+                            <div className="flex items-center gap-2"><CheckCircle size={14} className="text-nova-500 flex-shrink-0" /> NMSE Lending (Nano, Micro, Small)</div>
+                            <div className="flex items-center gap-2"><CheckCircle size={14} className="text-nova-500 flex-shrink-0" /> Consumer Finance/Credit</div>
+                            <div className="flex items-center gap-2"><CheckCircle size={14} className="text-nova-500 flex-shrink-0" /> Wealth Management Advisory</div>
+                            <div className="flex items-center gap-2"><CheckCircle size={14} className="text-nova-500 flex-shrink-0" /> Supply Chain financing</div>
+                        </div>
                         <button 
                             onClick={() => onNavigate('financial-support')}
                             className="mt-auto px-8 py-3 rounded-full bg-nova-500 hover:bg-nova-400 text-white font-bold transition-all w-full"
@@ -86,7 +89,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
                     </div>
                 </div>
 
-                {/* Business Support Card */}
+                {/* Business Support Card (GSI) */}
                 <div className="group relative glass-card p-1 rounded-3xl hover:shadow-[0_0_50px_rgba(168,85,247,0.3)] transition-all duration-500">
                     <div className="absolute inset-0 bg-gradient-to-b from-purple-500/20 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
                     <div className="relative bg-nova-900/80 backdrop-blur-xl rounded-[22px] p-8 h-full flex flex-col items-center text-center border border-white/5 group-hover:border-purple-500/50 transition-colors">
@@ -94,10 +97,13 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
                             <Network size={40} />
                         </div>
                         <h2 className="text-3xl font-bold text-white mb-2">Business Support</h2>
-                        <p className="text-purple-400 font-bold mb-4 uppercase tracking-widest text-[10px]">GSI Strategic Alliances</p>
-                        <p className="text-gray-400 mb-8 text-sm">
-                            Corporate Finance, Research & Advisory (CFRA), Strategic Outsourcing, and Commodity Trading & Distribution.
-                        </p>
+                        <p className="text-purple-400 font-bold mb-4 uppercase tracking-widest text-[10px]">GSI STRATEGIC ALLIANCES (Broastreet DyDX)</p>
+                        <div className="text-gray-400 mb-8 text-sm space-y-2 text-left w-full">
+                            <div className="flex items-center gap-2"><CheckCircle size={14} className="text-purple-500 flex-shrink-0" /> Business Support Services</div>
+                            <div className="flex items-center gap-2"><CheckCircle size={14} className="text-purple-500 flex-shrink-0" /> Corporate Finance & Advisory (CFRA)</div>
+                            <div className="flex items-center gap-2"><CheckCircle size={14} className="text-purple-500 flex-shrink-0" /> Supply Chain Commodity Trading</div>
+                            <div className="flex items-center gap-2"><CheckCircle size={14} className="text-purple-500 flex-shrink-0" /> Distribution & Global Logistics</div>
+                        </div>
                         <button 
                              onClick={() => onNavigate('business-support')}
                              className="mt-auto px-8 py-3 rounded-full bg-purple-600 hover:bg-purple-500 text-white font-bold transition-all w-full"
@@ -113,6 +119,14 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
 
       <section className="py-24 relative overflow-hidden bg-nova-800/30">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+           {/* Corporate Overview Section */}
+           <div className="mb-24 max-w-4xl mx-auto text-center">
+              <h2 className="text-3xl font-bold text-white mb-8 uppercase tracking-tighter italic">Corporate Overview</h2>
+              <p className="text-xl text-gray-300 leading-relaxed font-light">
+                CASIEC Financials focuses on financial intermediation, providing loans to Nano, Micro, Small, and Medium-sized businesses, as well as consumer lending to promote financial inclusion. In partnership with GSI STRATEGIC ALLIANCES (Broastreet DyDX), we offer comprehensive financial and business support services to drive enterprise sustainability.
+              </p>
+           </div>
+
            <div className="grid lg:grid-cols-3 gap-8 mb-20">
               <div className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
                  <div className="w-12 h-12 bg-nova-500/20 rounded-xl flex items-center justify-center text-nova-400 mb-6 group-hover:scale-110 transition-transform">
@@ -120,7 +134,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
                  </div>
                  <h3 className="text-xl font-bold text-white mb-3">Our Vision</h3>
                  <p className="text-gray-400 leading-relaxed text-sm">
-                   To be the leading story and benchmark in finance & business support, setting the standard for excellence.
+                   To become the story and the leading benchmark in finance and business support, setting the standard for excellence.
                  </p>
               </div>
               <div className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
@@ -206,34 +220,44 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
                 <h2 className="text-4xl font-bold mb-6">Contact Our Team</h2>
                 <p className="text-gray-400 mb-12 leading-relaxed">
                     Have specific questions about our funding process or business support services? 
-                    Fill out the form and a specialist will reach out within 24 hours.
+                    Reach out to our specialists via the official channels below.
                 </p>
                 <div className="space-y-6">
                     <div className="flex items-center gap-6 group">
                         <div className="w-14 h-14 rounded-2xl bg-nova-500/10 flex items-center justify-center text-nova-400 group-hover:scale-110 transition-transform">
-                            <Phone size={24} />
+                            <Mail size={24} />
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Call Us (Strategic)</p>
-                            <a href="tel:+2348183987171" className="text-xl font-bold text-white hover:text-nova-400 transition-colors">+234 818-398-7171</a>
+                            <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Corporate Emails</p>
+                            <div className="flex flex-col">
+                              <a href="mailto:info@casiecfinancials.com" className="text-lg font-bold text-white hover:text-nova-400 transition-colors">info@casiecfinancials.com</a>
+                              <a href="mailto:info@broastreet.africa" className="text-lg font-bold text-white hover:text-purple-400 transition-colors">info@broastreet.africa</a>
+                            </div>
                         </div>
                     </div>
                     <div className="flex items-center gap-6 group">
                         <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
-                            <Mail size={24} />
+                            <Globe size={24} />
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Email Support</p>
-                            <a href="mailto:support@casiec.com" className="text-xl font-bold text-white hover:text-purple-400 transition-colors">support@casiec.com</a>
+                            <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Websites</p>
+                            <div className="flex flex-col">
+                              <a href="http://www.casiecfinancials.com/" target="_blank" rel="noreferrer" className="text-lg font-bold text-white hover:text-nova-400 transition-colors">casiecfinancials.com</a>
+                              <a href="http://www.broastreet.africa/" target="_blank" rel="noreferrer" className="text-lg font-bold text-white hover:text-purple-400 transition-colors">broastreet.africa</a>
+                            </div>
                         </div>
                     </div>
                     <div className="flex items-center gap-6 group">
                         <div className="w-14 h-14 rounded-2xl bg-nova-accent/10 flex items-center justify-center text-nova-accent group-hover:scale-110 transition-transform">
-                            <MapPin size={24} />
+                            <Phone size={24} />
                         </div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Location</p>
-                            <p className="text-xl font-bold text-white">Lagos, Nigeria</p>
+                            <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Lines of Communication</p>
+                            <div className="flex flex-col font-mono text-sm text-white">
+                              <span>+234 818-398-7171 (Dl)</span>
+                              <span>+234 810-326-0048</span>
+                              <span>+234 810-537-5394</span>
+                            </div>
                         </div>
                     </div>
                 </div>

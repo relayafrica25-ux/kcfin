@@ -69,3 +69,20 @@ export interface NewsletterSubscription {
   email: string;
   date: string;
 }
+
+export interface TickerItem {
+  id: string;
+  label: string;
+  value: string;
+  trend: 'Bullish' | 'Bearish' | 'Neutral';
+  isManual: boolean;
+}
+
+export interface TeamMember {
+  id: string;
+  name: string;
+  role: string;
+  bio: string;
+  imageGradient: string;
+  specialization: string;
+}

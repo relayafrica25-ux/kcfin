@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from 'react';
 import { fetchFinancialNews } from '../services/geminiService';
 import { storageService } from '../services/storageService';
@@ -76,37 +77,48 @@ export const ArticleHubPage: React.FC = () => {
             </h1>
           </div>
 
-          {/* Featured Article Card */}
-          {activeCategory === 'All' && !searchQuery && featuredArticle && (
-            <div 
-              onClick={() => handleArticleClick(featuredArticle)}
-              className="glass-panel p-1 rounded-[2.5rem] mb-20 animate-fade-in-up group cursor-pointer hover:shadow-[0_0_50px_rgba(79,70,229,0.2)] transition-shadow duration-500"
-            >
-              <div className="bg-nova-900/50 rounded-[2.3rem] overflow-hidden grid lg:grid-cols-2">
-                 <div className="p-8 md:p-12 flex flex-col justify-center">
-                    <div className="flex items-center gap-3 mb-6">
-                       <span className="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs font-bold uppercase tracking-wider border border-purple-500/20">
-                         {featuredArticle.category}
-                       </span>
-                    </div>
-                    <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight group-hover:text-purple-300 transition-colors">
-                      {featuredArticle.title}
-                    </h2>
-                    <p className="text-lg text-gray-400 mb-8 leading-relaxed">
-                      {featuredArticle.excerpt}
-                    </p>
-                    <div className="flex items-center gap-4 mt-auto">
-                       <div className="text-white font-medium text-sm">By {featuredArticle.author}</div>
-                    </div>
-                 </div>
-                 <div className={`relative min-h-[400px] bg-gradient-to-br ${featuredArticle.imageGradient} opacity-80 group-hover:opacity-100 transition-opacity`}>
-                    <div className="absolute bottom-8 right-8 bg-black/30 backdrop-blur-md border border-white/10 p-4 rounded-full">
-                       <ArrowRight className="text-white group-hover:translate-x-1 transition-transform" />
-                    </div>
-                 </div>
+          {/* Featured Article Card - Stable height container */}
+          <div className="min-h-[400px]">
+            {activeCategory === 'All' && !searchQuery && featuredArticle && (
+              <div 
+                onClick={() => handleArticleClick(featuredArticle)}
+                className="glass-panel p-1 rounded-[2.5rem] mb-20 animate-fade-in-up group cursor-pointer hover:shadow-[0_0_50px_rgba(79,70,229,0.2)] transition-shadow duration-500"
+              >
+                <div className="bg-nova-900/50 rounded-[2.3rem] overflow-hidden grid lg:grid-cols-2">
+                   <div className="p-8 md:p-12 flex flex-col justify-center">
+                      <div className="flex items-center gap-3 mb-6">
+                         <span className="px-3 py-1 bg-purple-500/20 text-purple-400 rounded-full text-xs font-bold uppercase tracking-wider border border-purple-500/20">
+                           {featuredArticle.category}
+                         </span>
+                      </div>
+                      <h2 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight group-hover:text-purple-300 transition-colors">
+                        {featuredArticle.title}
+                      </h2>
+                      <p className="text-lg text-gray-400 mb-8 leading-relaxed">
+                        {featuredArticle.excerpt}
+                      </p>
+                      <div className="flex items-center gap-4 mt-auto">
+                         <div className="text-white font-medium text-sm">By {featuredArticle.author}</div>
+                      </div>
+                   </div>
+                   <div className={`relative min-h-[400px] bg-gradient-to-br ${featuredArticle.imageGradient} opacity-80 group-hover:opacity-100 transition-opacity`}>
+                      {featuredArticle.imageUrl && (
+                        <img 
+                          src={featuredArticle.imageUrl} 
+                          width="800"
+                          height="400"
+                          className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" 
+                          alt="" 
+                        />
+                      )}
+                      <div className="absolute bottom-8 right-8 bg-black/30 backdrop-blur-md border border-white/10 p-4 rounded-full">
+                         <ArrowRight className="text-white group-hover:translate-x-1 transition-transform" />
+                      </div>
+                   </div>
+                </div>
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
       </div>
 
@@ -146,11 +158,17 @@ export const ArticleHubPage: React.FC = () => {
                 <div 
                     key={article.id} 
                     onClick={() => handleArticleClick(article)}
-                    className="group flex flex-col bg-white/5 border border-white/5 rounded-3xl overflow-hidden hover:bg-white/10 transition-all duration-300 cursor-pointer"
+                    className="group flex flex-col bg-white/5 border border-white/5 rounded-3xl overflow-hidden hover:bg-white/10 transition-all duration-300 cursor-pointer h-full"
                 >
                     <div className={`h-48 relative overflow-hidden bg-gradient-to-br ${article.imageGradient}`}>
                         {article.imageUrl && (
-                          <img src={article.imageUrl} className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" alt="" />
+                          <img 
+                            src={article.imageUrl} 
+                            width="400"
+                            height="192"
+                            className="absolute inset-0 w-full h-full object-cover opacity-60 group-hover:opacity-100 transition-opacity" 
+                            alt="" 
+                          />
                         )}
                         <div className="absolute top-4 left-4 z-10">
                             <span className="px-3 py-1 backdrop-blur-md border border-white/10 text-white text-[10px] font-bold uppercase rounded-full">

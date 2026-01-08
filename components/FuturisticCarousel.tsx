@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect, useRef } from 'react';
 import { fetchFinancialNews } from '../services/geminiService';
 import { NewsItem } from '../types';
@@ -65,7 +66,6 @@ export const FuturisticCarousel: React.FC = () => {
       const newsItems = await fetchFinancialNews();
       
       // Transform news items to carousel format
-      // We take the "Hottest" (first 3) from the crawler
       const formattedNews: CarouselItem[] = newsItems.slice(0, 3).map(news => ({
         id: news.id,
         type: 'news',
@@ -78,7 +78,7 @@ export const FuturisticCarousel: React.FC = () => {
         imageUrl: news.imageUrl
       }));
 
-      // Interleave content: News -> Advert -> News -> Eco -> Advert
+      // Interleave content
       const mixedContent: CarouselItem[] = [];
       const maxLength = Math.max(formattedNews.length, staticContent.length);
       
@@ -98,7 +98,7 @@ export const FuturisticCarousel: React.FC = () => {
   useEffect(() => {
     if (loading || isPaused || items.length === 0) return;
 
-    const duration = 6000; // 6 seconds per slide
+    const duration = 6000; 
     const startTime = Date.now();
 
     const animate = () => {
@@ -127,7 +127,6 @@ export const FuturisticCarousel: React.FC = () => {
       if (direction === 'next') return (prev + 1) % items.length;
       return (prev - 1 + items.length) % items.length;
     });
-    // Reset progress visual
     if (progressRef.current) progressRef.current.style.width = '0%';
   };
 
@@ -149,7 +148,7 @@ export const FuturisticCarousel: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="w-full h-[400px] glass-panel rounded-3xl animate-pulse flex items-center justify-center">
+      <div className="w-full h-[500px] glass-panel rounded-[2.5rem] animate-pulse flex items-center justify-center">
         <Sparkles className="text-nova-400 animate-spin" size={32} />
       </div>
     );
@@ -159,24 +158,23 @@ export const FuturisticCarousel: React.FC = () => {
 
   return (
     <div 
-      className="relative w-full overflow-hidden rounded-[2.5rem] bg-nova-900 border border-white/10 shadow-2xl group"
+      className="relative w-full h-[500px] overflow-hidden rounded-[2.5rem] bg-nova-900 border border-white/10 shadow-2xl group"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
     >
-      {/* Background Ambience / Image */}
       {currentItem.imageUrl ? (
         <div className="absolute inset-0">
              <img 
                src={currentItem.imageUrl} 
                alt={currentItem.title} 
+               width="1280"
+               height="500"
                className="w-full h-full object-cover opacity-60 transition-transform duration-10000 group-hover:scale-105"
                onError={(e) => {
-                 // Fallback if image fails to load
                  (e.target as HTMLImageElement).style.display = 'none';
                }}
              />
              <div className="absolute inset-0 bg-gradient-to-r from-nova-900 via-nova-900/80 to-transparent"></div>
-             {/* Add a fallback gradient behind the image just in case it loads slowly or fails transparently */}
              <div className={`absolute inset-0 -z-10 bg-gradient-to-br ${currentItem.imageGradient}`}></div>
         </div>
       ) : (
@@ -187,11 +185,8 @@ export const FuturisticCarousel: React.FC = () => {
          <div className="absolute -top-1/2 -left-1/2 w-full h-full bg-white/5 rounded-full blur-[120px] animate-pulse-slow"></div>
       )}
 
-      <div className="relative z-10 grid lg:grid-cols-12 min-h-[500px]">
-        
-        {/* Left: Content Area */}
+      <div className="relative z-10 grid lg:grid-cols-12 h-full">
         <div className="lg:col-span-7 p-8 md:p-12 flex flex-col justify-center relative">
-           {/* Decorator Lines */}
            <div className="absolute top-8 left-8 w-20 h-1 bg-white/20 rounded-full"></div>
            
            <div className="mb-6 flex items-center gap-3 animate-fade-in-up">
@@ -223,9 +218,7 @@ export const FuturisticCarousel: React.FC = () => {
            </div>
         </div>
 
-        {/* Right: Visual / Abstract Art Area */}
         <div className="lg:col-span-5 relative hidden lg:block overflow-hidden">
-           {/* If no image, show abstract shapes. If image exists, it covers background so we don't need these shapes blocking the view or looking weird on top */}
            {!currentItem.imageUrl && (
              <>
                 <div className={`absolute inset-0 bg-gradient-to-bl ${currentItem.imageGradient} opacity-60 mix-blend-overlay`}></div>
@@ -245,7 +238,6 @@ export const FuturisticCarousel: React.FC = () => {
              </>
            )}
 
-           {/* Next Item Teaser (Bottom Right) */}
            <div className="absolute bottom-8 right-8 text-right max-w-[200px]">
               <div className="text-xs text-white/50 uppercase tracking-widest mb-1">Up Next</div>
               <div className="text-sm font-bold text-white truncate drop-shadow-md">
@@ -253,10 +245,8 @@ export const FuturisticCarousel: React.FC = () => {
               </div>
            </div>
         </div>
-
       </div>
 
-      {/* Progress Bar (Bottom Edge) */}
       <div className="absolute bottom-0 left-0 w-full h-1 bg-white/10">
         <div 
           ref={progressRef}
@@ -265,7 +255,6 @@ export const FuturisticCarousel: React.FC = () => {
         ></div>
       </div>
 
-      {/* Navigation Arrows */}
       <div className="absolute bottom-8 left-8 lg:left-auto lg:bottom-8 lg:right-auto lg:top-1/2 lg:-translate-y-1/2 lg:w-[calc(100%-4rem)] lg:mx-8 flex justify-between pointer-events-none">
         <button 
           onClick={() => handleManualNav('prev')}
@@ -281,7 +270,6 @@ export const FuturisticCarousel: React.FC = () => {
         </button>
       </div>
 
-      {/* Mobile Nav Indicators */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2 lg:hidden">
         {items.map((_, idx) => (
           <div 

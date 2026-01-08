@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Hero } from './Hero';
 import { FuturisticCarousel } from './FuturisticCarousel';
@@ -59,7 +58,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
                    </span>
                  </h1>
                  <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-                   Providing integrated financial solutions and corporate advisory to stimulate enterprise sustainability across continental markets.
+                   Providing integrated financial services, business funding solutions, and corporate advisory to stimulate enterprise sustainability across continental markets.
                  </p>
               </div>
 
@@ -71,8 +70,8 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
                         <div className="w-20 h-20 rounded-full bg-nova-500/10 flex items-center justify-center text-nova-400 mb-6 group-hover:scale-110 transition-transform duration-300">
                             <Wallet size={40} />
                         </div>
-                        <h2 className="text-3xl font-bold text-white mb-2">Financial Support</h2>
-                        <p className="text-nova-400 font-bold mb-4 uppercase tracking-widest text-[10px]">Managed by CASIEC</p>
+                        <h2 className="text-3xl font-bold text-white mb-2">Financial Funding</h2>
+                        <p className="text-nova-400 font-bold mb-4 uppercase tracking-widest text-[10px]">Managed by CASIEC Financials</p>
                         <div className="text-gray-400 mb-8 text-sm space-y-2 text-left w-full">
                             <div className="flex items-center gap-2"><CheckCircle size={14} className="text-nova-500 flex-shrink-0" /> Credit & Finance</div>
                             <div className="flex items-center gap-2"><CheckCircle size={14} className="text-nova-500 flex-shrink-0" /> NMSE Lending (Nano, Micro, Small)</div>
@@ -121,9 +120,9 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            {/* Corporate Overview Section */}
            <div className="mb-24 max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl font-bold text-white mb-8 uppercase tracking-tighter italic">Corporate Overview</h2>
+              <h2 className="text-3xl font-bold text-white mb-8 uppercase tracking-tighter italic">Expert Financial Services Overview</h2>
               <p className="text-xl text-gray-300 leading-relaxed font-light">
-                CASIEC Financials focuses on financial intermediation, providing loans to Nano, Micro, Small, and Medium-sized businesses, as well as consumer lending to promote financial inclusion. In partnership with GSI STRATEGIC ALLIANCES (Broastreet DyDX), we offer comprehensive financial and business support services to drive enterprise sustainability.
+                CASIEC Financials focuses on financial intermediation, providing loans to Nano, Micro, Small, and Medium-sized businesses, as well as consumer lending to promote financial inclusion. In partnership with GSI STRATEGIC ALLIANCES (Broastreet DyDX), we offer comprehensive business funding and support services to drive enterprise sustainability.
               </p>
            </div>
 
@@ -197,7 +196,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
           <div className="mb-10 flex items-end justify-between">
             <div>
-              <h2 className="text-4xl font-bold text-white mb-2">Live Insights & Updates</h2>
+              <h2 className="text-4xl font-bold text-white mb-2">Live Financial Insights & Market Updates</h2>
               <p className="text-gray-400">Breaking news, eco-financial opportunities, and company announcements.</p>
             </div>
             <div className="hidden md:block">
@@ -217,9 +216,9 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-16 items-center">
             <div>
-                <h2 className="text-4xl font-bold mb-6">Contact Our Team</h2>
+                <h2 className="text-4xl font-bold mb-6">Contact Our Financial Specialists</h2>
                 <p className="text-gray-400 mb-12 leading-relaxed">
-                    Have specific questions about our funding process or business support services? 
+                    Have specific questions about our business funding process or commercial loans? 
                     Reach out to our specialists via the official channels below.
                 </p>
                 <div className="space-y-6">

@@ -26,9 +26,9 @@ export const Hero: React.FC<HeroProps> = ({ onGetFundedClick }) => {
             </div>
             
             <h1 className="text-5xl lg:text-7xl font-bold tracking-tight text-white mb-6">
-              Fueling Growth with <br/>
+              Empowering Growth with <br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-nova-400 to-nova-accent">
-                Strategic Capital
+                Strategic Business Funding
               </span>
             </h1>
             

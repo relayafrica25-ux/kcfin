@@ -29,10 +29,18 @@ export const Navbar: React.FC<NavbarProps> = ({ onApplyClick, currentView, onNav
               className="flex-shrink-0 flex items-center gap-3 cursor-pointer group" 
               onClick={() => onNavigate('home')}
             >
-              <div className="bg-nova-500 p-2 rounded-lg group-hover:bg-nova-400 transition-colors shadow-lg shadow-nova-500/20">
-                <Activity className="h-6 w-6 text-white" />
-              </div>
-              <div className="flex flex-col leading-[0.8]">
+              <img 
+                src="logo.png" 
+                alt="CASIEC Financials" 
+                className="h-10 w-auto invert brightness-200 contrast-125 transition-transform group-hover:scale-105"
+                onError={(e) => {
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  const fallback = target.nextElementSibling as HTMLElement;
+                  if (fallback) fallback.classList.remove('hidden');
+                }}
+              />
+              <div className="hidden flex-col leading-[0.8] logo-fallback">
                 <span className="text-xl font-black bg-clip-text text-transparent bg-gradient-to-r from-white via-white/80 to-gray-500 tracking-tighter uppercase italic">
                   CASIEC
                 </span>

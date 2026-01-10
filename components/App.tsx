@@ -89,13 +89,11 @@ const App: React.FC = () => {
                 {/* Brand Column */}
                 <div className="lg:col-span-1">
                   <div className="flex items-center gap-3 mb-6">
-                    <div className="bg-nova-500 p-2 rounded-lg shadow-lg shadow-nova-500/20">
-                      <Activity className="h-5 w-5 text-white" />
-                    </div>
-                    <div className="flex flex-col leading-[0.8]">
-                      <span className="font-bold text-lg tracking-tight text-white uppercase italic">CASIEC</span>
-                      <span className="text-[8px] font-bold text-gray-500 tracking-[0.3em] uppercase mt-1">FINANCIALS</span>
-                    </div>
+                    <img 
+                      src="logo.png" 
+                      alt="CASIEC Logo" 
+                      className="h-12 w-auto invert brightness-200 contrast-125" 
+                    />
                   </div>
                   <p className="text-gray-500 text-xs leading-relaxed mb-4">
                     CASIEC Financials focuses on financial intermediation and inclusion. In partnership with GSI STRATEGIC ALLIANCES (Broastreet DyDX), we drive enterprise sustainability and growth.

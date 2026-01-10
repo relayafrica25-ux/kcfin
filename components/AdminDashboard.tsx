@@ -279,11 +279,12 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
             </button>
 
             <div className="pt-16 pb-8 text-center bg-white/[0.01] border-b border-white/5">
-              <div className="relative inline-block mb-8">
-                <div className="absolute inset-0 bg-nova-500 blur-2xl opacity-30"></div>
-                <div className={`w-20 h-20 rounded-[1.5rem] bg-gradient-to-br from-nova-600 to-nova-400 flex items-center justify-center text-white shadow-2xl relative z-10 transition-all duration-700 ${isScanning ? 'scale-110 shadow-emerald-500/50' : 'hover:scale-105'}`}>
-                   {isScanning ? <Cpu size={40} className="animate-spin" /> : <Fingerprint size={40} />}
-                </div>
+              <div className="relative inline-block mb-4">
+                <img 
+                  src="logo.png" 
+                  alt="CASIEC Financials" 
+                  className="h-12 w-auto invert brightness-200 contrast-125 mb-4 mx-auto drop-shadow-[0_0_10px_rgba(79,70,229,0.5)]"
+                />
               </div>
               <h1 className="text-4xl font-black text-white tracking-tighter uppercase italic italic-none">
                 <span className="text-nova-400">CASIEC</span> TERMINAL
@@ -368,11 +369,25 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     <div className="min-h-screen bg-[#050508] text-white selection:bg-nova-500 font-sans">
       {/* Sidebar Nav */}
       <div className="fixed left-0 top-0 h-full w-64 bg-nova-900 border-r border-white/5 flex flex-col p-6 z-50">
-        <div className="flex items-center gap-3 mb-12 text-nova-400 px-2">
-          <div className="bg-nova-500 p-2 rounded-lg shadow-lg shadow-nova-500/20">
-            <LayoutDashboard size={24} className="text-white" />
+        <div 
+          className="flex items-center gap-3 mb-12 cursor-pointer group px-2"
+          onClick={() => onBack()}
+        >
+           <img 
+            src="logo.png" 
+            alt="CASIEC Logo" 
+            className="h-8 w-auto invert brightness-200 contrast-125 transition-transform group-hover:scale-105"
+            onError={(e) => {
+              const target = e.target as HTMLImageElement;
+              target.style.display = 'none';
+              const fallback = target.nextElementSibling as HTMLElement;
+              if (fallback) fallback.classList.remove('hidden');
+            }}
+          />
+          <div className="hidden flex-col leading-[0.8]">
+             <span className="text-base font-black text-white italic tracking-tighter uppercase">CASIEC</span>
+             <span className="text-[7px] text-gray-500 font-bold uppercase tracking-widest">Financials</span>
           </div>
-          <span className="font-black text-lg tracking-tighter uppercase italic">Control_Center</span>
         </div>
 
         <nav className="space-y-1 flex-grow">

@@ -265,7 +265,7 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
           {step === 6 && (
             <div className="text-center py-10 animate-fade-in-up">
               <CheckCircle2 size={60} className="mx-auto text-green-400 mb-6" />
-              <h3 className="text-3xl font-bold text-white mb-4 tracking-tighter">Transmission Successful</h3>
+              <h3 className="text-3xl font-bold text-white mb-4 tracking-tighter">Live Feed Updated</h3>
               <p className="text-gray-400 text-lg mb-8 max-w-md mx-auto leading-relaxed">Our specialists will review your inquiry and initiate contact within 24-48 hours.</p>
               <button onClick={onClose} className="bg-white text-nova-900 px-8 py-3 rounded-full font-bold uppercase tracking-widest text-xs hover:bg-nova-400 hover:text-white transition-all">Exit Terminal</button>
             </div>
@@ -279,7 +279,7 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
               <button onClick={nextStep} className={`text-white px-8 py-2.5 rounded-full font-black text-xs uppercase tracking-widest flex items-center gap-2 shadow-lg ${isFinancial ? 'bg-nova-500 shadow-nova-500/20' : 'bg-purple-600 shadow-purple-600/20'}`}>Next Step <ChevronRight size={16} /></button>
             ) : (
               <button form="application-form" type="submit" disabled={isSubmitting} className={`text-white px-10 py-3 rounded-full font-black text-xs uppercase tracking-widest shadow-xl flex items-center gap-3 ${isFinancial ? 'bg-nova-500 shadow-nova-500/30' : 'bg-purple-600 shadow-purple-600/30'}`}>
-                {isSubmitting ? 'Syncing...' : 'Initiate Inquiry'} <Check size={16} />
+                {isSubmitting ? 'Live Syncing...' : 'Initiate Inquiry'} <Check size={16} />
               </button>
             )}
           </div>

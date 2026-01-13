@@ -1,11 +1,11 @@
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Hero } from './Hero';
 import { FuturisticCarousel } from './FuturisticCarousel';
 import { FAQSection } from './FAQSection';
-import { Building, Hammer, Banknote, Briefcase, Truck, Landmark, Mail, Phone, MapPin, Wallet, BrainCircuit, Headphones, Sparkles, Target, Compass, ShieldCheck, Zap, Gem, Send, CheckCircle, Network, TrendingUp, BarChart3, Database, Globe } from 'lucide-react';
+import { Building, Hammer, Banknote, Briefcase, Truck, Landmark, Mail, Phone, MapPin, Wallet, BrainCircuit, Headphones, Sparkles, Target, Compass, ShieldCheck, Zap, Gem, Send, CheckCircle, Network, TrendingUp, BarChart3, Database, Globe, ArrowRight, Flame, Clock, ChevronRight } from 'lucide-react';
 import { storageService } from '../services/storageService';
-import { ContactInquiry } from '../types';
+import { ContactInquiry, Article } from '../types';
 
 interface HomePageProps {
   onApplyClick: () => void;
@@ -21,6 +21,15 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
+  const [latestInsights, setLatestInsights] = useState<Article[]>([]);
+
+  useEffect(() => {
+    const loadLatestInsights = () => {
+      const stored = storageService.getArticles();
+      setLatestInsights(stored.slice(0, 3));
+    };
+    loadLatestInsights();
+  }, []);
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -192,22 +201,90 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
         </div>
       </section>
       
-      <section className="py-20 relative">
+      <section className="py-24 relative">
         <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-nova-800/20 to-transparent pointer-events-none"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="mb-10 flex items-end justify-between">
-            <div>
-              <h2 className="text-4xl font-bold text-white mb-2">Live Financial Insights & Market Updates</h2>
-              <p className="text-gray-400">Breaking news, eco-financial opportunities, and company announcements.</p>
+          <div className="mb-12 flex flex-col md:flex-row items-end justify-between gap-6">
+            <div className="max-w-2xl">
+              <div className="flex items-center gap-3 mb-4">
+                 <div className="w-10 h-10 rounded-xl bg-nova-500/10 flex items-center justify-center text-nova-400">
+                    <Zap size={20} />
+                 </div>
+                 <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tighter uppercase italic">Showcase & Strategy</h2>
+              </div>
+              <p className="text-gray-400 text-lg">Spotlighting our premier financial products and the institutional success of our partners across the continent.</p>
             </div>
             <div className="hidden md:block">
-              <span className="flex items-center gap-2 text-xs text-nova-400 uppercase tracking-widest font-bold">
+              <span className="flex items-center gap-2 text-[10px] text-nova-400 uppercase tracking-[0.4em] font-black border border-nova-500/20 px-4 py-2 rounded-full">
                 <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                Live Feed Active
+                Active Live Feed
               </span>
             </div>
           </div>
           <FuturisticCarousel />
+        </div>
+      </section>
+
+      {/* Latest Insights Section */}
+      <section className="py-32 relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8">
+            <div>
+              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-black uppercase tracking-widest mb-4">
+                <Flame size={12} className="animate-pulse" />
+                <span>Editorial Focus</span>
+              </div>
+              <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tighter uppercase italic leading-none">Latest <br/> <span className="text-nova-400">Insights</span></h2>
+            </div>
+            <button 
+              onClick={() => onNavigate('insights')}
+              className="group flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-black uppercase tracking-widest text-[11px] hover:bg-white/10 transition-all active:scale-95"
+            >
+              Access Intelligence Hub <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            </button>
+          </div>
+
+          <div className="grid md:grid-cols-3 gap-8">
+            {latestInsights.map((article, i) => (
+              <div 
+                key={article.id}
+                onClick={() => onNavigate('insights')}
+                className="group relative flex flex-col bg-nova-900/50 border border-white/5 rounded-[2.5rem] overflow-hidden hover:border-nova-500/30 transition-all duration-500 cursor-pointer"
+              >
+                <div className={`h-48 relative overflow-hidden bg-gradient-to-br ${article.imageGradient} opacity-60 group-hover:opacity-100 transition-opacity duration-700`}>
+                   {article.imageUrl ? (
+                     <img src={article.imageUrl} className="w-full h-full object-cover mix-blend-overlay" alt="" />
+                   ) : (
+                     <div className="w-full h-full flex items-center justify-center opacity-20">
+                        <Database size={64} />
+                     </div>
+                   )}
+                   <div className="absolute inset-0 bg-gradient-to-t from-nova-900 via-transparent to-transparent"></div>
+                   <div className="absolute top-6 left-6">
+                      <span className="px-3 py-1 bg-black/60 backdrop-blur-md border border-white/10 text-[9px] font-black text-white uppercase tracking-widest rounded-full">
+                        {article.category}
+                      </span>
+                   </div>
+                </div>
+                
+                <div className="p-8 flex flex-col flex-grow relative">
+                  <div className="flex items-center gap-3 text-[10px] text-gray-500 uppercase tracking-widest mb-4 font-black">
+                    <Clock size={12} /> {article.date}
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-4 group-hover:text-nova-400 transition-colors leading-tight line-clamp-2">
+                    {article.title}
+                  </h3>
+                  <p className="text-gray-400 text-sm leading-relaxed mb-8 line-clamp-3 font-light">
+                    {article.excerpt}
+                  </p>
+                  <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
+                     <span className="text-[10px] text-gray-500 uppercase tracking-widest">By {article.author}</span>
+                     <ChevronRight size={20} className="text-gray-600 group-hover:text-white transition-colors" />
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
@@ -323,7 +400,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
                             disabled={isSubmitting}
                             className="w-full bg-gradient-to-r from-nova-500 to-purple-600 hover:from-nova-400 hover:to-purple-500 text-white font-black py-5 rounded-2xl transition-all shadow-xl flex items-center justify-center gap-3 uppercase tracking-widest text-xs"
                         >
-                            {isSubmitting ? 'Transmitting...' : 'Send Inquiry'} <Send size={18} />
+                            {isSubmitting ? 'Live Syncing...' : 'Send Inquiry'} <Send size={18} />
                         </button>
                     </form>
                 )}

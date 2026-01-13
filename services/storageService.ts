@@ -1,5 +1,5 @@
 
-import { Article, LoanApplication, ContactInquiry, NewsletterSubscription, TickerItem } from '../types';
+import { Article, LoanApplication, ContactInquiry, NewsletterSubscription, TickerItem, CarouselItem } from '../types';
 
 const ARTICLES_KEY = 'casiec_articles';
 const APPLICATIONS_KEY = 'casiec_applications';
@@ -7,6 +7,7 @@ const INQUIRIES_KEY = 'casiec_inquiries';
 const NEWSLETTER_KEY = 'casiec_newsletter';
 const TICKER_KEY = 'casiec_ticker_manual';
 const USERS_KEY = 'casiec_admin_users';
+const CAROUSEL_KEY = 'casiec_carousel_items';
 
 const INITIAL_ARTICLES: Article[] = [
   {
@@ -18,6 +19,45 @@ const INITIAL_ARTICLES: Article[] = [
     author: "Sarah Jenkins, CFO",
     date: new Date().toLocaleDateString(),
     imageGradient: "from-purple-600 to-blue-600",
+  }
+];
+
+const INITIAL_CAROUSEL: CarouselItem[] = [
+  {
+    id: 'adv-1',
+    type: 'advert',
+    title: "Expansion Capital Phase II",
+    summary: "Fueling the next generation of African retail giants with structured credit facilities up to $5M.",
+    tag: "Active Campaign",
+    linkText: "Learn More",
+    imageGradient: "from-nova-500 via-indigo-600 to-purple-800",
+    imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200",
+    statLabel: "Interest Rate",
+    statValue: "9.5% Fixed"
+  },
+  {
+    id: 'adv-2',
+    type: 'advert',
+    title: "Real Estate Bridge Facilities",
+    summary: "Close on prime Lagos property in as little as 5 days. Our bridge loans bridge the gap to your permanent financing.",
+    tag: "Real Estate",
+    linkText: "Check Terms",
+    imageGradient: "from-blue-600 via-cyan-500 to-nova-accent",
+    imageUrl: "https://images.unsplash.com/photo-1582408921715-18e7806365c1?auto=format&fit=crop&q=80&w=1200",
+    statLabel: "Approval",
+    statValue: "24-48 Hours"
+  },
+  {
+    id: 'adv-3',
+    type: 'advert',
+    title: "Global Supply Chain Credit",
+    summary: "Leverage your inventory to unlock liquid capital for cross-border commodity trading and distribution.",
+    tag: "Global Trade",
+    linkText: "View Program",
+    imageGradient: "from-emerald-600 via-teal-500 to-emerald-900",
+    imageUrl: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=1200",
+    statLabel: "Leverage",
+    statValue: "Up to 85% LTC"
   }
 ];
 
@@ -46,6 +86,32 @@ export const storageService = {
   deleteArticle: (id: string) => {
     const articles = storageService.getArticles().filter(a => a.id !== id);
     localStorage.setItem(ARTICLES_KEY, JSON.stringify(articles));
+  },
+
+  // Carousel
+  getCarouselItems: (): CarouselItem[] => {
+    const saved = localStorage.getItem(CAROUSEL_KEY);
+    if (!saved) {
+      localStorage.setItem(CAROUSEL_KEY, JSON.stringify(INITIAL_CAROUSEL));
+      return INITIAL_CAROUSEL;
+    }
+    return JSON.parse(saved);
+  },
+
+  saveCarouselItem: (item: CarouselItem) => {
+    const items = storageService.getCarouselItems();
+    const existingIndex = items.findIndex(i => i.id === item.id);
+    if (existingIndex > -1) {
+      items[existingIndex] = item;
+    } else {
+      items.unshift(item);
+    }
+    localStorage.setItem(CAROUSEL_KEY, JSON.stringify(items));
+  },
+
+  deleteCarouselItem: (id: string) => {
+    const items = storageService.getCarouselItems().filter(i => i.id !== id);
+    localStorage.setItem(CAROUSEL_KEY, JSON.stringify(items));
   },
 
   // Applications

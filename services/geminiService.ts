@@ -5,6 +5,43 @@ import { NewsItem, GroundingChunk, ChatMessage } from "../types";
 // Helper to generate a unique ID
 const generateId = () => Math.random().toString(36).substr(2, 9);
 
+// Fix: Add generateArticleImage to support image generation in AdminDashboard.
+// This function uses gemini-2.5-flash-image to create editorial illustrations.
+export const generateArticleImage = async (prompt: string): Promise<string | null> => {
+  try {
+    if (!process.env.API_KEY) {
+      console.warn("API Key is missing for image generation.");
+      return null;
+    }
+
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    const response = await ai.models.generateContent({
+      model: 'gemini-2.5-flash-image',
+      contents: {
+        parts: [
+          {
+            text: `Create a professional, modern, and minimalist financial editorial illustration for an article titled: "${prompt}". Use a sophisticated color palette suitable for a corporate financial portal. No text in the image.`,
+          },
+        ],
+      },
+    });
+
+    // Iterate through response parts to find the generated image data.
+    if (response.candidates?.[0]?.content?.parts) {
+      for (const part of response.candidates[0].content.parts) {
+        if (part.inlineData) {
+          return `data:${part.inlineData.mimeType};base64,${part.inlineData.data}`;
+        }
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error("Failed to generate image from Gemini:", error);
+    return null;
+  }
+};
+
 export const fetchFinancialNews = async (): Promise<NewsItem[]> => {
   try {
     // API key check remains to handle demo mode

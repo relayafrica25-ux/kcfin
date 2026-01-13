@@ -12,6 +12,8 @@ import { InvestmentPage } from './components/InvestmentPage';
 import { ArticleHubPage } from './components/ArticleHubPage';
 import { AdminDashboard } from './components/AdminDashboard';
 import { RealEstatePage } from './components/RealEstatePage';
+import { TeamPage } from './components/TeamPage';
+import { AboutPage } from './components/AboutPage';
 import { Settings, Lock } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -35,6 +37,10 @@ const App: React.FC = () => {
     switch (currentView) {
       case 'home':
         return <HomePage onApplyClick={openLoanModal} onNavigate={handleNavigate} />;
+      case 'about':
+        return <AboutPage />;
+      case 'team':
+        return <TeamPage />;
       case 'financial-support':
       case 'real-estate':
         return <BusinessFundingPage onApplyClick={openLoanModal} />;
@@ -75,7 +81,7 @@ const App: React.FC = () => {
           <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-nova-500/5 to-transparent -z-10"></div>
           
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12 mb-16">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
               <div className="lg:col-span-1">
                 <div className="flex items-center gap-3 mb-6">
                   <div className="bg-nova-500 p-2.5 rounded-xl shadow-lg shadow-nova-500/20">
@@ -92,6 +98,7 @@ const App: React.FC = () => {
                 <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-[10px] opacity-50">Quick Links</h4>
                 <ul className="space-y-4">
                   <li><button onClick={() => handleNavigate('home')} className="text-gray-400 hover:text-white transition-colors text-sm">Home</button></li>
+                  <li><button onClick={() => handleNavigate('team')} className="text-gray-400 hover:text-white transition-colors text-sm">Our Team</button></li>
                   <li><button onClick={() => handleNavigate('financial-support')} className="text-gray-400 hover:text-white transition-colors text-sm">Funding Programs</button></li>
                   <li><button onClick={() => handleNavigate('insights')} className="text-gray-400 hover:text-white transition-colors text-sm">Insights Hub</button></li>
                 </ul>
@@ -106,25 +113,6 @@ const App: React.FC = () => {
                   <li className="font-mono text-xs">+234 810-326-0048</li>
                   <li className="font-mono text-xs">+234 810-537-5394</li>
                 </ul>
-              </div>
-
-              <div className="flex flex-col">
-                <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-[10px] opacity-50">Staff Access</h4>
-                <button 
-                  onClick={() => handleNavigate('admin')}
-                  className="group relative flex items-center justify-between gap-4 px-6 py-4 bg-white/5 border border-white/10 hover:border-nova-500 hover:bg-white/10 rounded-2xl transition-all duration-300 shadow-2xl overflow-hidden"
-                >
-                  <div className="flex items-center gap-3">
-                      <div className="p-2 bg-nova-500/20 rounded-lg text-nova-400 group-hover:bg-nova-500 group-hover:text-white transition-all">
-                          <Lock size={16} />
-                      </div>
-                      <div className="text-left">
-                          <div className="text-sm font-bold text-white">Staff Login</div>
-                          <div className="text-[10px] text-gray-500 group-hover:text-gray-400 transition-colors uppercase tracking-wider">Secure Portal</div>
-                      </div>
-                  </div>
-                  <Settings size={18} className="text-gray-600 group-hover:rotate-90 group-hover:text-nova-400 transition-all duration-500" />
-                </button>
               </div>
             </div>
 

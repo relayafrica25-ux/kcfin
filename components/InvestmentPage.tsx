@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { Crown, TrendingUp, Shield, ArrowRight, Lock } from 'lucide-react';
@@ -91,7 +92,7 @@ export const InvestmentPage: React.FC = () => {
             </div>
 
             <div className="pt-6">
-              <a href="mailto:invest@kcfinancial.com" className="inline-flex items-center gap-4 text-yellow-500 hover:text-white transition-colors group cursor-pointer">
+              <a href="mailto:info@casiecfinancials.com" className="inline-flex items-center gap-4 text-yellow-500 hover:text-white transition-colors group cursor-pointer">
                 <span className="text-lg font-bold">Request Investor Deck</span>
                 <div className="bg-yellow-500/10 p-2 rounded-full group-hover:bg-yellow-500 group-hover:text-black transition-colors">
                   <ArrowRight size={20} />

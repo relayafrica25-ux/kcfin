@@ -86,3 +86,20 @@ export interface TeamMember {
   imageGradient: string;
   specialization: string;
 }
+
+export type CarouselItemType = 'news' | 'eco' | 'advert' | 'product' | 'customer';
+
+export interface CarouselItem {
+  id: string;
+  type: CarouselItemType;
+  title: string;
+  summary: string;
+  tag: string;
+  date?: string;
+  link?: string;
+  linkText?: string;
+  imageGradient?: string;
+  imageUrl?: string;
+  statLabel?: string;
+  statValue?: string;
+}

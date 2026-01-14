@@ -1,7 +1,8 @@
+
 import React, { useEffect, useState } from 'react';
 import { fetchFinancialNews } from '../services/geminiService';
 import { NewsItem } from '../types';
-import { TrendingUp, TrendingDown, Minus, ExternalLink, RefreshCw, Loader2, Globe } from 'lucide-react';
+import { TrendingUp, TrendingDown, Minus, ExternalLink, RefreshCw, Globe } from 'lucide-react';
 
 export const NewsFeed: React.FC = () => {
   const [news, setNews] = useState<NewsItem[]>([]);
@@ -42,7 +43,7 @@ export const NewsFeed: React.FC = () => {
             <Globe size={24} className="text-nova-400" />
             <h2 className="text-3xl font-bold text-white">Market Pulse</h2>
           </div>
-          <p className="text-gray-400">AI-curated financial insights with focus on African Markets.</p>
+          <p className="text-gray-400 text-sm">Real-time financial intelligence stream with focus on African Markets.</p>
         </div>
         <button 
           onClick={loadNews}
@@ -60,9 +61,7 @@ export const NewsFeed: React.FC = () => {
               <div className="space-y-4">
                 <div className="h-6 bg-white/10 rounded w-3/4"></div>
                 <div className="h-4 bg-white/10 rounded w-full"></div>
-                <div className="h-4 bg-white/10 rounded w-5/6"></div>
               </div>
-              <div className="h-8 bg-white/10 rounded w-1/3"></div>
             </div>
           ))
         ) : (
@@ -82,27 +81,20 @@ export const NewsFeed: React.FC = () => {
               </div>
               
               <div className="mt-6 pt-6 border-t border-white/5">
-                 {item.sources && item.sources.length > 0 ? (
-                   <div className="flex flex-col gap-2">
-                     <span className="text-xs text-gray-500 uppercase tracking-wider">Sources</span>
-                     <div className="flex flex-wrap gap-2">
-                       {item.sources.map((source, idx) => (
-                         <a 
-                           key={idx} 
-                           href={source.uri} 
-                           target="_blank" 
-                           rel="noreferrer"
-                           className="flex items-center gap-1 text-xs text-nova-400 hover:text-white transition-colors"
-                         >
-                           <ExternalLink size={10} />
-                           {source.title.length > 20 ? source.title.substring(0, 20) + '...' : source.title}
-                         </a>
-                       ))}
-                     </div>
-                   </div>
-                 ) : (
-                   <div className="flex items-center gap-2 text-xs text-gray-600">
-                     <span>Analysis by KC AI</span>
+                 {item.sources && item.sources.length > 0 && (
+                   <div className="flex flex-wrap gap-2">
+                     {item.sources.map((source, idx) => (
+                       <a 
+                         key={idx} 
+                         href={source.uri} 
+                         target="_blank" 
+                         rel="noreferrer"
+                         className="flex items-center gap-1 text-xs text-nova-400 hover:text-white transition-colors"
+                       >
+                         <ExternalLink size={10} />
+                         {source.title.length > 20 ? source.title.substring(0, 20) + '...' : source.title}
+                       </a>
+                     ))}
                    </div>
                  )}
               </div>

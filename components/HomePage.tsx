@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Hero } from './Hero';
 import { FuturisticCarousel } from './FuturisticCarousel';
 import { FAQSection } from './FAQSection';
-import { Building, Hammer, Banknote, Briefcase, Truck, Landmark, Mail, Phone, MapPin, Wallet, BrainCircuit, Headphones, Sparkles, Target, Compass, ShieldCheck, Zap, Gem, Send, CheckCircle, Network, TrendingUp, BarChart3, Database, Globe, ArrowRight, Flame, Clock, ChevronRight } from 'lucide-react';
+import { Wallet, Network, CheckCircle, Target, Compass, Zap, Gem, ShieldCheck, Mail, Globe, Phone, Send, Clock, ChevronRight, ArrowRight, Database, Landmark, Briefcase, ChevronsUpRight, Check } from 'lucide-react';
 import { storageService } from '../services/storageService';
 import { ContactInquiry, Article } from '../types';
 
@@ -52,236 +52,172 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
   };
 
   return (
-    <article>
-      <header className="pt-10">
-          <div className="relative pt-32 pb-20 lg:pt-40 lg:pb-28 overflow-hidden">
-            <div className="absolute inset-0 z-0">
-               <div className="absolute top-0 left-0 w-1/2 h-full bg-nova-500/5 blur-[100px]"></div>
-               <div className="absolute top-0 right-0 w-1/2 h-full bg-purple-500/5 blur-[100px]"></div>
-            </div>
+    <article className="bg-nova-950 overflow-hidden">
+      <Hero onGetFundedClick={onApplyClick} />
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-              <div className="text-center mb-16">
-                 <h1 className="text-5xl lg:text-8xl font-bold tracking-tight text-white mb-6">
-                   <span className="text-transparent bg-clip-text bg-gradient-to-r from-nova-400 via-white to-purple-400">
-                     CASIEC Financials: <br/> Business Funding & Strategic Support
-                   </span>
-                 </h1>
-                 <p className="text-xl text-gray-400 max-w-2xl mx-auto leading-relaxed">
-                   Providing integrated financial services, business funding solutions, and corporate advisory to stimulate enterprise sustainability across continental markets.
-                 </p>
-              </div>
-
-              <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                {/* Financial Support Card (CASIEC) */}
-                <section className="group relative glass-card p-1 rounded-3xl hover:shadow-[0_0_50px_rgba(79,70,229,0.3)] transition-all duration-500">
-                    <div className="absolute inset-0 bg-gradient-to-b from-nova-500/20 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="relative bg-nova-900/80 backdrop-blur-xl rounded-[22px] p-8 h-full flex flex-col items-center text-center border border-white/5 group-hover:border-nova-500/50 transition-colors">
-                        <div className="w-20 h-20 rounded-full bg-nova-500/10 flex items-center justify-center text-nova-400 mb-6 group-hover:scale-110 transition-transform duration-300">
-                            <Wallet size={40} />
-                        </div>
-                        <h2 className="text-3xl font-bold text-white mb-2">Financial Funding</h2>
-                        <p className="text-nova-400 font-bold mb-4 uppercase tracking-widest text-[10px]">Managed by CASIEC Financials</p>
-                        <ul className="text-gray-400 mb-8 text-sm space-y-2 text-left w-full">
-                            <li className="flex items-center gap-2"><CheckCircle size={14} className="text-nova-500 flex-shrink-0" /> Credit & Finance</li>
-                            <li className="flex items-center gap-2"><CheckCircle size={14} className="text-nova-500 flex-shrink-0" /> NMSE Lending (Nano, Micro, Small)</li>
-                            <li className="flex items-center gap-2"><CheckCircle size={14} className="text-nova-500 flex-shrink-0" /> Consumer Finance/Credit</li>
-                            <li className="flex items-center gap-2"><CheckCircle size={14} className="text-nova-500 flex-shrink-0" /> Wealth Management Advisory</li>
-                            <li className="flex items-center gap-2"><CheckCircle size={14} className="text-nova-500 flex-shrink-0" /> Supply Chain financing</li>
-                        </ul>
-                        <button 
-                            onClick={() => onNavigate('financial-support')}
-                            className="mt-auto px-8 py-3 rounded-full bg-nova-500 hover:bg-nova-400 text-white font-bold transition-all w-full"
-                        >
-                            Access Capital
-                        </button>
-                    </div>
-                </section>
-
-                {/* Business Support Card (GSI) */}
-                <section className="group relative glass-card p-1 rounded-3xl hover:shadow-[0_0_50px_rgba(168,85,247,0.3)] transition-all duration-500">
-                    <div className="absolute inset-0 bg-gradient-to-b from-purple-500/20 to-transparent rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                    <div className="relative bg-nova-900/80 backdrop-blur-xl rounded-[22px] p-8 h-full flex flex-col items-center text-center border border-white/5 group-hover:border-purple-500/50 transition-colors">
-                        <div className="w-20 h-20 rounded-full bg-purple-500/10 flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform duration-300">
-                            <Network size={40} />
-                        </div>
-                        <h2 className="text-3xl font-bold text-white mb-2">Business Support</h2>
-                        <p className="text-purple-400 font-bold mb-4 uppercase tracking-widest text-[10px]">GSI STRATEGIC ALLIANCES (Broastreet DyDX)</p>
-                        <ul className="text-gray-400 mb-8 text-sm space-y-2 text-left w-full">
-                            <li className="flex items-center gap-2"><CheckCircle size={14} className="text-purple-500 flex-shrink-0" /> Business Support Services</li>
-                            <li className="flex items-center gap-2"><CheckCircle size={14} className="text-purple-500 flex-shrink-0" /> Corporate Finance & Advisory (CFRA)</li>
-                            <li className="flex items-center gap-2"><CheckCircle size={14} className="text-purple-500 flex-shrink-0" /> Supply Chain Commodity Trading</li>
-                            <li className="flex items-center gap-2"><CheckCircle size={14} className="text-purple-500 flex-shrink-0" /> Distribution & Global Logistics</li>
-                        </ul>
-                        <button 
-                             onClick={() => onNavigate('business-support')}
-                             className="mt-auto px-8 py-3 rounded-full bg-purple-600 hover:bg-purple-500 text-white font-bold transition-all w-full"
-                        >
-                            Explore Advisory
-                        </button>
-                    </div>
-                </section>
-              </div>
-            </div>
-          </div>
-      </header>
-
-      <section className="py-24 relative overflow-hidden bg-nova-800/30">
+      {/* Strategic Alliances Banner - Updated Logos */}
+      <section className="py-16 bg-white/[0.02] border-y border-white/5 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-           {/* Corporate Overview Section */}
-           <div className="mb-24 max-w-4xl mx-auto text-center">
-              <h2 className="text-3xl font-bold text-white mb-8 uppercase tracking-tighter italic">Expert Financial Services Overview</h2>
-              <p className="text-xl text-gray-300 leading-relaxed font-light">
-                CASIEC Financials focuses on financial intermediation, providing loans to Nano, Micro, Small, and Medium-sized businesses, as well as consumer lending to promote financial inclusion. In partnership with GSI STRATEGIC ALLIANCES (Broastreet DyDX), we offer comprehensive business funding and support services to drive enterprise sustainability.
-              </p>
-           </div>
-
-           <div className="grid lg:grid-cols-3 gap-8 mb-20">
-              <article className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
-                 <div className="w-12 h-12 bg-nova-500/20 rounded-xl flex items-center justify-center text-nova-400 mb-6 group-hover:scale-110 transition-transform">
-                    <Target size={24} />
-                 </div>
-                 <h3 className="text-xl font-bold text-white mb-3">Our Vision</h3>
-                 <p className="text-gray-400 leading-relaxed text-sm">
-                   To become the story and the leading benchmark in finance and business support, setting the standard for excellence.
-                 </p>
-              </article>
-              <article className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
-                 <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform">
-                    <Compass size={24} />
-                 </div>
-                 <h3 className="text-xl font-bold text-white mb-3">Our Mission</h3>
-                 <p className="text-gray-400 leading-relaxed text-sm">
-                   Delivering credit, capital and enterprise support to stimulate business growth and drive sustainable impact.
-                 </p>
-              </article>
-              <article className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group">
-                 <div className="w-12 h-12 bg-nova-accent/20 rounded-xl flex items-center justify-center text-nova-accent mb-6 group-hover:scale-110 transition-transform">
-                    <Zap size={24} />
-                 </div>
-                 <h3 className="text-xl font-bold text-white mb-3">Our Mandate</h3>
-                 <p className="text-gray-400 leading-relaxed text-sm">
-                   Fostering economic advancement through financial inclusion across the continent and beyond.
-                 </p>
-              </article>
-           </div>
-
-           <div className="relative max-w-4xl mx-auto mb-24">
-              <div className="absolute inset-0 bg-gradient-to-r from-nova-500/10 to-purple-500/10 rounded-[3rem] blur-2xl"></div>
-              <div className="relative bg-nova-900 border border-white/10 rounded-[3rem] p-12 text-center overflow-hidden">
-                <div className="absolute top-0 left-0 w-full h-full opacity-[0.03] pointer-events-none bg-[url('https://www.transparenttextures.com/patterns/marble.png')]"></div>
-                <Sparkles className="mx-auto text-nova-400 mb-6 h-8 w-8" />
-                <h4 className="text-sm font-bold text-gray-500 uppercase tracking-[0.3em] mb-4">Words on the Marble</h4>
-                <blockquote className="text-3xl md:text-5xl font-serif italic text-white leading-tight">
-                  "God’s Own Institution <br/>
-                  <span className="text-transparent bg-clip-text bg-gradient-to-r from-nova-400 to-nova-accent not-italic font-sans font-bold text-xl uppercase tracking-widest mt-4 block">
-                    (GOI factor)
-                  </span>"
-                </blockquote>
-              </div>
-           </div>
-
-           <div className="text-center mb-12">
-              <h3 className="text-4xl font-bold mb-4 text-white">Core Values</h3>
-              <div className="h-1 w-20 bg-nova-500 mx-auto rounded-full"></div>
-           </div>
-
-           <div className="grid md:grid-cols-3 gap-6">
-              {[
-                { pair: "Growth & Professionalism", icon: <Gem className="text-nova-400" /> },
-                { pair: "Opportunities & Resourcefulness", icon: <Target className="text-purple-400" /> },
-                { pair: "Innovation & Integrity", icon: <ShieldCheck className="text-nova-accent" /> }
-              ].map((val, i) => (
-                <div key={i} className="flex flex-col items-center p-8 rounded-2xl bg-white/5 border border-white/5 text-center group hover:bg-nova-900/50 transition-all">
-                  <div className="mb-4 group-hover:scale-110 transition-transform">{val.icon}</div>
-                  <span className="text-lg font-bold text-white">{val.pair}</span>
+           <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-32 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
+              {/* CASIEC Logo Component */}
+              <div className="flex flex-col items-center">
+                <div className="flex items-center gap-1">
+                  <span className="text-3xl font-black text-white tracking-tighter lowercase">casiec</span>
+                  <div className="flex flex-col -mb-1 translate-y-[-1px]">
+                     <ChevronRight size={16} className="text-nova-accent -rotate-45" strokeWidth={3} />
+                     <ChevronRight size={16} className="text-nova-accent -rotate-45 -mt-3" strokeWidth={3} />
+                  </div>
                 </div>
-              ))}
+                <span className="text-[10px] font-black text-nova-accent tracking-[0.3em] lowercase -mt-1">financials</span>
+              </div>
+
+              <div className="h-10 w-px bg-white/10 hidden md:block"></div>
+
+              {/* Broastreet DyDX Logo Component - Updated to Orange Checkmark */}
+              <div className="flex flex-col items-center">
+                <div className="flex items-center gap-2">
+                  <span className="text-3xl font-black text-white tracking-tighter lowercase">broastreet</span>
+                  <div className="bg-orange-500 rounded-sm p-0.5">
+                     <Check size={20} className="text-white" strokeWidth={4} />
+                  </div>
+                </div>
+                <span className="text-[10px] font-black text-orange-500 tracking-[0.3em] uppercase -mt-1 italic">DyDX alliance</span>
+              </div>
            </div>
         </div>
       </section>
-      
-      <section className="py-24 relative">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-transparent via-nova-800/20 to-transparent pointer-events-none"></div>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-          <div className="mb-12 flex flex-col md:flex-row items-end justify-between gap-6">
-            <div className="max-w-2xl">
-              <div className="flex items-center gap-3 mb-4">
-                 <div className="w-10 h-10 rounded-xl bg-nova-500/10 flex items-center justify-center text-nova-400">
-                    <Zap size={20} />
-                 </div>
-                 <h2 className="text-4xl md:text-5xl font-bold text-white tracking-tighter uppercase italic">Showcase & Strategy</h2>
-              </div>
-              <p className="text-gray-400 text-lg">Spotlighting our premier financial products and the institutional success of our partners across the continent.</p>
+
+      {/* Core Pillars */}
+      <section className="py-32 relative">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid lg:grid-cols-2 gap-12">
+            
+            {/* Financial Support (CASIEC) */}
+            <div className="group relative bg-white/[0.03] border border-white/5 p-10 md:p-14 rounded-[3rem] hover:border-nova-500/40 transition-all duration-500 flex flex-col">
+               <div className="w-16 h-16 bg-nova-500/10 rounded-2xl flex items-center justify-center text-nova-500 mb-10 group-hover:scale-110 transition-transform">
+                  <Wallet size={32} />
+               </div>
+               <h2 className="text-4xl font-bold text-white mb-4 tracking-tighter">Institutional Capital</h2>
+               <p className="text-gray-400 mb-8 leading-relaxed font-light">Lending solutions managed by CASIEC Financials, focused on financial intermediation and NMSE stimulation.</p>
+               <ul className="space-y-4 mb-12 flex-grow">
+                 {["Strategic Asset Finance", "NMSE Development Credit", "Corporate Refinancing", "Supply Chain Liquidity"].map((item, i) => (
+                   <li key={i} className="flex items-center gap-4 text-sm text-gray-300">
+                      <div className="w-1.5 h-1.5 rounded-full bg-nova-500"></div>
+                      {item}
+                   </li>
+                 ))}
+               </ul>
+               <button onClick={() => onNavigate('financial-support')} className="w-full py-4 bg-nova-500 text-white font-black uppercase tracking-widest text-[11px] rounded-xl hover:bg-nova-400 transition-all shadow-xl shadow-nova-500/20">
+                  Access Portfolio
+               </button>
             </div>
-            <div className="hidden md:block">
-              <span className="flex items-center gap-2 text-[10px] text-nova-400 uppercase tracking-[0.4em] font-black border border-nova-500/20 px-4 py-2 rounded-full">
-                <span className="w-2 h-2 rounded-full bg-red-500 animate-pulse"></span>
-                Active Live Feed
-              </span>
+
+            {/* Strategic Support (GSI) - Updated to Orange */}
+            <div className="group relative bg-white/[0.03] border border-white/5 p-10 md:p-14 rounded-[3rem] hover:border-orange-500/40 transition-all duration-500 flex flex-col">
+               <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 mb-10 group-hover:scale-110 transition-transform">
+                  <Briefcase size={32} />
+               </div>
+               <h2 className="text-4xl font-bold text-white mb-4 tracking-tighter">Enterprise Advisory</h2>
+               <p className="text-gray-400 mb-8 leading-relaxed font-light">Global Strategic Alliances powered by Broastreet DyDX, delivering corporate research and logistics architecture.</p>
+               <ul className="space-y-4 mb-12 flex-grow">
+                 {["Corporate Finance Research", "Market Entry Intelligence", "Commodity Trading Distribution", "Logistics Architecture"].map((item, i) => (
+                   <li key={i} className="flex items-center gap-4 text-sm text-gray-300">
+                      <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
+                      {item}
+                   </li>
+                 ))}
+               </ul>
+               <button onClick={() => onNavigate('business-support')} className="w-full py-4 bg-orange-600 text-white font-black uppercase tracking-widest text-[11px] rounded-xl hover:bg-orange-500 transition-all shadow-xl shadow-orange-500/20">
+                  Explore Advisory
+               </button>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* Corporate Identity Section */}
+      <section className="py-32 bg-nova-900/50">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+           <div className="max-w-3xl mb-24">
+              <h2 className="text-xs font-black text-nova-500 uppercase tracking-[0.4em] mb-6">Our Mandate</h2>
+              <h3 className="text-4xl md:text-6xl font-black text-white tracking-tighter uppercase italic leading-[1.1]">
+                Fostering <span className="text-gray-500">Growth</span> <br/> 
+                Through <span className="text-nova-500">Inclusion.</span>
+              </h3>
+           </div>
+
+           <div className="grid md:grid-cols-3 gap-10">
+              <div className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all">
+                 <Target className="text-nova-500 mb-8" size={32} />
+                 <h4 className="text-xl font-bold text-white mb-4 italic uppercase">Vision</h4>
+                 <p className="text-gray-500 text-sm leading-relaxed font-light">To become the benchmark in finance and business support, setting the standard for institutional excellence.</p>
+              </div>
+              <div className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all">
+                 <Compass className="text-nova-500 mb-8" size={32} />
+                 <h4 className="text-xl font-bold text-white mb-4 italic uppercase">Mission</h4>
+                 <p className="text-gray-500 text-sm leading-relaxed font-light">Delivering credit, capital and enterprise support to stimulate business growth and drive sustainable impact.</p>
+              </div>
+              <div className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all">
+                 <Zap className="text-nova-500 mb-8" size={32} />
+                 <h4 className="text-xl font-bold text-white mb-4 italic uppercase">Factor</h4>
+                 <p className="text-gray-500 text-sm leading-relaxed font-light">"God’s Own Institution (GOI factor)" - A commitment to integrity and resourcefulness in all transactions.</p>
+              </div>
+           </div>
+        </div>
+      </section>
+
+      {/* Campaign Showcase */}
+      <section className="py-32 relative border-y border-white/5">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-16 flex flex-col md:flex-row md:items-end justify-between gap-8">
+            <div className="max-w-xl">
+              <h2 className="text-xs font-black text-nova-500 uppercase tracking-[0.5em] mb-6">Strategic Focus</h2>
+              <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase italic">Institutional Showcase.</h3>
+            </div>
+            <div className="flex items-center gap-2 text-[10px] text-gray-500 uppercase font-black tracking-widest border border-white/10 px-4 py-2 rounded-full">
+              <span className="w-2 h-2 rounded-full bg-orange-500 animate-pulse"></span> Live Update Stream
             </div>
           </div>
           <FuturisticCarousel />
         </div>
       </section>
 
-      {/* Latest Insights Section */}
-      <section className="py-32 relative overflow-hidden">
+      {/* Market Intelligence Feed */}
+      <section className="py-32">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8">
             <div>
-              <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-rose-500/10 border border-rose-500/20 text-rose-400 text-[10px] font-black uppercase tracking-widest mb-4">
-                <Flame size={12} className="animate-pulse" />
-                <span>Editorial Focus</span>
-              </div>
-              <h2 className="text-4xl md:text-6xl font-bold text-white tracking-tighter uppercase italic leading-none">Latest <br/> <span className="text-nova-400">Insights</span></h2>
+              <h2 className="text-xs font-black text-nova-500 uppercase tracking-[0.5em] mb-6">Knowledge Base</h2>
+              <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase italic">Market Intel.</h3>
             </div>
-            <button 
-              onClick={() => onNavigate('insights')}
-              className="group flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 rounded-2xl text-white font-black uppercase tracking-widest text-[11px] hover:bg-white/10 transition-all active:scale-95"
-            >
-              Access Intelligence Hub <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+            <button onClick={() => onNavigate('insights')} className="flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 rounded-xl text-white font-black uppercase tracking-widest text-[11px] hover:bg-white/10 transition-all">
+              All Insights <ChevronRight size={18} />
             </button>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
-            {latestInsights.map((article, i) => (
+          <div className="grid md:grid-cols-3 gap-10">
+            {latestInsights.map((article) => (
               <div 
                 key={article.id}
                 onClick={() => onNavigate('insights')}
-                className="group relative flex flex-col bg-nova-900/50 border border-white/5 rounded-[2.5rem] overflow-hidden hover:border-nova-500/30 transition-all duration-500 cursor-pointer"
+                className="group cursor-pointer flex flex-col"
               >
-                <div className={`h-48 relative overflow-hidden bg-gradient-to-br ${article.imageGradient} opacity-60 group-hover:opacity-100 transition-opacity duration-700`}>
+                <div className="h-64 rounded-3xl overflow-hidden mb-8 relative">
                    {article.imageUrl ? (
-                     <img src={article.imageUrl} className="w-full h-full object-cover mix-blend-overlay" alt="" />
+                     <img src={article.imageUrl} className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" alt="" />
                    ) : (
-                     <div className="w-full h-full flex items-center justify-center opacity-20">
-                        <Database size={64} />
-                     </div>
+                     <div className={`w-full h-full bg-gradient-to-br ${article.imageGradient} opacity-30`}></div>
                    )}
-                   <div className="absolute inset-0 bg-gradient-to-t from-nova-900 via-transparent to-transparent"></div>
                    <div className="absolute top-6 left-6">
-                      <span className="px-3 py-1 bg-black/60 backdrop-blur-md border border-white/10 text-[9px] font-black text-white uppercase tracking-widest rounded-full">
-                        {article.category}
-                      </span>
+                      <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-[9px] font-black text-white uppercase tracking-widest rounded-full">{article.category}</span>
                    </div>
                 </div>
-                
-                <div className="p-8 flex flex-col flex-grow relative">
-                  <div className="flex items-center gap-3 text-[10px] text-gray-500 uppercase tracking-widest mb-4 font-black">
-                    <Clock size={12} /> {article.date}
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-4 group-hover:text-nova-400 transition-colors leading-tight line-clamp-2">
-                    {article.title}
-                  </h3>
-                  <p className="text-gray-400 text-sm leading-relaxed mb-8 line-clamp-3 font-light">
-                    {article.excerpt}
-                  </p>
-                  <div className="mt-auto pt-6 border-t border-white/5 flex items-center justify-between">
-                     <span className="text-[10px] text-gray-500 uppercase tracking-widest">By {article.author}</span>
-                     <ChevronRight size={20} className="text-gray-600 group-hover:text-white transition-colors" />
-                  </div>
+                <div className="flex items-center gap-3 text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">
+                  <Clock size={12} /> {article.date}
                 </div>
+                <h4 className="text-xl font-bold text-white mb-4 group-hover:text-nova-500 transition-colors leading-tight">{article.title}</h4>
+                <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 font-light">{article.excerpt}</p>
               </div>
             ))}
           </div>
@@ -290,120 +226,81 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
 
       <FAQSection />
 
-      <section className="py-24 relative overflow-hidden bg-nova-900 border-t border-white/5">
+      {/* Global Uplink / Contact */}
+      <section className="py-32 bg-white/[0.02] border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-2 gap-16 items-center">
+          <div className="grid lg:grid-cols-2 gap-20 items-center">
             <div>
-                <h2 className="text-4xl font-bold mb-6 text-white">Contact Our Financial Specialists</h2>
-                <p className="text-gray-400 mb-12 leading-relaxed">
-                    Have specific questions about our business funding process or commercial loans? 
-                    Reach out to our specialists via the official channels below.
+                <h2 className="text-5xl font-black text-white tracking-tighter uppercase italic mb-8">Consultancy Uplink.</h2>
+                <p className="text-gray-500 text-lg leading-relaxed mb-12 font-light">
+                    Direct communication lines for institutional partners and enterprise clients. Professional responses within 24 hours.
                 </p>
-                <div className="space-y-6">
-                    <div className="flex items-center gap-6 group">
-                        <div className="w-14 h-14 rounded-2xl bg-nova-500/10 flex items-center justify-center text-nova-400 group-hover:scale-110 transition-transform">
-                            <Mail size={24} />
-                        </div>
+                <div className="space-y-10">
+                    <div className="flex items-center gap-6">
+                        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white"><Mail size={24} /></div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Corporate Emails</p>
-                            <div className="flex flex-col">
-                              <a href="mailto:info@casiecfinancials.com" className="text-lg font-bold text-white hover:text-nova-400 transition-colors">info@casiecfinancials.com</a>
-                              <a href="mailto:info@broastreet.africa" className="text-lg font-bold text-white hover:text-purple-400 transition-colors">info@broastreet.africa</a>
+                            <p className="text-[10px] text-gray-600 font-black uppercase tracking-widest mb-1">Electronic Mail</p>
+                            <a href="mailto:info@casiecfinancials.com" className="text-lg font-bold text-white hover:text-nova-500 transition-colors">info@casiecfinancials.com</a>
+                        </div>
+                    </div>
+                    <div className="flex items-center gap-6">
+                        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white"><Globe size={24} /></div>
+                        <div>
+                            <p className="text-[10px] text-gray-600 font-black uppercase tracking-widest mb-1">Global Presence</p>
+                            <div className="flex gap-4">
+                              <a href="http://www.casiecfinancials.com" target="_blank" rel="noreferrer" className="text-sm font-bold text-gray-300 hover:text-white transition-colors">casiecfinancials.com</a>
+                              <span className="text-gray-800">|</span>
+                              <a href="http://www.broastreet.africa" target="_blank" rel="noreferrer" className="text-sm font-bold text-gray-300 hover:text-white transition-colors">broastreet.africa</a>
                             </div>
                         </div>
                     </div>
-                    <div className="flex items-center gap-6 group">
-                        <div className="w-14 h-14 rounded-2xl bg-purple-500/10 flex items-center justify-center text-purple-400 group-hover:scale-110 transition-transform">
-                            <Globe size={24} />
-                        </div>
+                    <div className="flex items-center gap-6">
+                        <div className="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white"><Phone size={24} /></div>
                         <div>
-                            <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Websites</p>
-                            <div className="flex flex-col">
-                              <a href="http://www.casiecfinancials.com/" target="_blank" rel="noreferrer" className="text-lg font-bold text-white hover:text-nova-400 transition-colors">casiecfinancials.com</a>
-                              <a href="http://www.broastreet.africa/" target="_blank" rel="noreferrer" className="text-lg font-bold text-white hover:text-purple-400 transition-colors">broastreet.africa</a>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="flex items-center gap-6 group">
-                        <div className="w-14 h-14 rounded-2xl bg-nova-accent/10 flex items-center justify-center text-nova-accent group-hover:scale-110 transition-transform">
-                            <Phone size={24} />
-                        </div>
-                        <div>
-                            <p className="text-xs text-gray-500 uppercase tracking-widest font-bold">Lines of Communication</p>
-                            <div className="flex flex-col font-mono text-sm text-white">
-                              <span>+234 818-398-7171 (Dl)</span>
-                              <span>+234 810-326-0048</span>
-                              <span>+234 810-537-5394</span>
+                            <p className="text-[10px] text-gray-600 font-black uppercase tracking-widest mb-1">Secure Lines</p>
+                            <div className="flex flex-col text-sm text-gray-300 font-mono">
+                               <span>+234 818-398-7171</span>
+                               <span>+234 810-326-0048</span>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div className="glass-panel p-10 rounded-[2.5rem] relative">
-                <div className="absolute -top-10 -right-10 w-40 h-40 bg-nova-500/10 rounded-full blur-[60px] -z-10"></div>
-                {submitted ? (
-                    <div className="text-center py-12 animate-fade-in-up">
-                        <CheckCircle size={64} className="mx-auto text-emerald-500 mb-6" />
-                        <h3 className="text-3xl font-bold text-white mb-4">Message Received</h3>
-                        <p className="text-gray-400">A representative will contact you shortly.</p>
-                    </div>
-                ) : (
-                    <form onSubmit={handleContactSubmit} className="space-y-6">
-                        <div className="grid md:grid-cols-2 gap-6">
-                            <div>
-                                <label className="block text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mb-2 ml-4">Full Identity</label>
-                                <input 
-                                    required
-                                    type="text" 
-                                    value={contactForm.fullName}
-                                    onChange={(e) => setContactForm({...contactForm, fullName: e.target.value})}
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-nova-500 transition-all"
-                                    placeholder="Enter name"
-                                />
-                            </div>
-                            <div>
-                                <label className="block text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mb-2 ml-4">Contact Email</label>
-                                <input 
-                                    required
-                                    type="email" 
-                                    value={contactForm.email}
-                                    onChange={(e) => setContactForm({...contactForm, email: e.target.value})}
-                                    className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-nova-500 transition-all"
-                                    placeholder="your@email.com"
-                                />
-                            </div>
-                        </div>
-                        <div>
-                            <label className="block text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mb-2 ml-4">Subject</label>
-                            <input 
-                                required
-                                type="text" 
-                                value={contactForm.subject}
-                                onChange={(e) => setContactForm({...contactForm, subject: e.target.value})}
-                                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:outline-none focus:border-nova-500 transition-all"
-                                placeholder="What can we help with?"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-[10px] text-gray-500 uppercase tracking-[0.3em] font-black mb-2 ml-4">Detailed Message</label>
-                            <textarea 
-                                required
-                                value={contactForm.message}
-                                onChange={(e) => setContactForm({...contactForm, message: e.target.value})}
-                                className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white h-32 focus:outline-none focus:border-nova-500 transition-all resize-none"
-                                placeholder="Tell us more about your inquiry..."
-                            />
-                        </div>
-                        <button 
-                            type="submit" 
-                            disabled={isSubmitting}
-                            className="w-full bg-gradient-to-r from-nova-500 to-purple-600 hover:from-nova-400 hover:to-purple-500 text-white font-black py-5 rounded-2xl transition-all shadow-xl flex items-center justify-center gap-3 uppercase tracking-widest text-xs"
-                        >
-                            {isSubmitting ? 'Live Syncing...' : 'Send Inquiry'} <Send size={18} />
-                        </button>
-                    </form>
-                )}
+            <div className="p-1 bg-gradient-to-br from-white/10 via-transparent to-white/5 rounded-[3rem]">
+              <div className="bg-nova-900 rounded-[2.8rem] p-10 md:p-14 shadow-2xl">
+                  {submitted ? (
+                      <div className="text-center py-16 animate-fade-in-up">
+                          <CheckCircle size={64} className="mx-auto text-orange-500 mb-6" />
+                          <h3 className="text-3xl font-bold text-white mb-2 tracking-tight">Transmission Complete</h3>
+                          <p className="text-gray-500 font-light">Your inquiry has been logged in our secure system.</p>
+                      </div>
+                  ) : (
+                      <form onSubmit={handleContactSubmit} className="space-y-6">
+                          <div className="grid md:grid-cols-2 gap-6">
+                              <div>
+                                  <label className="block text-[10px] text-gray-600 uppercase font-black tracking-widest mb-3 ml-2">Identity</label>
+                                  <input required type="text" value={contactForm.fullName} onChange={(e) => setContactForm({...contactForm, fullName: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:outline-none focus:border-nova-500 transition-all text-sm font-bold" placeholder="Name" />
+                              </div>
+                              <div>
+                                  <label className="block text-[10px] text-gray-600 uppercase font-black tracking-widest mb-3 ml-2">Email Address</label>
+                                  <input required type="email" value={contactForm.email} onChange={(e) => setContactForm({...contactForm, email: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:outline-none focus:border-nova-500 transition-all text-sm font-bold" placeholder="Corporate Email" />
+                              </div>
+                          </div>
+                          <div>
+                              <label className="block text-[10px] text-gray-600 uppercase font-black tracking-widest mb-3 ml-2">Subject of Inquiry</label>
+                              <input required type="text" value={contactForm.subject} onChange={(e) => setContactForm({...contactForm, subject: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:outline-none focus:border-nova-500 transition-all text-sm font-bold" placeholder="e.g. Asset Finance Inquiry" />
+                          </div>
+                          <div>
+                              <label className="block text-[10px] text-gray-600 uppercase font-black tracking-widest mb-3 ml-2">Detailed Brief</label>
+                              <textarea required value={contactForm.message} onChange={(e) => setContactForm({...contactForm, message: e.target.value})} className="w-full h-32 bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:outline-none focus:border-nova-500 transition-all resize-none text-sm font-light" placeholder="Describe your requirements..." />
+                          </div>
+                          <button type="submit" disabled={isSubmitting} className="w-full bg-white text-nova-950 font-black py-5 rounded-xl transition-all shadow-xl flex items-center justify-center gap-3 uppercase tracking-widest text-[11px] active:scale-95">
+                              {isSubmitting ? 'Transmitting...' : 'Send Inquiry'} <Send size={18} />
+                          </button>
+                      </form>
+                  )}
+              </div>
             </div>
           </div>
         </div>

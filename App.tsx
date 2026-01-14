@@ -14,7 +14,7 @@ import { AdminDashboard } from './components/AdminDashboard';
 import { RealEstatePage } from './components/RealEstatePage';
 import { TeamPage } from './components/TeamPage';
 import { AboutPage } from './components/AboutPage';
-import { Settings, Lock } from 'lucide-react';
+import { Settings, Lock, Globe, ShieldCheck, Linkedin, Twitter, Mail } from 'lucide-react';
 
 const App: React.FC = () => {
   const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
@@ -58,7 +58,7 @@ const App: React.FC = () => {
   const isDashboard = currentView === 'admin';
 
   return (
-    <div className="min-h-screen bg-nova-900 text-white selection:bg-nova-500 selection:text-white flex flex-col">
+    <div className="min-h-screen bg-nova-950 text-white selection:bg-nova-500 selection:text-white flex flex-col">
       {!isDashboard && (
         <>
           <Navbar 
@@ -77,48 +77,109 @@ const App: React.FC = () => {
       </main>
 
       {!isDashboard && (
-        <footer className="bg-nova-900 pt-20 pb-10 border-t border-white/5 mt-auto relative overflow-hidden">
-          <div className="absolute bottom-0 left-0 w-full h-1/2 bg-gradient-to-t from-nova-500/5 to-transparent -z-10"></div>
+        <footer className="bg-nova-950 pt-32 pb-16 border-t border-white/5 mt-auto relative overflow-hidden">
+          <div className="absolute bottom-0 left-0 w-full h-full bg-gradient-to-t from-nova-500/5 to-transparent -z-10"></div>
           
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12 mb-16">
-              <div className="lg:col-span-1">
-                <div className="flex items-center gap-3 mb-6">
+            <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24">
+              
+              {/* Brand & Corporate Ethos */}
+              <div className="lg:col-span-5">
+                <div className="flex items-center gap-3 mb-8">
                   <div className="bg-nova-500 p-2.5 rounded-xl shadow-lg shadow-nova-500/20">
                     <div className="h-4 w-4 bg-white rounded-sm"></div>
                   </div>
-                  <span className="font-bold text-xl tracking-tight text-white">CASIEC</span>
+                  <span className="font-bold text-2xl tracking-tighter text-white">CASIEC</span>
                 </div>
-                <p className="text-gray-500 text-sm leading-relaxed">
-                  CASIEC FINANCIALS & GSI: The intersection of institutional capital and entrepreneurial vision. Fostering economic advancement through financial inclusion.
+                <p className="text-gray-500 text-sm leading-relaxed mb-8 max-w-md font-light">
+                  CASIEC Financials operates with a core focus on financial intermediation, delivering institutional-grade capital to stimulate NMSE and corporate growth. Fostering economic advancement through financial inclusion.
                 </p>
+                <div className="flex items-center gap-3 px-5 py-2.5 bg-white/5 border border-white/10 rounded-xl w-fit">
+                  <ShieldCheck size={16} className="text-nova-500" />
+                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Institutional Governance Compliant</span>
+                </div>
               </div>
               
-              <div>
-                <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-[10px] opacity-50">Quick Links</h4>
-                <ul className="space-y-4">
-                  <li><button onClick={() => handleNavigate('home')} className="text-gray-400 hover:text-white transition-colors text-sm">Home</button></li>
-                  <li><button onClick={() => handleNavigate('team')} className="text-gray-400 hover:text-white transition-colors text-sm">Our Team</button></li>
-                  <li><button onClick={() => handleNavigate('financial-support')} className="text-gray-400 hover:text-white transition-colors text-sm">Funding Programs</button></li>
-                  <li><button onClick={() => handleNavigate('insights')} className="text-gray-400 hover:text-white transition-colors text-sm">Insights Hub</button></li>
-                </ul>
-              </div>
+              {/* Professional Sitemap */}
+              <div className="lg:col-span-7 grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-12">
+                <div>
+                  <h4 className="text-white font-black mb-8 uppercase tracking-[0.4em] text-[10px] opacity-30">Quick Links</h4>
+                  <ul className="space-y-4">
+                    <li><button onClick={() => handleNavigate('home')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium">Global Home</button></li>
+                    <li><button onClick={() => handleNavigate('team')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium">Our Leadership</button></li>
+                    <li><button onClick={() => handleNavigate('financial-support')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium text-left">Funding Programs</button></li>
+                    <li><button onClick={() => handleNavigate('insights')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium">Insights Hub</button></li>
+                    {/* Admin Login within Quick Links */}
+                    <li className="pt-2 border-t border-white/5">
+                      <button 
+                        onClick={() => handleNavigate('admin')} 
+                        className="text-nova-400 hover:text-white transition-colors text-sm font-bold flex items-center gap-2 group"
+                      >
+                        <Lock size={12} className="group-hover:scale-110 transition-transform" /> 
+                        Admin Login
+                      </button>
+                    </li>
+                  </ul>
+                </div>
 
-              <div>
-                <h4 className="text-white font-bold mb-6 uppercase tracking-widest text-[10px] opacity-50">Contact Us</h4>
-                <ul className="space-y-4 text-sm text-gray-400">
-                  <li>Lagos, Nigeria</li>
-                  <li>support@casiec.com</li>
-                  <li className="font-mono text-xs">+234 818-398-7171 (Dl)</li>
-                  <li className="font-mono text-xs">+234 810-326-0048</li>
-                  <li className="font-mono text-xs">+234 810-537-5394</li>
-                </ul>
+                <div>
+                  <h4 className="text-white font-black mb-8 uppercase tracking-[0.4em] text-[10px] opacity-30">Our Pillars</h4>
+                  <ul className="space-y-4">
+                    <li><button onClick={() => handleNavigate('financial-support')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium text-left">Capital Solutions</button></li>
+                    <li><button onClick={() => handleNavigate('business-support')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium text-left">Strategic Advisory</button></li>
+                    <li><button onClick={() => handleNavigate('investment')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium text-left">Wealth Architecture</button></li>
+                    <li><button onClick={() => handleNavigate('real-estate')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium text-left">Infrastructure Bridge</button></li>
+                  </ul>
+                </div>
+
+                <div>
+                  <h4 className="text-white font-black mb-8 uppercase tracking-[0.4em] text-[10px] opacity-30">Electronic Uplink</h4>
+                  <ul className="space-y-6 text-sm text-gray-400">
+                    <li className="flex items-start gap-3 group">
+                      <Globe size={18} className="text-nova-500 mt-0.5" />
+                      <div className="flex flex-col gap-1">
+                         <a href="mailto:support@casiec.com" className="text-sm font-medium hover:text-white transition-colors">support@casiec.com</a>
+                         <span className="text-xs text-gray-600">Lagos, Nigeria</span>
+                      </div>
+                    </li>
+                    <li className="font-mono text-[11px] space-y-2">
+                      <span className="block text-white">+234 818-398-7171</span>
+                      <span className="block">+234 810-326-0048</span>
+                      <span className="block">+234 810-537-5394</span>
+                    </li>
+                  </ul>
+                </div>
               </div>
             </div>
 
-            <div className="pt-8 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-6">
-              <div className="text-gray-600 text-[10px] uppercase tracking-[0.4em] font-bold">
-                © 2024 CASIEC FINANCIALS & GSI. ALL RIGHTS RESERVED.
+            {/* Regulatory Disclosure & Copyright */}
+            <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-10">
+              <div className="flex flex-col gap-2">
+                <div className="text-gray-600 text-[10px] uppercase tracking-[0.5em] font-black">
+                  © 2024 CASIEC FINANCIALS & GSI. ALL RIGHTS RESERVED.
+                </div>
+                <div className="text-[9px] text-gray-700 uppercase tracking-widest font-bold">
+                  Licensed & Authorized Financial Institution. Global Strategic Alliance Partner.
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-8">
+                 <div className="flex gap-4">
+                    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 hover:text-nova-500 hover:border-nova-500 transition-all cursor-pointer">
+                      <Linkedin size={16} />
+                    </div>
+                    <div className="w-10 h-10 rounded-xl bg-white/5 border border-white/10 flex items-center justify-center text-gray-500 hover:text-nova-500 hover:border-nova-500 transition-all cursor-pointer">
+                      <Twitter size={16} />
+                    </div>
+                 </div>
+                 {/* Prominent Staff Terminal button in footer bar */}
+                 <button 
+                  onClick={() => handleNavigate('admin')}
+                  className="flex items-center gap-2 px-5 py-2.5 bg-nova-500 text-white rounded-xl shadow-lg shadow-nova-500/20 hover:bg-nova-400 transition-all group"
+                 >
+                   <Lock size={12} className="text-white" />
+                   <span className="text-[10px] font-black uppercase tracking-[0.2em]">Staff Terminal</span>
+                 </button>
               </div>
             </div>
           </div>

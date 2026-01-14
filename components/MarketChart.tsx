@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 
@@ -13,8 +14,8 @@ const data = [
 
 export const MarketChart: React.FC = () => {
   return (
-    <div className="w-full h-[250px] mt-4">
-      <ResponsiveContainer width="100%" height="100%">
+    <div className="w-full h-[250px] mt-4 relative overflow-hidden">
+      <ResponsiveContainer width="100%" height="100%" minWidth={0}>
         <AreaChart
           data={data}
           margin={{ top: 10, right: 0, left: -20, bottom: 0 }}

@@ -43,8 +43,8 @@ export const InvestmentPage: React.FC = () => {
                </div>
             </div>
             
-            <div className="h-[300px] w-full">
-               <ResponsiveContainer width="100%" height="100%">
+            <div className="h-[300px] w-full relative overflow-hidden">
+               <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                 <AreaChart data={mockChartData}>
                   <defs>
                     <linearGradient id="goldGradient" x1="0" y1="0" x2="0" y2="1">
@@ -106,7 +106,7 @@ export const InvestmentPage: React.FC = () => {
         {/* Minimum Investment Banner */}
         <div className="mt-20 p-8 rounded-2xl bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border border-white/5 text-center">
            <h3 className="text-2xl text-white mb-2">Minimum Investment</h3>
-           <div className="text-5xl font-serif text-yellow-500 mb-4">$50,000</div>
+           <div className="text-5xl font-serif text-yellow-500 mb-4">₦10,000,000</div>
            <p className="text-gray-500 text-sm">For Accredited Investors Only</p>
         </div>
       </div>

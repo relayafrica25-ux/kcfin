@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Network, BrainCircuit, FileText, Scale, ArrowRight, Lightbulb, Users, Globe, Coins, LineChart, ShieldCheck, Database, Truck, BarChart3, Settings, Search, PackageSearch, Share2 } from 'lucide-react';
+import { Network, BrainCircuit, FileText, Scale, ArrowRight, Lightbulb, Users, Globe, Coins, LineChart, ShieldCheck, Database, Truck, BarChart3, Settings, Search, PackageSearch, Share2, Check } from 'lucide-react';
 
 interface BusinessSupportPageProps {
   onInquireClick: () => void;
@@ -10,7 +10,7 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
   const sections = [
     {
       title: "Business Support Services",
-      icon: <Users className="text-purple-400" />,
+      icon: <Users className="text-orange-400" />,
       items: [
         { label: "Business Development", desc: "Strategic mapping and pipeline expansion for emerging ventures and established firms." },
         { label: "Strategic Outsourcing", desc: "E-Management System Optimization and leaner operational scaling strategies." },
@@ -19,7 +19,7 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
     },
     {
       title: "Corporate Finance, Research & Advisory",
-      icon: <BarChart3 className="text-emerald-400" />,
+      icon: <BarChart3 className="text-orange-400" />,
       items: [
         { label: "Credit & Capital Raise", desc: "Full-cycle financing solutions and structured capital infusion for complex projects." },
         { label: "Market Research", desc: "Evidence-based market intelligence and feasibility studies for strategic planning." },
@@ -38,19 +38,23 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
   ];
 
   return (
-    <div className="pt-24 min-h-screen bg-nova-900 selection:bg-purple-500">
+    <div className="pt-24 min-h-screen bg-nova-900 selection:bg-orange-500">
       {/* Hero Section */}
       <div className="relative py-20 overflow-hidden">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-purple-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
+        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-purple-300 text-sm font-semibold mb-8 backdrop-blur-md">
-            <Network size={16} />
-            <span>GSI STRATEGIC ALLIANCES (Broastreet DyDX)</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-orange-300 text-sm font-semibold mb-8 backdrop-blur-md">
+            {/* Updated Branding in Badge */}
+            <div className="flex items-center gap-1.5">
+               <span className="font-black lowercase">broastreet</span>
+               <Check size={14} className="text-orange-500" strokeWidth={4} />
+               <span className="font-black italic uppercase">DyDX</span>
+            </div>
           </div>
           
           <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight text-white uppercase italic">
             Institutional <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 via-white to-emerald-400">
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-white to-orange-200">
               Backbone.
             </span>
           </h1>
@@ -61,7 +65,7 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
           
           <button 
             onClick={onInquireClick}
-            className="px-10 py-4 rounded-full bg-purple-600 hover:bg-purple-500 text-white font-black uppercase tracking-widest text-sm transition-all shadow-xl shadow-purple-600/20"
+            className="px-10 py-4 rounded-full bg-orange-600 hover:bg-orange-500 text-white font-black uppercase tracking-widest text-sm transition-all shadow-xl shadow-orange-600/20"
           >
             Initiate Advisory
           </button>
@@ -72,7 +76,7 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
         <div className="grid lg:grid-cols-3 gap-8">
           {sections.map((section, idx) => (
-            <div key={idx} className="glass-panel p-10 rounded-[3rem] border border-white/5 flex flex-col hover:border-purple-500/30 transition-all duration-500 group">
+            <div key={idx} className="glass-panel p-10 rounded-[3rem] border border-white/5 flex flex-col hover:border-orange-500/30 transition-all duration-500 group">
                <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
                   {section.icon}
                </div>
@@ -80,8 +84,8 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
                <div className="space-y-8 flex-grow">
                  {section.items.map((item, i) => (
                     <div key={i} className="group cursor-default">
-                       <div className="text-white font-bold mb-1 flex items-center gap-2 group-hover:text-purple-400 transition-colors">
-                          <div className="w-1.5 h-1.5 rounded-full bg-purple-500"></div>
+                       <div className="text-white font-bold mb-1 flex items-center gap-2 group-hover:text-orange-400 transition-colors">
+                          <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
                           {item.label}
                        </div>
                        <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
@@ -89,7 +93,7 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
                  ))}
                </div>
                <div className="mt-12 pt-6 border-t border-white/5">
-                  <button onClick={onInquireClick} className="text-[10px] font-black uppercase tracking-[0.2em] text-purple-400 hover:text-white flex items-center gap-2 transition-colors">
+                  <button onClick={onInquireClick} className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-400 hover:text-white flex items-center gap-2 transition-colors">
                      Consult Experts <ArrowRight size={14} />
                   </button>
                </div>
@@ -105,32 +109,32 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
             <div className="grid md:grid-cols-2 gap-16 items-start">
                <div className="animate-fade-in-up">
                   <div className="flex items-center gap-4 mb-8">
-                    <Search className="text-purple-500" size={32} />
+                    <Search className="text-orange-500" size={32} />
                     <h2 className="text-3xl font-bold text-white uppercase tracking-tighter italic">Intelligence & Research</h2>
                   </div>
                   <div className="space-y-6">
-                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-purple-500/20 transition-all">
-                        <h4 className="font-bold text-purple-400 mb-2 uppercase tracking-tight">Market Feasibility</h4>
+                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-orange-500/20 transition-all">
+                        <h4 className="font-bold text-orange-400 mb-2 uppercase tracking-tight">Market Feasibility</h4>
                         <p className="text-gray-400 text-sm leading-relaxed">Deep-dive analytics for continental market entry, risk assessment, and scalability mapping for NMSEs and corporate giants.</p>
                      </div>
-                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-purple-500/20 transition-all">
-                        <h4 className="font-bold text-purple-400 mb-2 uppercase tracking-tight">Financial Modeling</h4>
+                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-orange-500/20 transition-all">
+                        <h4 className="font-bold text-orange-400 mb-2 uppercase tracking-tight">Financial Modeling</h4>
                         <p className="text-gray-400 text-sm leading-relaxed">Precision forecasting and valuation models tailored for the unique dynamics of emerging African economies.</p>
                      </div>
                   </div>
                </div>
                <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
                   <div className="flex items-center gap-4 mb-8">
-                    <PackageSearch className="text-emerald-500" size={32} />
+                    <PackageSearch className="text-orange-500" size={32} />
                     <h2 className="text-3xl font-bold text-white uppercase tracking-tighter italic">Global Value Chain</h2>
                   </div>
                   <div className="space-y-6">
-                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-emerald-500/20 transition-all">
-                        <h4 className="font-bold text-emerald-400 mb-2 uppercase tracking-tight">Logistics Engineering</h4>
+                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-orange-500/20 transition-all">
+                        <h4 className="font-bold text-orange-400 mb-2 uppercase tracking-tight">Logistics Engineering</h4>
                         <p className="text-gray-400 text-sm leading-relaxed">End-to-end supply chain optimization focusing on reducing lead times and operational overheads through GSI technology.</p>
                      </div>
-                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-emerald-500/20 transition-all">
-                        <h4 className="font-bold text-emerald-400 mb-2 uppercase tracking-tight">Asset Monetization</h4>
+                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-orange-500/20 transition-all">
+                        <h4 className="font-bold text-orange-400 mb-2 uppercase tracking-tight">Asset Monetization</h4>
                         <p className="text-gray-400 text-sm leading-relaxed">Strategic advisory on leveraging physical assets and inventory for liquid capital injection and trade financing.</p>
                      </div>
                   </div>
@@ -138,8 +142,10 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
             </div>
 
             <div className="mt-24 p-12 glass-panel rounded-[3rem] border border-white/5 text-center relative group overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-500/10 to-emerald-500/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
-                <Share2 className="mx-auto text-purple-400 mb-6" size={40} />
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-orange-300/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="bg-orange-500 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-orange-500/20">
+                   <Check size={32} className="text-white" strokeWidth={4} />
+                </div>
                 <h3 className="text-3xl font-bold text-white mb-6 tracking-tight uppercase italic">The Broastreet DyDX Ecosystem</h3>
                 <p className="text-gray-400 max-w-2xl mx-auto leading-relaxed mb-10 font-light">
                     Harnessing the proprietary DyDX framework, we bridge the gap between institutional research and real-world execution. 
@@ -147,7 +153,7 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
                 </p>
                 <button 
                   onClick={onInquireClick}
-                  className="px-8 py-3 bg-white text-nova-900 rounded-full font-black uppercase tracking-widest text-xs hover:bg-purple-500 hover:text-white transition-all shadow-2xl"
+                  className="px-8 py-3 bg-white text-nova-900 rounded-full font-black uppercase tracking-widest text-xs hover:bg-orange-500 hover:text-white transition-all shadow-2xl"
                 >
                   Join the Alliance
                 </button>

@@ -7,7 +7,7 @@ import { ChatMessage } from '../types';
 export const ChatWidget: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<ChatMessage[]>([
-    { role: 'model', text: "Welcome to the Digital Support Uplink. How may I assist your enterprise today?" }
+    { role: 'model', text: "Welcome to the CASIEC Support Terminal. I am your CASIEC Financial Specialist. How may I assist your enterprise today?" }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -49,10 +49,10 @@ export const ChatWidget: React.FC = () => {
               <Bot className="text-white h-5 w-5" />
             </div>
             <div>
-              <h3 className="font-bold text-white text-sm">Nova Specialist</h3>
+              <h3 className="font-bold text-white text-sm">CASIEC Financial Specialist</h3>
               <p className="text-[10px] text-white/80 flex items-center gap-1">
                 <span className="w-1.5 h-1.5 bg-green-400 rounded-full"></span>
-                Digital Interface Active
+                Institutional Interface Active
               </p>
             </div>
           </div>
@@ -118,7 +118,7 @@ export const ChatWidget: React.FC = () => {
            }`}
            onClick={() => setIsOpen(true)}
         >
-           Digital Support Active
+           Specialist Support Active
            <div className="absolute -right-1.5 top-1/2 -translate-y-1/2 w-4 h-4 bg-white rotate-45 transform origin-center"></div>
         </div>
 

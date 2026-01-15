@@ -1,44 +1,26 @@
 
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Linkedin, Mail, Twitter, ShieldCheck, Award, Briefcase, Globe, Sparkles } from 'lucide-react';
 import { TeamMember } from '../types';
-
-const team: TeamMember[] = [
-  {
-    id: '1',
-    name: "Dr. Adebayo Ogunlesi",
-    role: "Managing Director / CEO",
-    bio: "Visionary leader with 20+ years in investment banking and structured finance across emerging markets. Architect of the CASIEC institutional framework.",
-    imageGradient: "from-blue-600 to-indigo-900",
-    specialization: "Strategic Leadership"
-  },
-  {
-    id: '2',
-    name: "Sarah Jenkins",
-    role: "Chief Financial Officer",
-    bio: "Expert in mezzanine financing and corporate treasury management with a focus on institutional risk assessment and capital mapping.",
-    imageGradient: "from-purple-600 to-nova-500",
-    specialization: "Corporate Finance"
-  },
-  {
-    id: '3',
-    name: "Chidi Okafor",
-    role: "Head of Business Support",
-    bio: "Specialist in supply chain optimization and strategic outsourcing. Driving enterprise sustainability for NMSE growth across Africa.",
-    imageGradient: "from-emerald-600 to-teal-900",
-    specialization: "Operations & GSI"
-  },
-  {
-    id: '4',
-    name: "Elena Rodriguez",
-    role: "Director of Wealth Advisory",
-    bio: "Architecting bespoke wealth preservation strategies for high-net-worth family offices and institutional capital partners.",
-    imageGradient: "from-amber-500 to-orange-700",
-    specialization: "Wealth Management"
-  }
-];
+import { storageService } from '../services/storageService';
 
 export const TeamPage: React.FC = () => {
+  const [team, setTeam] = useState<TeamMember[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loadTeam = () => {
+      setLoading(true);
+      try {
+        setTeam(storageService.getTeamMembers());
+      } catch (err) {
+        console.error("Uplink failed:", err);
+      }
+      setLoading(false);
+    };
+    loadTeam();
+  }, []);
+
   return (
     <div className="pt-24 min-h-screen bg-nova-900 selection:bg-nova-500">
       {/* Hero Section */}
@@ -71,16 +53,20 @@ export const TeamPage: React.FC = () => {
             {team.map((member) => (
               <div key={member.id} className="group relative flex flex-col glass-panel rounded-[2.5rem] border border-white/5 overflow-hidden hover:border-nova-500/30 transition-all duration-500 hover:translate-y-[-8px]">
                 <div className={`h-72 relative bg-gradient-to-br ${member.imageGradient} opacity-80 group-hover:opacity-100 transition-all duration-500`}>
-                   <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-                   <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center">
+                   {member.imageUrl ? (
+                     <img src={member.imageUrl} className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={member.name} />
+                   ) : (
+                     <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                   )}
+                   <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center z-10">
                       <span className="px-3 py-1 bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest rounded-full">
                         {member.specialization}
                       </span>
-                      <div className="flex gap-2">
-                        <div className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white/50 group-hover:text-white transition-colors">
+                      {member.linkedin && (
+                        <a href={member.linkedin} target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white/50 group-hover:text-white transition-colors">
                             <Linkedin size={14} />
-                        </div>
-                      </div>
+                        </a>
+                      )}
                    </div>
                 </div>
                 
@@ -92,9 +78,9 @@ export const TeamPage: React.FC = () => {
                   </p>
                   
                   <div className="mt-auto pt-6 border-t border-white/5 flex gap-4">
-                    <button className="text-gray-600 hover:text-white transition-colors"><Linkedin size={18} /></button>
-                    <button className="text-gray-600 hover:text-white transition-colors"><Twitter size={18} /></button>
-                    <button className="text-gray-600 hover:text-white transition-colors"><Mail size={18} /></button>
+                    {member.linkedin && <a href={member.linkedin} target="_blank" rel="noreferrer" className="text-gray-600 hover:text-white transition-colors"><Linkedin size={18} /></a>}
+                    {member.twitter && <a href={member.twitter} target="_blank" rel="noreferrer" className="text-gray-600 hover:text-white transition-colors"><Twitter size={18} /></a>}
+                    {member.email && <a href={`mailto:${member.email}`} className="text-gray-600 hover:text-white transition-colors"><Mail size={18} /></a>}
                   </div>
                 </div>
               </div>

@@ -40,11 +40,16 @@ import {
   LogOut,
   Info,
   Check,
-  AlertCircle
+  AlertCircle,
+  Linkedin,
+  Twitter,
+  Upload,
+  // Added ShieldCheck to imports
+  ShieldCheck
 } from 'lucide-react';
 import { storageService } from '../services/storageService';
 import { generateArticleImage } from '../services/geminiService';
-import { Article, LoanApplication, ContactInquiry, NewsletterSubscription, TickerItem, CarouselItem } from '../types';
+import { Article, LoanApplication, ContactInquiry, NewsletterSubscription, TickerItem, CarouselItem, TeamMember } from '../types';
 
 export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -54,7 +59,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   const [staffId, setStaffId] = useState('');
   const [loginPass, setLoginPass] = useState('');
   const [error, setError] = useState<string | null>(null);
-  const [activeTab, setActiveTab] = useState<'overview' | 'articles' | 'applications' | 'inquiries' | 'ticker' | 'carousel'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'articles' | 'applications' | 'inquiries' | 'ticker' | 'carousel' | 'leadership'>('overview');
   
   // Data States
   const [articles, setArticles] = useState<Article[]>([]);
@@ -62,11 +67,13 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   const [inquiries, setInquiries] = useState<ContactInquiry[]>([]);
   const [tickerItems, setTickerItems] = useState<TickerItem[]>([]);
   const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
+  const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
   
   // Modal States
   const [isArticleModalOpen, setIsArticleModalOpen] = useState(false);
   const [isTickerModalOpen, setIsTickerModalOpen] = useState(false);
   const [isCarouselModalOpen, setIsCarouselModalOpen] = useState(false);
+  const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<LoanApplication | null>(null);
   const [selectedInquiry, setSelectedInquiry] = useState<ContactInquiry | null>(null);
@@ -74,6 +81,8 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   // Edit States
   const [isEditingArticle, setIsEditingArticle] = useState(false);
   const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
+  const [isEditingTeam, setIsEditingTeam] = useState(false);
+  const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
 
   const [newArticle, setNewArticle] = useState<Partial<Article>>({
     title: '',
@@ -84,6 +93,18 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     date: new Date().toISOString().split('T')[0],
     readTime: '5 min read',
     imageUrl: ''
+  });
+
+  const [newTeamMember, setNewTeamMember] = useState<Partial<TeamMember>>({
+    name: '',
+    role: '',
+    bio: '',
+    specialization: '',
+    imageGradient: 'from-blue-600 to-indigo-900',
+    imageUrl: '',
+    linkedin: '',
+    twitter: '',
+    email: ''
   });
 
   const [newTicker, setNewTicker] = useState<Partial<TickerItem>>({
@@ -108,7 +129,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   useEffect(() => {
     if (isAuthenticated) {
       refreshData();
-      const interval = setInterval(refreshData, 10000); // 10s refresh is sufficient
+      const interval = setInterval(refreshData, 10000); 
       return () => clearInterval(interval);
     }
   }, [isAuthenticated]);
@@ -119,6 +140,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     setInquiries(storageService.getInquiries());
     setTickerItems(storageService.getManualTickerItems());
     setCarouselItems(storageService.getCarouselItems());
+    setTeamMembers(storageService.getTeamMembers());
   };
 
   const handleLogin = async (e: React.FormEvent) => {
@@ -141,17 +163,25 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     setIsAuthenticated(true);
   };
 
-  const handleGenerateAIImage = async (isForCarousel = false) => {
-    const titleToUse = isForCarousel ? newCarousel.title : newArticle.title;
+  const handleGenerateAIImage = async (context: 'article' | 'carousel' | 'team') => {
+    const promptMap = {
+      article: newArticle.title,
+      carousel: newCarousel.title,
+      team: newTeamMember.name ? `Professional headshot of ${newTeamMember.name}, ${newTeamMember.role}` : null
+    };
+    
+    const titleToUse = promptMap[context];
     if (!titleToUse) {
-      alert("Please provide a headline first.");
+      alert("Please provide the required name/headline first.");
       return;
     }
     setIsGeneratingImage(true);
     const generatedUrl = await generateArticleImage(titleToUse);
     if (generatedUrl) {
-      if (isForCarousel) {
+      if (context === 'carousel') {
         setNewCarousel(prev => ({ ...prev, imageUrl: generatedUrl }));
+      } else if (context === 'team') {
+        setNewTeamMember(prev => ({ ...prev, imageUrl: generatedUrl }));
       } else {
         setNewArticle(prev => ({ ...prev, imageUrl: generatedUrl }));
       }
@@ -159,6 +189,17 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
       alert("Visual synchronization failed. Proceeding with fallback.");
     }
     setIsGeneratingImage(false);
+  };
+
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: any) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setter((prev: any) => ({ ...prev, imageUrl: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleEditArticle = (article: Article) => {
@@ -177,6 +218,23 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     setIsArticleModalOpen(true);
   };
 
+  const handleEditTeam = (member: TeamMember) => {
+    setIsEditingTeam(true);
+    setEditingTeamId(member.id);
+    setNewTeamMember({
+      name: member.name,
+      role: member.role,
+      bio: member.bio,
+      specialization: member.specialization,
+      imageGradient: member.imageGradient,
+      imageUrl: member.imageUrl,
+      linkedin: member.linkedin,
+      twitter: member.twitter,
+      email: member.email
+    });
+    setIsTeamModalOpen(true);
+  };
+
   const handlePostArticle = (e: React.FormEvent) => {
     e.preventDefault();
     const article: Article = {
@@ -191,6 +249,21 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     setIsArticleModalOpen(false);
     setIsEditingArticle(false);
     setEditingArticleId(null);
+  };
+
+  const handlePostTeam = (e: React.FormEvent) => {
+    e.preventDefault();
+    const member: TeamMember = {
+      ...(newTeamMember as TeamMember),
+      id: isEditingTeam && editingTeamId ? editingTeamId : Math.random().toString(36).substr(2, 9),
+      imageGradient: newTeamMember.imageGradient || 'from-blue-600 to-indigo-900'
+    };
+    storageService.saveTeamMember(member);
+    refreshData();
+    setIsTeamModalOpen(false);
+    setIsEditingTeam(false);
+    setEditingTeamId(null);
+    setNewTeamMember({ name: '', role: '', bio: '', specialization: '', linkedin: '', twitter: '', email: '', imageUrl: '', imageGradient: 'from-blue-600 to-indigo-900' });
   };
 
   const handlePostCarousel = (e: React.FormEvent) => {
@@ -209,6 +282,13 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   const handleDeleteArticle = (id: string) => {
     if (window.confirm('Erase this insight?')) {
       storageService.deleteArticle(id);
+      refreshData();
+    }
+  };
+
+  const handleDeleteTeam = (id: string) => {
+    if (window.confirm('Remove this member from leadership records?')) {
+      storageService.deleteTeamMember(id);
       refreshData();
     }
   };
@@ -332,6 +412,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
             { id: 'overview', icon: <TrendingUp size={20} />, label: 'Overview' },
             { id: 'applications', icon: <Users size={20} />, label: 'Applications', badge: pendingApps },
             { id: 'inquiries', icon: <MessageSquare size={20} />, label: 'Inquiries', badge: unreadInquiries },
+            { id: 'leadership', icon: <ShieldCheck size={20} />, label: 'Leadership' },
             { id: 'ticker', icon: <Activity size={20} />, label: 'Live Ticker' },
             { id: 'articles', icon: <FileText size={20} />, label: 'Insights Hub' },
             { id: 'carousel', icon: <Megaphone size={20} />, label: 'Campaigns' }
@@ -376,9 +457,9 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                  </div>
               </div>
               <div className="glass-panel p-10 rounded-[2.5rem] border border-white/5">
-                 <Activity className="text-emerald-400 mb-6" size={32} />
-                 <p className="text-[10px] uppercase font-black text-gray-500 tracking-widest mb-2">Ticker Points</p>
-                 <p className="text-6xl font-black">{tickerItems.length}</p>
+                 <ShieldCheck className="text-emerald-400 mb-6" size={32} />
+                 <p className="text-[10px] uppercase font-black text-gray-500 tracking-widest mb-2">Leadership Team</p>
+                 <p className="text-6xl font-black">{teamMembers.length}</p>
               </div>
             </div>
             <div className="grid lg:grid-cols-2 gap-12">
@@ -420,6 +501,43 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                         )}
                     </div>
                 </div>
+            </div>
+          </div>
+        )}
+
+        {/* TAB: LEADERSHIP */}
+        {activeTab === 'leadership' && (
+          <div className="animate-fade-in-up">
+            <div className="flex justify-between items-center mb-12">
+                <h1 className="text-4xl font-black uppercase italic tracking-tighter">Leadership Records</h1>
+                <button onClick={() => { setIsEditingTeam(false); setIsTeamModalOpen(true); }} className="px-6 py-3 bg-nova-500 rounded-xl text-xs font-black uppercase flex items-center gap-2"><Plus size={16} /> Add Leader</button>
+            </div>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                {teamMembers.map(member => (
+                    <div key={member.id} className="glass-panel rounded-3xl border border-white/5 overflow-hidden flex flex-col group">
+                        <div className="h-48 relative">
+                            {member.imageUrl ? (
+                                <img src={member.imageUrl} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" alt={member.name} />
+                            ) : (
+                                <div className={`w-full h-full bg-gradient-to-br ${member.imageGradient} opacity-40`} />
+                            )}
+                            <div className="absolute top-4 right-4 flex gap-2">
+                                <button onClick={() => handleEditTeam(member)} className="p-2 bg-white/10 rounded-lg text-white hover:bg-white/20"><Edit3 size={16} /></button>
+                                <button onClick={() => handleDeleteTeam(member.id)} className="p-2 bg-red-500/10 rounded-lg text-red-500 hover:bg-red-500/20"><Trash2 size={16} /></button>
+                            </div>
+                        </div>
+                        <div className="p-8">
+                            <span className="text-[10px] font-black uppercase text-nova-400 tracking-widest">{member.specialization}</span>
+                            <h3 className="text-xl font-bold text-white mt-2">{member.name}</h3>
+                            <p className="text-xs text-gray-500 uppercase font-bold tracking-widest mt-1 mb-4">{member.role}</p>
+                            <div className="flex gap-4 border-t border-white/5 pt-4">
+                                {member.linkedin && <Linkedin size={14} className="text-gray-600" />}
+                                {member.twitter && <Twitter size={14} className="text-gray-600" />}
+                                {member.email && <Mail size={14} className="text-gray-600" />}
+                            </div>
+                        </div>
+                    </div>
+                ))}
             </div>
           </div>
         )}
@@ -582,6 +700,54 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
       </div>
 
       {/* MODALS */}
+      {/* Team Modal */}
+      {isTeamModalOpen && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto"><div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsTeamModalOpen(false)}></div>
+        <form onSubmit={handlePostTeam} className="relative w-full max-w-2xl glass-panel rounded-[3rem] border border-white/10 p-12 space-y-6 my-10 animate-fade-in-up">
+            <h2 className="text-2xl font-black uppercase italic tracking-tighter">{isEditingTeam ? 'Edit Leader' : 'Add Leader'}</h2>
+            <div className="grid grid-cols-2 gap-4">
+                <input required type="text" placeholder="Full Name" className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:border-nova-500 outline-none" value={newTeamMember.name} onChange={(e) => setNewTeamMember({...newTeamMember, name: e.target.value})} />
+                <input required type="text" placeholder="Official Role" className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:border-nova-500 outline-none" value={newTeamMember.role} onChange={(e) => setNewTeamMember({...newTeamMember, role: e.target.value})} />
+                <input required type="text" placeholder="Specialization (e.g. Strategic Leadership)" className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white col-span-2 focus:border-nova-500 outline-none" value={newTeamMember.specialization} onChange={(e) => setNewTeamMember({...newTeamMember, specialization: e.target.value})} />
+                <textarea required placeholder="Short professional bio..." className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white col-span-2 h-32 resize-none focus:border-nova-500 outline-none font-light" value={newTeamMember.bio} onChange={(e) => setNewTeamMember({...newTeamMember, bio: e.target.value})} />
+            </div>
+            
+            <div className="grid grid-cols-3 gap-4">
+               <div className="relative group">
+                  <Linkedin className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
+                  <input type="url" placeholder="LinkedIn" className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-xs text-white outline-none focus:border-nova-500" value={newTeamMember.linkedin} onChange={(e) => setNewTeamMember({...newTeamMember, linkedin: e.target.value})} />
+               </div>
+               <div className="relative group">
+                  <Twitter className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
+                  <input type="url" placeholder="Twitter" className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-xs text-white outline-none focus:border-nova-500" value={newTeamMember.twitter} onChange={(e) => setNewTeamMember({...newTeamMember, twitter: e.target.value})} />
+               </div>
+               <div className="relative group">
+                  <Mail className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
+                  <input type="email" placeholder="Email" className="w-full bg-white/5 border border-white/10 rounded-xl py-3 pl-12 pr-4 text-xs text-white outline-none focus:border-nova-500" value={newTeamMember.email} onChange={(e) => setNewTeamMember({...newTeamMember, email: e.target.value})} />
+               </div>
+            </div>
+
+            <div className="p-6 bg-white/5 rounded-2xl border border-white/10 space-y-4">
+                <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-4">
+                        {newTeamMember.imageUrl ? <img src={newTeamMember.imageUrl} className="w-12 h-12 rounded-lg object-cover" alt="" /> : <div className="w-12 h-12 rounded-lg bg-nova-500/20 flex items-center justify-center"><User size={16} className="text-nova-400" /></div>}
+                        <span className="text-xs text-gray-500 font-bold">Portrait status</span>
+                    </div>
+                    <div className="flex gap-2">
+                        <label className="px-4 py-2 bg-white/5 border border-white/10 text-gray-400 rounded-lg text-[10px] font-black uppercase flex items-center gap-2 hover:bg-white/10 cursor-pointer transition-all">
+                            <Upload size={14} /> Upload
+                            <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, setNewTeamMember)} />
+                        </label>
+                        <button type="button" onClick={() => handleGenerateAIImage('team')} disabled={isGeneratingImage} className="px-4 py-2 bg-nova-500/10 border border-nova-500/20 text-nova-400 rounded-lg text-[10px] font-black uppercase flex items-center gap-2 hover:bg-nova-500 hover:text-white transition-all disabled:opacity-50">
+                            {isGeneratingImage ? <Loader2 className="animate-spin" size={14} /> : <Zap size={14} />} Vision Sync
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <button type="submit" className="w-full py-5 bg-nova-500 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-nova-500/20 hover:bg-nova-400 transition-all">{isEditingTeam ? 'Update Records' : 'Deploy to Leadership'}</button>
+        </form></div>
+      )}
+
       {/* Application Details */}
       {selectedApplication && (
         <div className="fixed inset-0 z-[100] flex items-center justify-center p-4"><div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setSelectedApplication(null)}></div>
@@ -656,8 +822,11 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                 <input type="text" placeholder="Author Name" className="bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:border-nova-500 outline-none" value={newArticle.author} onChange={(e) => setNewArticle({...newArticle, author: e.target.value})} />
             </div>
             <div className="p-6 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between">
-                <div className="flex items-center gap-4">{newArticle.imageUrl ? <img src={newArticle.imageUrl} className="w-12 h-12 rounded-lg object-cover" alt="" /> : <div className="w-12 h-12 rounded-lg bg-nova-500/20 flex items-center justify-center"><ImageIcon size={16} className="text-nova-400" /></div>}<span className="text-xs text-gray-500 font-bold">Visual synchronization status</span></div>
-                <button type="button" onClick={() => handleGenerateAIImage()} disabled={isGeneratingImage} className="px-4 py-2 bg-nova-500/10 border border-nova-500/20 text-nova-400 rounded-lg text-[10px] font-black uppercase flex items-center gap-2 hover:bg-nova-500 hover:text-white transition-all disabled:opacity-50">{isGeneratingImage ? <Loader2 className="animate-spin" size={14} /> : <Zap size={14} />} Vision Sync</button>
+                <div className="flex items-center gap-4">
+                    {newArticle.imageUrl ? <img src={newArticle.imageUrl} className="w-12 h-12 rounded-lg object-cover" alt="" /> : <div className="w-12 h-12 rounded-lg bg-nova-500/20 flex items-center justify-center"><ImageIcon size={16} className="text-nova-400" /></div>}
+                    <span className="text-xs text-gray-500 font-bold">Visual synchronization status</span>
+                </div>
+                <button type="button" onClick={() => handleGenerateAIImage('article')} disabled={isGeneratingImage} className="px-4 py-2 bg-nova-500/10 border border-nova-500/20 text-nova-400 rounded-lg text-[10px] font-black uppercase flex items-center gap-2 hover:bg-nova-500 hover:text-white transition-all disabled:opacity-50">{isGeneratingImage ? <Loader2 className="animate-spin" size={14} /> : <Zap size={14} />} Vision Sync</button>
             </div>
             <button type="submit" className="w-full py-5 bg-nova-500 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-nova-500/20 hover:bg-nova-400 transition-all">{isEditingArticle ? 'Update Hub' : 'Post to Hub'}</button>
         </form></div>
@@ -676,7 +845,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
             </div>
             <div className="p-6 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between">
                 <div className="flex items-center gap-4">{newCarousel.imageUrl ? <img src={newCarousel.imageUrl} className="w-12 h-12 rounded-lg object-cover" alt="" /> : <div className="w-12 h-12 rounded-lg bg-nova-500/20 flex items-center justify-center"><ImageIcon size={16} className="text-nova-400" /></div>}<span className="text-xs text-gray-500 font-bold">Campaign visual</span></div>
-                <button type="button" onClick={() => handleGenerateAIImage(true)} disabled={isGeneratingImage} className="px-4 py-2 bg-nova-500/10 border border-nova-500/20 text-nova-400 rounded-lg text-[10px] font-black uppercase flex items-center gap-2 hover:bg-nova-500 hover:text-white transition-all disabled:opacity-50">{isGeneratingImage ? <Loader2 className="animate-spin" size={14} /> : <Zap size={14} />} Vision Sync</button>
+                <button type="button" onClick={() => handleGenerateAIImage('carousel')} disabled={isGeneratingImage} className="px-4 py-2 bg-nova-500/10 border border-nova-500/20 text-nova-400 rounded-lg text-[10px] font-black uppercase flex items-center gap-2 hover:bg-nova-500 hover:text-white transition-all disabled:opacity-50">{isGeneratingImage ? <Loader2 className="animate-spin" size={14} /> : <Zap size={14} />} Vision Sync</button>
             </div>
             <button type="submit" className="w-full py-5 bg-nova-500 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-nova-500/20 hover:bg-nova-400 transition-all">Deploy Campaign</button>
         </form></div>

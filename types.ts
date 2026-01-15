@@ -85,6 +85,10 @@ export interface TeamMember {
   bio: string;
   imageGradient: string;
   specialization: string;
+  imageUrl?: string;
+  linkedin?: string;
+  twitter?: string;
+  email?: string;
 }
 
 export type CarouselItemType = 'news' | 'eco' | 'advert' | 'product' | 'customer';

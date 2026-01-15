@@ -1,5 +1,5 @@
 
-import { Article, LoanApplication, ContactInquiry, NewsletterSubscription, TickerItem, CarouselItem } from '../types';
+import { Article, LoanApplication, ContactInquiry, NewsletterSubscription, TickerItem, CarouselItem, TeamMember } from '../types';
 
 const ARTICLES_KEY = 'casiec_articles';
 const APPLICATIONS_KEY = 'casiec_applications';
@@ -8,6 +8,51 @@ const NEWSLETTER_KEY = 'casiec_newsletter';
 const TICKER_KEY = 'casiec_ticker_manual';
 const USERS_KEY = 'casiec_admin_users';
 const CAROUSEL_KEY = 'casiec_carousel_items';
+const TEAM_KEY = 'casiec_team_members';
+
+const INITIAL_TEAM: TeamMember[] = [
+  {
+    id: '1',
+    name: "Dr. Adebayo Ogunlesi",
+    role: "Managing Director / CEO",
+    bio: "Visionary leader with 20+ years in investment banking and structured finance across emerging markets. Architect of the CASIEC institutional framework.",
+    imageGradient: "from-blue-600 to-indigo-900",
+    specialization: "Strategic Leadership",
+    linkedin: "https://linkedin.com",
+    twitter: "https://twitter.com",
+    email: "ceo@casiec.com"
+  },
+  {
+    id: '2',
+    name: "Sarah Jenkins",
+    role: "Chief Financial Officer",
+    bio: "Expert in mezzanine financing and corporate treasury management with a focus on institutional risk assessment and capital mapping.",
+    imageGradient: "from-purple-600 to-nova-500",
+    specialization: "Corporate Finance",
+    linkedin: "https://linkedin.com",
+    email: "cfo@casiec.com"
+  },
+  {
+    id: '3',
+    name: "Chidi Okafor",
+    role: "Head of Business Support",
+    bio: "Specialist in supply chain optimization and strategic outsourcing. Driving enterprise sustainability for NMSE growth across Africa.",
+    imageGradient: "from-emerald-600 to-teal-900",
+    specialization: "Operations & GSI",
+    linkedin: "https://linkedin.com",
+    email: "ops@casiec.com"
+  },
+  {
+    id: '4',
+    name: "Elena Rodriguez",
+    role: "Director of Wealth Advisory",
+    bio: "Architecting bespoke wealth preservation strategies for high-net-worth family offices and institutional capital partners.",
+    imageGradient: "from-amber-500 to-orange-700",
+    specialization: "Wealth Management",
+    linkedin: "https://linkedin.com",
+    email: "wealth@casiec.com"
+  }
+];
 
 const INITIAL_ARTICLES: Article[] = [
   {
@@ -86,6 +131,32 @@ export const storageService = {
   deleteArticle: (id: string) => {
     const articles = storageService.getArticles().filter(a => a.id !== id);
     localStorage.setItem(ARTICLES_KEY, JSON.stringify(articles));
+  },
+
+  // Team Members
+  getTeamMembers: (): TeamMember[] => {
+    const saved = localStorage.getItem(TEAM_KEY);
+    if (!saved) {
+      localStorage.setItem(TEAM_KEY, JSON.stringify(INITIAL_TEAM));
+      return INITIAL_TEAM;
+    }
+    return JSON.parse(saved);
+  },
+
+  saveTeamMember: (member: TeamMember) => {
+    const members = storageService.getTeamMembers();
+    const existingIndex = members.findIndex(m => m.id === member.id);
+    if (existingIndex > -1) {
+      members[existingIndex] = member;
+    } else {
+      members.push(member);
+    }
+    localStorage.setItem(TEAM_KEY, JSON.stringify(members));
+  },
+
+  deleteTeamMember: (id: string) => {
+    const members = storageService.getTeamMembers().filter(m => m.id !== id);
+    localStorage.setItem(TEAM_KEY, JSON.stringify(members));
   },
 
   // Carousel

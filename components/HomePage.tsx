@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { Hero } from './Hero';
 import { FuturisticCarousel } from './FuturisticCarousel';
@@ -205,7 +204,12 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
               >
                 <div className="h-64 rounded-3xl overflow-hidden mb-8 relative">
                    {article.imageUrl ? (
-                     <img src={article.imageUrl} className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" alt="" />
+                     <img 
+                      src={article.imageUrl} 
+                      className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" 
+                      alt={article.title}
+                      loading="lazy"
+                    />
                    ) : (
                      <div className={`w-full h-full bg-gradient-to-br ${article.imageGradient} opacity-30`}></div>
                    )}

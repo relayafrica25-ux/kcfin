@@ -135,6 +135,11 @@ export const storageService = {
     }
   },
 
+  deleteApplication: (id: string) => {
+    const apps = storageService.getApplications().filter(a => a.id !== id);
+    localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(apps));
+  },
+
   // Inquiries
   getInquiries: (): ContactInquiry[] => {
     const saved = localStorage.getItem(INQUIRIES_KEY);
@@ -154,6 +159,11 @@ export const storageService = {
       inquiry.status = status;
       localStorage.setItem(INQUIRIES_KEY, JSON.stringify(inquiries));
     }
+  },
+
+  deleteInquiry: (id: string) => {
+    const inquiries = storageService.getInquiries().filter(i => i.id !== id);
+    localStorage.setItem(INQUIRIES_KEY, JSON.stringify(inquiries));
   },
 
   // Ticker Management

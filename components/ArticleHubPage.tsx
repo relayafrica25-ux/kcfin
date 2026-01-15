@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { storageService } from '../services/storageService';
 import { Article } from '../types';
@@ -90,7 +89,12 @@ export const ArticleHubPage: React.FC = () => {
                    </div>
                    <div className="relative h-[500px] lg:h-auto overflow-hidden">
                       {featured.imageUrl ? (
-                        <img src={featured.imageUrl} className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt="" />
+                        <img 
+                          src={featured.imageUrl} 
+                          className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" 
+                          alt={featured.title} 
+                          loading="lazy"
+                        />
                       ) : (
                         <div className={`absolute inset-0 bg-gradient-to-br ${featured.imageGradient} opacity-60`}></div>
                       )}
@@ -140,7 +144,12 @@ export const ArticleHubPage: React.FC = () => {
               >
                  <div className="h-60 relative overflow-hidden">
                     {insight.imageUrl ? (
-                       <img src={insight.imageUrl} className="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" alt="" />
+                       <img 
+                        src={insight.imageUrl} 
+                        className="w-full h-full object-cover grayscale-[40%] group-hover:grayscale-0 group-hover:scale-105 transition-all duration-700" 
+                        alt={insight.title}
+                        loading="lazy"
+                      />
                     ) : (
                        <div className={`absolute inset-0 bg-gradient-to-br ${insight.imageGradient} opacity-40`}></div>
                     )}

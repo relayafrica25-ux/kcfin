@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { ArrowUpRight, Shield, Building2, Briefcase, Globe, CheckCircle2 } from 'lucide-react';
 import { MarketChart } from './MarketChart';
@@ -24,14 +23,14 @@ export const Hero: React.FC<HeroProps> = ({ onGetFundedClick }) => {
             </div>
             
             <h1 className="text-5xl lg:text-8xl font-black tracking-tighter text-white mb-8 leading-[0.95] animate-fade-in-up">
-              Architecting <br/>
+              Strategic <br/>
               <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-white/90 to-nova-500">
-                Strategic Capital.
+                Asset Finance & Capital.
               </span>
             </h1>
             
             <p className="text-lg text-gray-400 mb-12 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
-              From commercial real estate bridge facilities to cross-border enterprise support. We provide the institutional-grade capital required to stimulate growth.
+              Expert financial services for commercial real estate and NMSE growth. We architect institutional-grade capital solutions to stimulate sustainable economic advancement.
             </p>
             
             <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">

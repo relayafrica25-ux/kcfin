@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { storageService } from '../services/storageService';
 import { CarouselItem, CarouselItemType } from '../types';
@@ -89,7 +88,12 @@ export const FuturisticCarousel: React.FC = () => {
       <div className="absolute inset-0 transition-all duration-1000">
         {currentItem.imageUrl ? (
             <div className="absolute inset-0 z-0">
-               <img src={currentItem.imageUrl} className="w-full h-full object-cover opacity-30 mix-blend-luminosity" alt="" />
+               <img 
+                src={currentItem.imageUrl} 
+                className="w-full h-full object-cover opacity-30 mix-blend-luminosity" 
+                alt={currentItem.title}
+                fetchpriority={activeIndex === 0 ? "high" : "low"}
+              />
                <div className={`absolute inset-0 bg-gradient-to-br ${currentItem.imageGradient} opacity-40`}></div>
             </div>
         ) : (

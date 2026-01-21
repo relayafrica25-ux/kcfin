@@ -1,4 +1,3 @@
-
 import React from 'react';
 import { Target, Compass, Zap, Sparkles, Gem, ShieldCheck, Landmark, Network, ArrowRight } from 'lucide-react';
 
@@ -31,12 +30,12 @@ export const AboutPage: React.FC = () => {
             <div className="flex flex-col md:flex-row gap-12 items-start">
               <div className="flex-grow">
                 <h2 className="text-3xl font-bold text-white mb-8 border-l-4 border-nova-500 pl-6 uppercase tracking-tighter italic">Corporate Narrative</h2>
-                <div className="space-y-6 text-lg text-gray-300 leading-relaxed font-light">
+                <div className="space-y-6 text-xl text-gray-100 leading-relaxed font-medium">
                   <p>
                     CASIEC Financials focuses on financial intermediation, providing loans to Nano, Micro, Small, and Medium-sized businesses, as well as consumer lending to promote financial inclusion.
                   </p>
                   <p>
-                    In partnership with <span className="text-purple-400 font-semibold">GSI STRATEGIC ALLIANCES (Broastreet DyDX)</span>, we offer comprehensive financial and business support services to drive enterprise sustainability. 
+                    In partnership with <span className="text-purple-400 font-black">GSI STRATEGIC ALLIANCES (Broastreet DyDX)</span>, we offer comprehensive financial and business support services to drive enterprise sustainability. 
                   </p>
                   <p>
                     Our vision is to become the story and the leading benchmark in finance and business support, setting the standard for excellence.
@@ -45,15 +44,15 @@ export const AboutPage: React.FC = () => {
               </div>
               
               <div className="w-full md:w-72 flex-shrink-0 space-y-6">
-                <div className="p-6 bg-white/5 rounded-2xl border border-white/5">
+                <div className="p-6 bg-white/5 rounded-2xl border border-white/5 shadow-2xl">
                   <Landmark className="text-nova-400 mb-3" size={32} />
-                  <h3 className="text-white font-bold mb-1">CASIEC</h3>
-                  <p className="text-xs text-gray-500 uppercase tracking-widest">Financial Intermediation</p>
+                  <h3 className="text-white font-black mb-1">CASIEC</h3>
+                  <p className="text-[10px] text-gray-400 uppercase tracking-widest font-black">Financial Intermediation</p>
                 </div>
-                <div className="p-6 bg-white/5 rounded-2xl border border-white/5">
+                <div className="p-6 bg-white/5 rounded-2xl border border-white/5 shadow-2xl">
                   <Network className="text-purple-400 mb-3" size={32} />
-                  <h3 className="text-white font-bold mb-1">GSI (Broastreet DyDX)</h3>
-                  <p className="text-xs text-gray-500 uppercase tracking-widest">Strategic Support</p>
+                  <h3 className="text-white font-black mb-1">GSI (Broastreet DyDX)</h3>
+                  <p className="text-[10px] text-gray-400 uppercase tracking-widest font-black">Strategic Support</p>
                 </div>
               </div>
             </div>
@@ -61,34 +60,36 @@ export const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Vision & Mission Grid */}
+      {/* Vision & Mission Grid - ULTRA VISIBILITY */}
       <section className="py-24 bg-white/[0.02]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-3 gap-8">
-            <article className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group hover:translate-y-[-5px]">
-              <div className="w-12 h-12 bg-nova-500/20 rounded-xl flex items-center justify-center text-nova-400 mb-6 group-hover:scale-110 transition-transform">
-                <Target size={24} />
+            <article className="p-12 rounded-[3rem] bg-nova-800/60 border border-nova-500/20 hover:border-nova-500 transition-all group hover:translate-y-[-12px] shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+              <div className="w-16 h-16 bg-nova-500/20 rounded-2xl flex items-center justify-center text-nova-400 mb-10 group-hover:scale-110 transition-transform">
+                <Target size={32} />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">Our Vision</h3>
-              <p className="text-gray-400 leading-relaxed text-sm">
+              <h3 className="text-3xl font-black text-white mb-6 uppercase italic tracking-tighter">Our Vision</h3>
+              <p className="text-white leading-relaxed text-xl font-bold opacity-100">
                 To become the story and the leading benchmark in finance and business support, setting the standard for excellence.
               </p>
             </article>
-            <article className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group hover:translate-y-[-5px]">
-              <div className="w-12 h-12 bg-purple-500/20 rounded-xl flex items-center justify-center text-purple-400 mb-6 group-hover:scale-110 transition-transform">
-                <Compass size={24} />
+            
+            <article className="p-12 rounded-[3rem] bg-nova-800/60 border border-purple-500/20 hover:border-purple-500 transition-all group hover:translate-y-[-12px] shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+              <div className="w-16 h-16 bg-purple-500/20 rounded-2xl flex items-center justify-center text-purple-400 mb-10 group-hover:scale-110 transition-transform">
+                <Compass size={32} />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">Our Mission</h3>
-              <p className="text-gray-400 leading-relaxed text-sm">
+              <h3 className="text-3xl font-black text-white mb-6 uppercase italic tracking-tighter">Our Mission</h3>
+              <p className="text-white leading-relaxed text-xl font-bold opacity-100">
                 Delivering credit, capital and enterprise support to stimulate business growth and drive sustainable impact.
               </p>
             </article>
-            <article className="p-8 rounded-3xl bg-white/5 border border-white/10 hover:bg-white/10 transition-all group hover:translate-y-[-5px]">
-              <div className="w-12 h-12 bg-nova-accent/20 rounded-xl flex items-center justify-center text-nova-accent mb-6 group-hover:scale-110 transition-transform">
-                <Zap size={24} />
+            
+            <article className="p-12 rounded-[3rem] bg-nova-800/60 border border-nova-accent/20 hover:border-nova-accent transition-all group hover:translate-y-[-12px] shadow-[0_20px_50px_rgba(0,0,0,0.5)]">
+              <div className="w-16 h-16 bg-nova-accent/20 rounded-2xl flex items-center justify-center text-nova-accent mb-10 group-hover:scale-110 transition-transform">
+                <Zap size={32} />
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">Our Mandate</h3>
-              <p className="text-gray-400 leading-relaxed text-sm">
+              <h3 className="text-3xl font-black text-white mb-6 uppercase italic tracking-tighter">Our Mandate</h3>
+              <p className="text-white leading-relaxed text-xl font-bold opacity-100">
                 Fostering economic advancement through financial inclusion across the continent and beyond.
               </p>
             </article>
@@ -96,25 +97,25 @@ export const AboutPage: React.FC = () => {
         </div>
       </section>
 
-      {/* Values Section */}
+      {/* Core Values Section - MAXIMUM VISIBILITY */}
       <section className="py-24 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-white mb-4">Core Values</h2>
-            <div className="h-1 w-20 bg-nova-500 mx-auto rounded-full"></div>
+          <div className="text-center mb-20">
+            <h2 className="text-5xl font-black text-white mb-6 uppercase tracking-tighter italic">Core Values</h2>
+            <div className="h-1.5 w-24 bg-nova-500 mx-auto rounded-full"></div>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-3 gap-10">
             {[
-              { title: "Growth & Professionalism", icon: <Gem className="text-nova-400" size={32} /> },
-              { title: "Opportunities & Resourcefulness", icon: <Target className="text-purple-400" size={32} /> },
-              { title: "Innovation & Integrity", icon: <ShieldCheck className="text-nova-accent" size={32} /> }
+              { title: "Growth & Professionalism", description: "The catalyst for institutional evolution and the benchmark for every client interaction.", icon: <Gem className="text-nova-400" size={40} /> },
+              { title: "Opportunities & Resourcefulness", description: "Unlocking hidden value through strategic capital and innovative problem solving.", icon: <Target className="text-purple-400" size={40} /> },
+              { title: "Innovation & Integrity", description: "Building the future of finance on a foundation of absolute transparency and trust.", icon: <ShieldCheck className="text-nova-accent" size={40} /> }
             ].map((val, i) => (
-              <div key={i} className="flex flex-col items-center p-10 rounded-[2.5rem] bg-white/5 border border-white/5 text-center group hover:bg-nova-900 transition-all duration-500 hover:shadow-[0_0_40px_rgba(79,70,229,0.1)]">
-                <div className="mb-6 group-hover:scale-110 transition-transform">{val.icon}</div>
-                <h3 className="text-xl font-bold text-white mb-4">{val.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed">
-                  The foundation of every interaction and the driver of our long-term institutional success.
+              <div key={i} className="flex flex-col items-center p-12 rounded-[3rem] bg-nova-800/40 border border-white/10 text-center group hover:bg-nova-950 transition-all duration-500 hover:shadow-[0_0_60px_rgba(37,99,235,0.15)] hover:border-white/20">
+                <div className="mb-8 group-hover:scale-125 transition-transform duration-500">{val.icon}</div>
+                <h3 className="text-2xl font-black text-white mb-6 uppercase tracking-tighter leading-tight italic">{val.title}</h3>
+                <p className="text-gray-100 text-lg leading-relaxed font-bold">
+                  {val.description}
                 </p>
               </div>
             ))}
@@ -125,15 +126,15 @@ export const AboutPage: React.FC = () => {
       {/* Partners Section */}
       <section className="py-24 bg-nova-800/20 border-t border-white/5">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <h4 className="text-xs font-bold text-gray-500 uppercase tracking-[0.4em] mb-12">Partners in Excellence</h4>
-          <div className="flex flex-wrap justify-center items-center gap-16 opacity-50 grayscale hover:grayscale-0 transition-all">
-             <div className="flex items-center gap-3">
-                <div className="bg-nova-500 p-2 rounded-lg"><Landmark className="h-8 w-8 text-white" /></div>
-                <span className="text-2xl font-black text-white italic uppercase">CASIEC</span>
+          <h4 className="text-xs font-black text-gray-500 uppercase tracking-[0.5em] mb-12">Institutional Alliance</h4>
+          <div className="flex flex-wrap justify-center items-center gap-16 opacity-100">
+             <div className="flex items-center gap-3 group cursor-pointer">
+                <div className="bg-nova-500 p-3 rounded-xl group-hover:scale-110 transition-transform"><Landmark className="h-10 w-10 text-white" /></div>
+                <span className="text-3xl font-black text-white italic uppercase tracking-tighter">CASIEC</span>
              </div>
-             <div className="flex items-center gap-3">
-                <div className="bg-purple-600 p-2 rounded-lg"><Network className="h-8 w-8 text-white" /></div>
-                <span className="text-2xl font-black text-white italic uppercase">GSI STRATEGIC ALLIANCES</span>
+             <div className="flex items-center gap-3 group cursor-pointer">
+                <div className="bg-purple-600 p-3 rounded-xl group-hover:scale-110 transition-transform"><Network className="h-10 w-10 text-white" /></div>
+                <span className="text-3xl font-black text-white italic uppercase tracking-tighter">GSI ALLIANCES</span>
              </div>
           </div>
         </div>

@@ -9,9 +9,10 @@ import { ContactInquiry, Article } from '../types';
 interface HomePageProps {
   onApplyClick: () => void;
   onNavigate: (view: string) => void;
+  onOpenArticle: (article: Article) => void;
 }
 
-export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) => {
+export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, onOpenArticle }) => {
   const [contactForm, setContactForm] = useState({
     fullName: '',
     email: '',
@@ -126,7 +127,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
                    </li>
                  ))}
                </ul>
-               <button onClick={() => onNavigate('business-support')} className="w-full py-4 bg-orange-600 text-white font-black uppercase tracking-widest text-[11px] rounded-xl hover:bg-orange-500 transition-all shadow-xl shadow-orange-500/20">
+               <button onClick={() => onNavigate('business-support')} className="w-full py-4 bg-orange-600 text-white font-black uppercase tracking-widest text-[11px] rounded-xl hover:bg-orange-500 transition-all shadow-xl shadow-orange-600/20">
                   Explore Advisory
                </button>
             </div>
@@ -135,7 +136,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
         </div>
       </section>
 
-      {/* Corporate Identity Section */}
+      {/* Corporate Identity Section - ENHANCED TEXT VISIBILITY */}
       <section className="py-32 bg-nova-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="max-w-3xl mb-24">
@@ -150,17 +151,17 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
               <div className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all">
                  <Target className="text-nova-500 mb-8" size={32} />
                  <h4 className="text-xl font-bold text-white mb-4 italic uppercase">Vision</h4>
-                 <p className="text-gray-500 text-sm leading-relaxed font-light">To become the benchmark in finance and business support, setting the standard for institutional excellence.</p>
+                 <p className="text-gray-200 text-base leading-relaxed font-medium">To become the benchmark in finance and business support, setting the standard for institutional excellence.</p>
               </div>
               <div className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all">
                  <Compass className="text-nova-500 mb-8" size={32} />
                  <h4 className="text-xl font-bold text-white mb-4 italic uppercase">Mission</h4>
-                 <p className="text-gray-500 text-sm leading-relaxed font-light">Delivering credit, capital and enterprise support to stimulate business growth and drive sustainable impact.</p>
+                 <p className="text-gray-200 text-base leading-relaxed font-medium">Delivering credit, capital and enterprise support to stimulate business growth and drive sustainable impact.</p>
               </div>
               <div className="p-10 rounded-[2.5rem] bg-white/[0.02] border border-white/5 hover:border-white/10 transition-all">
                  <Zap className="text-nova-500 mb-8" size={32} />
                  <h4 className="text-xl font-bold text-white mb-4 italic uppercase">Factor</h4>
-                 <p className="text-gray-500 text-sm leading-relaxed font-light">"God’s Own Institution (GOI factor)" - A commitment to integrity and resourcefulness in all transactions.</p>
+                 <p className="text-gray-200 text-base leading-relaxed font-medium">"God’s Own Institution (GOI factor)" - A commitment to integrity and resourcefulness in all transactions.</p>
               </div>
            </div>
         </div>
@@ -199,7 +200,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
             {latestInsights.map((article) => (
               <div 
                 key={article.id}
-                onClick={() => onNavigate('insights')}
+                onClick={() => onOpenArticle(article)}
                 className="group cursor-pointer flex flex-col"
               >
                 <div className="h-64 rounded-3xl overflow-hidden mb-8 relative">
@@ -220,7 +221,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate }) 
                 <div className="flex items-center gap-3 text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">
                   <Clock size={12} /> {article.date}
                 </div>
-                <h4 className="text-xl font-bold text-white mb-4 group-hover:text-nova-500 transition-colors leading-tight">{article.title}</h4>
+                <h4 className="text-xl font-bold text-white mb-4 group-hover:text-nova-500 transition-colors leading-tight line-clamp-2 tracking-tight">{article.title}</h4>
                 <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 font-light">{article.excerpt}</p>
               </div>
             ))}

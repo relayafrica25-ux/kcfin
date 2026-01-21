@@ -1,4 +1,3 @@
-
 import React, { useState } from 'react';
 import { Navbar } from './Navbar';
 import { NewsTicker } from './NewsTicker';
@@ -14,17 +13,35 @@ import { AdminDashboard } from './AdminDashboard';
 import { RealEstatePage } from './RealEstatePage';
 import { TeamPage } from './TeamPage';
 import { AboutPage } from './AboutPage';
+import { ArticleDetailPage } from './ArticleDetailPage';
+import { Article } from '../types';
 import { Settings, Lock, Globe, ShieldCheck, Linkedin, Twitter, Mail, ChevronRight } from 'lucide-react';
 
 const App: React.FC = () => {
   const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
+  const [modalType, setModalType] = useState<'financial' | 'business_support' | null>(null);
   const [currentView, setCurrentView] = useState('home');
+  const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
 
-  const openLoanModal = () => setIsLoanModalOpen(true);
-  const closeLoanModal = () => setIsLoanModalOpen(false);
+  const openLoanModal = (type?: 'financial' | 'business_support') => {
+    setModalType(type || null);
+    setIsLoanModalOpen(true);
+  };
+  
+  const closeLoanModal = () => {
+    setIsLoanModalOpen(false);
+    setModalType(null);
+  };
 
   const handleNavigate = (view: string) => {
     setCurrentView(view);
+    setSelectedArticle(null);
+    window.scrollTo(0, 0);
+  };
+
+  const handleOpenArticle = (article: Article) => {
+    setSelectedArticle(article);
+    setCurrentView('article-detail');
     window.scrollTo(0, 0);
   };
 
@@ -34,24 +51,46 @@ const App: React.FC = () => {
       return <AdminDashboard onBack={() => handleNavigate('home')} />;
     }
 
+    if (currentView === 'article-detail' && selectedArticle) {
+      return (
+        <ArticleDetailPage 
+          article={selectedArticle} 
+          onBack={() => handleNavigate('insights')} 
+          onOpenArticle={handleOpenArticle}
+        />
+      );
+    }
+
     switch (currentView) {
       case 'home':
-        return <HomePage onApplyClick={openLoanModal} onNavigate={handleNavigate} />;
+        return (
+          <HomePage 
+            onApplyClick={() => openLoanModal()} 
+            onNavigate={handleNavigate} 
+            onOpenArticle={handleOpenArticle}
+          />
+        );
       case 'about':
         return <AboutPage />;
       case 'team':
         return <TeamPage />;
       case 'financial-support':
       case 'real-estate':
-        return <BusinessFundingPage onApplyClick={openLoanModal} />;
+        return <BusinessFundingPage onApplyClick={() => openLoanModal('financial')} />;
       case 'business-support':
-        return <BusinessSupportPage onInquireClick={openLoanModal} />;
+        return <BusinessSupportPage onInquireClick={() => openLoanModal('business_support')} />;
       case 'investment':
         return <InvestmentPage />;
       case 'insights':
-        return <ArticleHubPage />;
+        return <ArticleHubPage onOpenArticle={handleOpenArticle} />;
       default:
-        return <HomePage onApplyClick={openLoanModal} onNavigate={handleNavigate} />;
+        return (
+          <HomePage 
+            onApplyClick={() => openLoanModal()} 
+            onNavigate={handleNavigate} 
+            onOpenArticle={handleOpenArticle}
+          />
+        );
     }
   };
 
@@ -62,12 +101,12 @@ const App: React.FC = () => {
       {!isDashboard && (
         <>
           <Navbar 
-            onApplyClick={openLoanModal} 
+            onApplyClick={() => openLoanModal()} 
             currentView={currentView}
             onNavigate={handleNavigate}
           />
           <NewsTicker />
-          <LoanApplicationModal isOpen={isLoanModalOpen} onClose={closeLoanModal} />
+          <LoanApplicationModal isOpen={isLoanModalOpen} onClose={closeLoanModal} initialType={modalType} />
           <NewsletterPopup />
         </>
       )}
@@ -83,24 +122,31 @@ const App: React.FC = () => {
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 mb-24">
               
-              {/* Brand & Corporate Ethos - Updated Logo */}
+              {/* Brand & Corporate Ethos - Prominent "evident" branding */}
               <div className="lg:col-span-5">
                 <div className="flex flex-col items-start mb-10">
-                   <div className="flex items-center gap-1">
-                     <span className="text-3xl font-black text-white tracking-tighter lowercase">casiec</span>
+                   <div className="flex items-center gap-1 group cursor-pointer" onClick={() => handleNavigate('home')}>
+                     <span className="text-4xl font-black text-white tracking-tighter lowercase group-hover:text-nova-500 transition-colors">casiec financial</span>
                      <div className="flex flex-col -mb-1 translate-y-[-1px]">
-                        <ChevronRight size={18} className="text-nova-accent -rotate-45" strokeWidth={3} />
-                        <ChevronRight size={18} className="text-nova-accent -rotate-45 -mt-3.5" strokeWidth={3} />
+                        <ChevronRight size={22} className="text-nova-accent -rotate-45" strokeWidth={3} />
+                        <ChevronRight size={22} className="text-nova-accent -rotate-45 -mt-4" strokeWidth={3} />
                      </div>
                    </div>
-                   <span className="text-[11px] font-black text-nova-accent tracking-[0.3em] lowercase -mt-1 opacity-90">financials</span>
+                   <span className="text-[12px] font-black text-nova-accent tracking-[0.4em] lowercase -mt-1.5 opacity-100">institutional partner</span>
                 </div>
-                <p className="text-gray-500 text-sm leading-relaxed mb-8 max-w-md font-light">
-                  CASIEC Financials operates with a core focus on financial intermediation, delivering institutional-grade capital to stimulate NMSE and corporate growth. Fostering economic advancement through financial inclusion.
-                </p>
-                <div className="flex items-center gap-3 px-5 py-2.5 bg-white/5 border border-white/10 rounded-xl w-fit">
-                  <ShieldCheck size={16} className="text-nova-500" />
-                  <span className="text-[10px] font-black uppercase tracking-[0.2em] text-gray-400">Institutional Governance Compliant</span>
+                
+                <div className="space-y-6">
+                  <div className="p-1 bg-gradient-to-r from-nova-500/20 to-transparent rounded-2xl">
+                    <p className="text-gray-300 text-base leading-relaxed font-medium bg-nova-950 p-6 rounded-[calc(1rem-1px)]">
+                      <span className="text-white font-bold block mb-2 text-xl">CASIEC</span>
+                      CASIEC Financials operates with a core focus on financial intermediation, delivering institutional-grade capital to stimulate NMSE and corporate growth. Fostering economic advancement through financial inclusion.
+                    </p>
+                  </div>
+                  
+                  <div className="flex items-center gap-3 px-5 py-3 bg-white/5 border border-white/10 rounded-2xl w-fit">
+                    <ShieldCheck size={20} className="text-nova-500" />
+                    <span className="text-[10px] font-black uppercase tracking-[0.3em] text-gray-400">Institutional Governance Compliant</span>
+                  </div>
                 </div>
               </div>
               

@@ -3,7 +3,11 @@ import { storageService } from '../services/storageService';
 import { Article } from '../types';
 import { ArrowRight, BookOpen, Clock, Tag, Search, TrendingUp, Filter, Hash, Sparkles, ChevronRight, Cpu, ExternalLink, Image as ImageIcon, Flame, Newspaper } from 'lucide-react';
 
-export const ArticleHubPage: React.FC = () => {
+interface ArticleHubPageProps {
+  onOpenArticle: (article: Article) => void;
+}
+
+export const ArticleHubPage: React.FC<ArticleHubPageProps> = ({ onOpenArticle }) => {
   const [activeCategory, setActiveCategory] = useState('All');
   const [storedArticles, setStoredArticles] = useState<Article[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
@@ -25,14 +29,6 @@ export const ArticleHubPage: React.FC = () => {
   });
 
   const featured = storedArticles[0];
-
-  const handleOpenInsight = (insight: Article) => {
-    if (insight.url) {
-      window.open(insight.url, '_blank');
-    } else {
-      console.log("Viewing full detail for:", insight.id);
-    }
-  };
 
   return (
     <div className="pt-24 min-h-screen bg-[#050508] selection:bg-nova-500">
@@ -57,7 +53,7 @@ export const ArticleHubPage: React.FC = () => {
           {/* Featured Spread */}
           {featured && !searchQuery && activeCategory === 'All' && (
              <div 
-               onClick={() => handleOpenInsight(featured)}
+               onClick={() => onOpenArticle(featured)}
                className="group relative cursor-pointer glass-panel rounded-[4rem] border border-white/10 overflow-hidden animate-fade-in-up hover:border-nova-500/40 transition-all duration-700 shadow-2xl"
              >
                 <div className="grid lg:grid-cols-2">
@@ -138,7 +134,7 @@ export const ArticleHubPage: React.FC = () => {
            {filteredInsights.map((insight, idx) => (
               <div 
                 key={insight.id}
-                onClick={() => handleOpenInsight(insight)}
+                onClick={() => onOpenArticle(insight)}
                 className="group flex flex-col glass-panel rounded-[3rem] border border-white/5 overflow-hidden hover:border-nova-500/40 transition-all duration-500 cursor-pointer animate-fade-in-up"
                 style={{ animationDelay: `${idx * 0.05}s` }}
               >

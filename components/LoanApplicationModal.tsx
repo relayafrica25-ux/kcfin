@@ -7,11 +7,12 @@ import { LoanApplication } from '../types';
 interface LoanApplicationModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialType?: 'financial' | 'business_support' | null;
 }
 
 type ApplicationType = 'financial' | 'business_support' | null;
 
-export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOpen, onClose }) => {
+export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOpen, onClose, initialType }) => {
   const [step, setStep] = useState(1);
   const [appType, setAppType] = useState<ApplicationType>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -36,11 +37,16 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
 
   useEffect(() => {
     if (isOpen) {
-      setStep(1);
-      setAppType(null);
+      if (initialType) {
+        setAppType(initialType);
+        setStep(2);
+      } else {
+        setStep(1);
+        setAppType(null);
+      }
       setIsSubmitting(false);
     }
-  }, [isOpen]);
+  }, [isOpen, initialType]);
 
   if (!isOpen) return null;
 

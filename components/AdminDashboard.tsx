@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, 
@@ -44,7 +43,6 @@ import {
   Linkedin,
   Twitter,
   Upload,
-  // Added ShieldCheck to imports
   ShieldCheck
 } from 'lucide-react';
 import { storageService } from '../services/storageService';
@@ -810,45 +808,141 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
 
       {/* Article Modal */}
       {isArticleModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto"><div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsArticleModalOpen(false)}></div>
-        <form onSubmit={handlePostArticle} className="relative w-full max-w-2xl glass-panel rounded-[3rem] border border-white/10 p-12 space-y-6 my-10 animate-fade-in-up">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsArticleModalOpen(false)}></div>
+          <form onSubmit={handlePostArticle} className="relative w-full max-w-2xl glass-panel rounded-[3rem] border border-white/10 p-12 space-y-6 my-10 animate-fade-in-up">
             <h2 className="text-2xl font-black uppercase italic tracking-tighter">{isEditingArticle ? 'Edit Insight' : 'Curate Insight'}</h2>
+            
             <div className="grid grid-cols-2 gap-4">
-                <input required type="text" placeholder="Headline" className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white col-span-2 focus:border-nova-500 outline-none" value={newArticle.title} onChange={(e) => setNewArticle({...newArticle, title: e.target.value})} />
-                <textarea required placeholder="Short summary" className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white col-span-2 h-32 resize-none focus:border-nova-500 outline-none" value={newArticle.excerpt} onChange={(e) => setNewArticle({...newArticle, excerpt: e.target.value})} />
-                <select className="bg-nova-900 border border-white/10 rounded-xl py-4 px-6 text-gray-400 outline-none focus:border-nova-500" value={newArticle.category} onChange={(e) => setNewArticle({...newArticle, category: e.target.value})}>
-                    <option value="Strategy">Strategy</option><option value="Real Estate">Real Estate</option><option value="Guide">Guide</option><option value="Tech">Tech</option><option value="Eco-Finance">Eco-Finance</option>
-                </select>
-                <input type="text" placeholder="Author Name" className="bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:border-nova-500 outline-none" value={newArticle.author} onChange={(e) => setNewArticle({...newArticle, author: e.target.value})} />
+              <input required type="text" placeholder="Headline" className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white col-span-2 focus:border-nova-500 outline-none" value={newArticle.title} onChange={(e) => setNewArticle({...newArticle, title: e.target.value})} />
+              <textarea required placeholder="Short summary" className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white col-span-2 h-32 resize-none focus:border-nova-500 outline-none" value={newArticle.excerpt} onChange={(e) => setNewArticle({...newArticle, excerpt: e.target.value})} />
+              <select className="bg-nova-900 border border-white/10 rounded-xl py-4 px-6 text-gray-400 outline-none focus:border-nova-500" value={newArticle.category} onChange={(e) => setNewArticle({...newArticle, category: e.target.value})}>
+                <option value="Strategy">Strategy</option>
+                <option value="Real Estate">Real Estate</option>
+                <option value="Guide">Guide</option>
+                <option value="Tech">Tech</option>
+                <option value="Eco-Finance">Eco-Finance</option>
+              </select>
+              <input type="text" placeholder="Author Name" className="bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:border-nova-500 outline-none" value={newArticle.author} onChange={(e) => setNewArticle({...newArticle, author: e.target.value})} />
             </div>
-            <div className="p-6 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between">
-                <div className="flex items-center gap-4">
-                    {newArticle.imageUrl ? <img src={newArticle.imageUrl} className="w-12 h-12 rounded-lg object-cover" alt="" /> : <div className="w-12 h-12 rounded-lg bg-nova-500/20 flex items-center justify-center"><ImageIcon size={16} className="text-nova-400" /></div>}
-                    <span className="text-xs text-gray-500 font-bold">Visual synchronization status</span>
+
+            <div className="space-y-4">
+              <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest ml-2">Image Sourcing</label>
+              
+              <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 space-y-6">
+                <div className="flex items-center gap-6">
+                  {newArticle.imageUrl ? (
+                    <img src={newArticle.imageUrl} className="w-24 h-24 rounded-2xl object-cover border border-white/10" alt="Preview" />
+                  ) : (
+                    <div className="w-24 h-24 rounded-2xl bg-nova-500/10 border border-nova-500/20 flex items-center justify-center text-nova-400">
+                      <ImageIcon size={32} />
+                    </div>
+                  )}
+                  <div className="flex-grow space-y-3">
+                    <p className="text-xs text-gray-400 font-medium">Link a direct image address or upload a local file.</p>
+                    <input 
+                      type="text" 
+                      placeholder="Image Address (URL)" 
+                      className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-xs text-white focus:border-nova-500 outline-none transition-all" 
+                      value={newArticle.imageUrl} 
+                      onChange={(e) => setNewArticle({...newArticle, imageUrl: e.target.value})} 
+                    />
+                  </div>
                 </div>
-                <button type="button" onClick={() => handleGenerateAIImage('article')} disabled={isGeneratingImage} className="px-4 py-2 bg-nova-500/10 border border-nova-500/20 text-nova-400 rounded-lg text-[10px] font-black uppercase flex items-center gap-2 hover:bg-nova-500 hover:text-white transition-all disabled:opacity-50">{isGeneratingImage ? <Loader2 className="animate-spin" size={14} /> : <Zap size={14} />} Vision Sync</button>
+
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                  <label className="flex items-center justify-center gap-2 px-6 py-4 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase text-gray-400 hover:text-white hover:bg-white/10 cursor-pointer transition-all">
+                    <Upload size={16} /> Upload Local
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, setNewArticle)} />
+                  </label>
+                  
+                  <button 
+                    type="button" 
+                    onClick={() => handleGenerateAIImage('article')} 
+                    disabled={isGeneratingImage || !newArticle.title} 
+                    className="flex items-center justify-center gap-2 px-6 py-4 bg-nova-500/10 border border-nova-500/20 rounded-xl text-[10px] font-black uppercase text-nova-400 hover:text-white hover:bg-nova-500 transition-all disabled:opacity-30"
+                  >
+                    {isGeneratingImage ? <Loader2 className="animate-spin" size={16} /> : <Zap size={16} />}
+                    {isGeneratingImage ? 'Syncing...' : 'Vision Sync (AI)'}
+                  </button>
+                </div>
+              </div>
             </div>
-            <button type="submit" className="w-full py-5 bg-nova-500 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-nova-500/20 hover:bg-nova-400 transition-all">{isEditingArticle ? 'Update Hub' : 'Post to Hub'}</button>
-        </form></div>
+
+            <button type="submit" className="w-full py-5 bg-nova-500 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-nova-500/20 hover:bg-nova-400 transition-all">
+              {isEditingArticle ? 'Update Insight' : 'Deploy to Hub'}
+            </button>
+          </form>
+        </div>
       )}
 
       {/* Carousel Modal */}
       {isCarouselModalOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto"><div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsCarouselModalOpen(false)}></div>
-        <form onSubmit={handlePostCarousel} className="relative w-full max-w-xl glass-panel rounded-[3rem] border border-white/10 p-12 space-y-6 animate-fade-in-up">
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 overflow-y-auto">
+          <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={() => setIsCarouselModalOpen(false)}></div>
+          <form onSubmit={handlePostCarousel} className="relative w-full max-w-2xl glass-panel rounded-[3rem] border border-white/10 p-12 space-y-6 my-10 animate-fade-in-up">
             <h2 className="text-2xl font-black uppercase italic tracking-tighter">New Campaign</h2>
-            <input required type="text" placeholder="Campaign Headline" className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:border-nova-500 outline-none" value={newCarousel.title} onChange={(e) => setNewCarousel({...newCarousel, title: e.target.value})} />
-            <textarea required placeholder="Short pitch summary" className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white h-24 resize-none focus:border-nova-500 outline-none" value={newCarousel.summary} onChange={(e) => setNewCarousel({...newCarousel, summary: e.target.value})} />
+            
             <div className="grid grid-cols-2 gap-4">
-                <input type="text" placeholder="Tag (e.g. Active)" className="bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:border-nova-500 outline-none" value={newCarousel.tag} onChange={(e) => setNewCarousel({...newCarousel, tag: e.target.value})} />
-                <input type="text" placeholder="Button Label" className="bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:border-nova-500 outline-none" value={newCarousel.linkText} onChange={(e) => setNewCarousel({...newCarousel, linkText: e.target.value})} />
+              <input required type="text" placeholder="Campaign Headline" className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white col-span-2 focus:border-nova-500 outline-none" value={newCarousel.title} onChange={(e) => setNewCarousel({...newCarousel, title: e.target.value})} />
+              <textarea required placeholder="Short pitch summary" className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white col-span-2 h-32 resize-none focus:border-nova-500 outline-none" value={newCarousel.summary} onChange={(e) => setNewCarousel({...newCarousel, summary: e.target.value})} />
+              <input type="text" placeholder="Tag (e.g. Active)" className="bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:border-nova-500 outline-none" value={newCarousel.tag} onChange={(e) => setNewCarousel({...newCarousel, tag: e.target.value})} />
+              <input type="text" placeholder="Button Label" className="bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:border-nova-500 outline-none" value={newCarousel.linkText} onChange={(e) => setNewCarousel({...newCarousel, linkText: e.target.value})} />
             </div>
-            <div className="p-6 bg-white/5 rounded-2xl border border-white/10 flex items-center justify-between">
-                <div className="flex items-center gap-4">{newCarousel.imageUrl ? <img src={newCarousel.imageUrl} className="w-12 h-12 rounded-lg object-cover" alt="" /> : <div className="w-12 h-12 rounded-lg bg-nova-500/20 flex items-center justify-center"><ImageIcon size={16} className="text-nova-400" /></div>}<span className="text-xs text-gray-500 font-bold">Campaign visual</span></div>
-                <button type="button" onClick={() => handleGenerateAIImage('carousel')} disabled={isGeneratingImage} className="px-4 py-2 bg-nova-500/10 border border-nova-500/20 text-nova-400 rounded-lg text-[10px] font-black uppercase flex items-center gap-2 hover:bg-nova-500 hover:text-white transition-all disabled:opacity-50">{isGeneratingImage ? <Loader2 className="animate-spin" size={14} /> : <Zap size={14} />} Vision Sync</button>
+
+            <div className="space-y-4">
+              <div className="flex items-center justify-between ml-2">
+                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest">Image Sourcing</label>
+                <div className="flex items-center gap-1.5 text-[9px] font-black text-nova-400 uppercase tracking-widest bg-nova-500/5 px-3 py-1 rounded-full border border-nova-500/20">
+                  <Info size={10} /> Recommended: 1200 x 600 px
+                </div>
+              </div>
+              
+              <div className="p-8 bg-white/5 rounded-[2rem] border border-white/10 space-y-6">
+                <div className="flex items-center gap-6">
+                  {newCarousel.imageUrl ? (
+                    <img src={newCarousel.imageUrl} className="w-24 h-24 rounded-2xl object-cover border border-white/10" alt="Preview" />
+                  ) : (
+                    <div className="w-24 h-24 rounded-2xl bg-nova-500/10 border border-nova-500/20 flex items-center justify-center text-nova-400">
+                      <Megaphone size={32} />
+                    </div>
+                  )}
+                  <div className="flex-grow space-y-3">
+                    <p className="text-xs text-gray-400 font-medium">Link a direct image address or upload a campaign asset.</p>
+                    <input 
+                      type="text" 
+                      placeholder="Campaign Image URL" 
+                      className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-xs text-white focus:border-nova-500 outline-none transition-all" 
+                      value={newCarousel.imageUrl} 
+                      onChange={(e) => setNewCarousel({...newCarousel, imageUrl: e.target.value})} 
+                    />
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 pt-4 border-t border-white/5">
+                  <label className="flex items-center justify-center gap-2 px-6 py-4 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase text-gray-400 hover:text-white hover:bg-white/10 cursor-pointer transition-all">
+                    <Upload size={16} /> Upload Asset
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleFileUpload(e, setNewCarousel)} />
+                  </label>
+                  
+                  <button 
+                    type="button" 
+                    onClick={() => handleGenerateAIImage('carousel')} 
+                    disabled={isGeneratingImage || !newCarousel.title} 
+                    className="flex items-center justify-center gap-2 px-6 py-4 bg-nova-500/10 border border-nova-500/20 rounded-xl text-[10px] font-black uppercase text-nova-400 hover:text-white hover:bg-nova-500 transition-all disabled:opacity-30"
+                  >
+                    {isGeneratingImage ? <Loader2 className="animate-spin" size={16} /> : <Zap size={16} />}
+                    {isGeneratingImage ? 'Syncing...' : 'Vision Sync (AI)'}
+                  </button>
+                </div>
+              </div>
             </div>
-            <button type="submit" className="w-full py-5 bg-nova-500 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-lg shadow-nova-500/20 hover:bg-nova-400 transition-all">Deploy Campaign</button>
-        </form></div>
+
+            <button type="submit" className="w-full py-5 bg-nova-500 rounded-2xl font-black uppercase text-[10px] tracking-widest shadow-xl shadow-nova-500/20 hover:bg-nova-400 transition-all">
+              Deploy Campaign
+            </button>
+          </form>
+        </div>
       )}
     </div>
   );

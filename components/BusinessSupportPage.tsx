@@ -142,7 +142,7 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
             </div>
 
             <div className="mt-24 p-12 glass-panel rounded-[3rem] border border-white/5 text-center relative group overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-orange-300/10 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-orange-300/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                 <div className="bg-orange-500 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-orange-500/20">
                    <Check size={32} className="text-white" strokeWidth={4} />
                 </div>
@@ -153,7 +153,7 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
                 </p>
                 <button 
                   onClick={onInquireClick}
-                  className="px-8 py-3 bg-white text-nova-900 rounded-full font-black uppercase tracking-widest text-xs hover:bg-orange-500 hover:text-white transition-all shadow-2xl"
+                  className="relative z-10 px-8 py-3 bg-white text-nova-900 rounded-full font-black uppercase tracking-widest text-xs hover:bg-orange-500 hover:text-white transition-all shadow-2xl"
                 >
                   Join the Alliance
                 </button>

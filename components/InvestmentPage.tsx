@@ -1,7 +1,6 @@
-
 import React from 'react';
 import { AreaChart, Area, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
-import { Crown, TrendingUp, Shield, ArrowRight, Lock } from 'lucide-react';
+import { Crown, TrendingUp, Shield, ArrowRight, Lock, PieChart, Network } from 'lucide-react';
 
 const mockChartData = [
   { year: '2019', return: 12 },
@@ -16,29 +15,59 @@ export const InvestmentPage: React.FC = () => {
   return (
     <div className="pt-24 min-h-screen bg-[#050508]">
       {/* Luxury Header */}
-      <div className="relative py-24 text-center">
+      <div className="relative py-24 text-center px-4">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] bg-yellow-600/10 rounded-full blur-[100px] -z-10"></div>
         <Crown className="mx-auto text-yellow-500 h-12 w-12 mb-6" />
-        <h1 className="text-5xl md:text-7xl font-serif font-medium text-white mb-6">
-          Wealth <span className="text-yellow-500 italic">Architecture</span>
+        <h1 className="text-4xl md:text-7xl font-serif font-medium text-white mb-6 leading-tight">
+          Investment & <span className="text-yellow-500 italic">Partnership Opportunities</span>
         </h1>
-        <p className="text-xl text-gray-400 max-w-2xl mx-auto font-light">
-          Exclusive private credit opportunities for accredited investors, family offices, and institutional partners.
+        <p className="text-xl text-gray-400 max-w-3xl mx-auto font-light leading-relaxed">
+          Exclusive entry points for institutional partners and accredited investors to participate in our proprietary private credit and equity ecosystem.
         </p>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-        <div className="grid lg:grid-cols-2 gap-12 items-center">
+      {/* Highlighted Value Pillars */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-24">
+        <div className="grid md:grid-cols-3 gap-8">
+          <div className="group p-10 rounded-[2.5rem] bg-white/[0.02] border border-yellow-500/10 hover:border-yellow-500/40 transition-all duration-500 text-center">
+            <div className="w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center text-yellow-500 mx-auto mb-8 group-hover:scale-110 transition-transform">
+              <Network size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-4 uppercase italic tracking-tighter">Professional Linkages</h3>
+            <p className="text-gray-400 text-sm leading-relaxed font-light">Facilitating high-value connections for significant value addition across global financial corridors.</p>
+          </div>
+          
+          <div className="group p-10 rounded-[2.5rem] bg-white/[0.02] border border-yellow-500/10 hover:border-yellow-500/40 transition-all duration-500 text-center">
+            <div className="w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center text-yellow-500 mx-auto mb-8 group-hover:scale-110 transition-transform">
+              <PieChart size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-4 uppercase italic tracking-tighter">Equity Stakes</h3>
+            <p className="text-gray-400 text-sm leading-relaxed font-light">Direct participation in high-potential ventures and infrastructure projects through structured equity.</p>
+          </div>
+
+          <div className="group p-10 rounded-[2.5rem] bg-white/[0.02] border border-yellow-500/10 hover:border-yellow-500/40 transition-all duration-500 text-center">
+            <div className="w-16 h-16 bg-yellow-500/10 rounded-2xl flex items-center justify-center text-yellow-500 mx-auto mb-8 group-hover:scale-110 transition-transform">
+              <TrendingUp size={32} />
+            </div>
+            <h3 className="text-xl font-bold text-white mb-4 uppercase italic tracking-tighter">Investment</h3>
+            <p className="text-gray-400 text-sm leading-relaxed font-light">Capital deployment into diversified asset-backed portfolios with optimized risk-adjusted yields.</p>
+          </div>
+        </div>
+      </section>
+
+      {/* Performance & Mechanics Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-32">
+        <div className="grid lg:grid-cols-2 gap-16 items-center">
           
           {/* Chart Section */}
-          <div className="glass-card p-8 rounded-3xl border border-yellow-500/20 bg-gradient-to-b from-gray-900 to-black">
-            <div className="flex justify-between items-end mb-8">
+          <div className="glass-card p-10 rounded-[3rem] border border-yellow-500/20 bg-gradient-to-b from-gray-900 to-black relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-48 h-48 bg-yellow-500/5 rounded-full blur-3xl"></div>
+            <div className="flex justify-between items-end mb-10 relative z-10">
                <div>
-                 <div className="text-gray-400 text-sm">Target Annual Yield</div>
-                 <div className="text-4xl font-bold text-white">12% - 18%</div>
+                 <div className="text-gray-500 text-[10px] font-black uppercase tracking-[0.3em] mb-2">Target Annual Yield</div>
+                 <div className="text-5xl font-black text-white tracking-tighter">12% - 18%</div>
                </div>
-               <div className="text-green-400 flex items-center gap-1 text-sm bg-green-900/20 px-3 py-1 rounded-full">
+               <div className="text-green-400 flex items-center gap-1 text-[10px] font-black uppercase tracking-widest bg-green-900/20 px-4 py-2 rounded-full border border-green-500/20">
                  <TrendingUp size={14} /> Consistent Alpha
                </div>
             </div>
@@ -52,49 +81,49 @@ export const InvestmentPage: React.FC = () => {
                       <stop offset="95%" stopColor="#EAB308" stopOpacity={0}/>
                     </linearGradient>
                   </defs>
-                  <XAxis dataKey="year" stroke="#4B5563" tick={{fill: '#9CA3AF'}} />
-                  <YAxis stroke="#4B5563" tick={{fill: '#9CA3AF'}} unit="%" />
+                  <XAxis dataKey="year" stroke="#334155" tick={{fill: '#475569', fontSize: 12}} axisLine={false} tickLine={false} />
+                  <YAxis stroke="#334155" tick={{fill: '#475569', fontSize: 12}} unit="%" axisLine={false} tickLine={false} />
                   <Tooltip 
-                    contentStyle={{ backgroundColor: '#111', borderColor: '#EAB308' }}
+                    contentStyle={{ backgroundColor: '#050508', borderColor: '#EAB308', borderRadius: '12px', border: '1px solid rgba(234, 179, 8, 0.2)' }}
                     itemStyle={{ color: '#EAB308' }}
                   />
-                  <Area type="monotone" dataKey="return" stroke="#EAB308" strokeWidth={2} fill="url(#goldGradient)" />
+                  <Area type="monotone" dataKey="return" stroke="#EAB308" strokeWidth={3} fill="url(#goldGradient)" />
                 </AreaChart>
                </ResponsiveContainer>
             </div>
-            <p className="text-xs text-gray-600 mt-4 text-center">*Historical performance of our secured first-lien mortgage fund.</p>
+            <p className="text-[10px] text-gray-600 mt-6 text-center font-black uppercase tracking-[0.2em] italic">Historical performance indicative of secured credit fund mandates.</p>
           </div>
 
-          {/* Text Content */}
-          <div className="space-y-8">
-            <div className="flex gap-4">
-              <div className="bg-white/5 p-4 rounded-full h-fit">
-                <Shield className="text-yellow-500" size={24} />
+          {/* Core Safeguards */}
+          <div className="space-y-12">
+            <div className="flex gap-6 group">
+              <div className="bg-white/5 p-5 rounded-3xl h-fit border border-white/5 group-hover:border-yellow-500/30 transition-all">
+                <Shield className="text-yellow-500" size={28} />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white mb-2">Asset-Backed Security</h3>
-                <p className="text-gray-400 leading-relaxed">
-                  Your capital is secured by first-position liens on tangible real estate assets with a maximum LTV of 70%. We prioritize principal protection above all else.
+                <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">Asset-Backed Security</h3>
+                <p className="text-gray-400 leading-relaxed font-light">
+                  Mandates are secured by institutional-grade first-position liens on tangible assets. We maintain a conservative 70% Maximum LTV to prioritize principal preservation.
                 </p>
               </div>
             </div>
 
-             <div className="flex gap-4">
-              <div className="bg-white/5 p-4 rounded-full h-fit">
-                <Lock className="text-yellow-500" size={24} />
+             <div className="flex gap-6 group">
+              <div className="bg-white/5 p-5 rounded-3xl h-fit border border-white/5 group-hover:border-yellow-500/30 transition-all">
+                <Lock className="text-yellow-500" size={28} />
               </div>
               <div>
-                <h3 className="text-xl font-bold text-white mb-2">Short Duration</h3>
-                <p className="text-gray-400 leading-relaxed">
-                  Our funds typically mature in 12-24 months, providing liquidity and mitigating long-term market interest rate risk.
+                <h3 className="text-2xl font-bold text-white mb-3 tracking-tight">Optimized Duration</h3>
+                <p className="text-gray-400 leading-relaxed font-light">
+                  Sovereign liquidity managed through short-duration cycles (12-24 months), effectively mitigating systemic interest rate exposure and enhancing capital agility.
                 </p>
               </div>
             </div>
 
-            <div className="pt-6">
-              <a href="mailto:info@casiecfinancials.com" className="inline-flex items-center gap-4 text-yellow-500 hover:text-white transition-colors group cursor-pointer">
-                <span className="text-lg font-bold">Request Investor Deck</span>
-                <div className="bg-yellow-500/10 p-2 rounded-full group-hover:bg-yellow-500 group-hover:text-black transition-colors">
+            <div className="pt-8">
+              <a href="mailto:info@casiecfinancials.com" className="inline-flex items-center gap-6 text-yellow-500 hover:text-white transition-all group cursor-pointer bg-white/5 px-8 py-5 rounded-2xl border border-white/5 hover:border-yellow-500/40">
+                <span className="text-sm font-black uppercase tracking-[0.3em]">Request Investor Deck</span>
+                <div className="bg-yellow-500 text-black p-2 rounded-full group-hover:scale-110 transition-all">
                   <ArrowRight size={20} />
                 </div>
               </a>
@@ -104,10 +133,10 @@ export const InvestmentPage: React.FC = () => {
         </div>
 
         {/* Minimum Investment Banner */}
-        <div className="mt-20 p-8 rounded-2xl bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border border-white/5 text-center">
-           <h3 className="text-2xl text-white mb-2">Minimum Investment</h3>
-           <div className="text-5xl font-serif text-yellow-500 mb-4">₦10,000,000</div>
-           <p className="text-gray-500 text-sm">For Accredited Investors Only</p>
+        <div className="mt-24 p-12 rounded-[3.5rem] bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border border-yellow-500/10 text-center relative overflow-hidden group">
+           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/grid-me.png')] opacity-[0.03] pointer-events-none"></div>
+           <h3 className="text-sm font-black text-gray-500 uppercase tracking-[0.5em] mb-4">Entry Threshold</h3>
+           <div className="text-5xl md:text-7xl font-serif text-yellow-500 mb-6 drop-shadow-[0_0_15px_rgba(234,179,8,0.2)]">₦10,000,000</div>
         </div>
       </div>
     </div>

@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect } from 'react';
 import { X, ChevronRight, ChevronLeft, Check, Building2, Wallet, User, Calculator, CheckCircle2, Briefcase, MapPin, UploadCloud, FileText, Trash2, Scale, BrainCircuit, Globe, Landmark, TrendingUp, Network, AlertCircle, ShieldCheck, CheckSquare, Info } from 'lucide-react';
 import { storageService } from '../services/storageService';
@@ -33,6 +32,7 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
     role: '',
     email: '',
     phone: '',
+    bvn: '',
   });
 
   useEffect(() => {
@@ -84,7 +84,7 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
   const prevStep = () => setStep(prev => prev - 1);
   const isFinancial = appType === 'financial';
 
-  // Total steps: 1: Path, 2: Product, 3: Profile, 4: Checklist (New), 5: Contact, 6: Success
+  // Total steps: 1: Path, 2: Product, 3: Profile, 4: Checklist, 5: Contact, 6: Success
   const totalSteps = 5;
 
   return (
@@ -131,7 +131,7 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
               <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-tight">{isFinancial ? 'Select Financial Product' : 'Select Advisory Pillar'}</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {isFinancial ? (
-                  ['Asset Finance', 'Consumer Loan', 'Working Capital Loans', 'Group Loans', 'Gender Credit', 'Refinancing Credit', 'Creative Economy Loans', 'TOP Onlending Loans', 'Proof of Funds'].map((label) => (
+                  ['Asset Finance', 'Consumer Loan', 'Working Capital Loans', 'Group Loans', 'Gender Credit', 'Refinancing Credit', 'Creative Economy Loans', 'TOP Onlending Loans', 'Clean Energy Credit'].map((label) => (
                     <div key={label} onClick={() => { setFormData({...formData, loanType: label}); setTimeout(nextStep, 200); }} className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center gap-3 ${formData.loanType === label ? 'bg-nova-500/20 border-nova-500' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}>
                       <span className="font-bold text-sm tracking-tight">{label}</span>
                     </div>
@@ -264,6 +264,9 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
                 <input required type="text" name="role" value={formData.role} onChange={handleInputChange} placeholder="Designated Role" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
                 <input required type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Email" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
                 <input required type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
+                {isFinancial && (
+                  <input required type="text" name="bvn" value={formData.bvn} onChange={handleInputChange} placeholder="BVN (11 Digits)" maxLength={11} pattern="\d{11}" title="Please enter an 11-digit BVN" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all md:col-span-2" />
+                )}
               </div>
             </form>
           )}

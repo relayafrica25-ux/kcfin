@@ -50,6 +50,7 @@ export interface LoanApplication {
   role: string;
   email: string;
   phone: string;
+  bvn?: string;
   description?: string;
   status: 'Pending' | 'Reviewed' | 'Approved' | 'Declined';
 }
@@ -72,9 +73,8 @@ export interface NewsletterSubscription {
 
 export interface TickerItem {
   id: string;
-  label: string;
-  value: string;
-  trend: 'Bullish' | 'Bearish' | 'Neutral';
+  text: string;
+  category: 'Market' | 'Corporate' | 'Urgent';
   isManual: boolean;
 }
 

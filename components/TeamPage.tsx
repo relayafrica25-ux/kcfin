@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Linkedin, Mail, Twitter, ShieldCheck, Award, Briefcase, Globe, Sparkles } from 'lucide-react';
+import { Linkedin, Mail, Twitter, Award, Briefcase, Globe } from 'lucide-react';
 import { TeamMember } from '../types';
 import { storageService } from '../services/storageService';
 
@@ -26,10 +26,6 @@ export const TeamPage: React.FC = () => {
       <div className="relative py-24 overflow-hidden border-b border-white/5">
         <div className="absolute top-0 right-0 w-[800px] h-[400px] bg-nova-500/5 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-nova-500/10 border border-nova-500/30 text-nova-400 text-sm font-semibold mb-8 animate-fade-in-up">
-            <Sparkles size={16} />
-            <span>Meet Our Leadership</span>
-          </div>
           <h1 className="text-5xl md:text-8xl font-bold mb-8 tracking-tighter text-white">
             The <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-nova-400 to-purple-400 uppercase italic">Architects.</span>
           </h1>
@@ -85,55 +81,6 @@ export const TeamPage: React.FC = () => {
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* Philosophy Section - MAXIMUM VISIBILITY */}
-      <section className="py-24 bg-white/[0.01] border-y border-white/5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid lg:grid-cols-3 gap-12">
-            <div className="flex gap-8 group">
-              <div className="w-20 h-20 bg-nova-500/10 rounded-2xl flex items-center justify-center text-nova-400 flex-shrink-0 group-hover:scale-110 transition-transform shadow-2xl">
-                <ShieldCheck size={40} />
-              </div>
-              <div>
-                <h4 className="text-2xl font-black text-white mb-4 uppercase italic tracking-tighter">Integrity First</h4>
-                <p className="text-white text-lg leading-relaxed font-bold opacity-100">Fostering trust through transparent fee structures and ethical lending practices across all institutional interactions.</p>
-              </div>
-            </div>
-            <div className="flex gap-8 group">
-              <div className="w-20 h-20 bg-purple-500/10 rounded-2xl flex items-center justify-center text-purple-400 flex-shrink-0 group-hover:scale-110 transition-transform shadow-2xl">
-                <Award size={40} />
-              </div>
-              <div>
-                <h4 className="text-2xl font-black text-white mb-4 uppercase italic tracking-tighter">Domain Expertise</h4>
-                <p className="text-white text-lg leading-relaxed font-bold opacity-100">Deep domain knowledge in NMSE lending, structured debt, corporate advisory, and continental trade distribution.</p>
-              </div>
-            </div>
-            <div className="flex gap-8 group">
-              <div className="w-20 h-20 bg-nova-accent/10 rounded-2xl flex items-center justify-center text-nova-accent flex-shrink-0 group-hover:scale-110 transition-transform shadow-2xl">
-                <Globe size={40} />
-              </div>
-              <div>
-                <h4 className="text-2xl font-black text-white mb-4 uppercase italic tracking-tighter">Global Vision</h4>
-                <p className="text-white text-lg leading-relaxed font-bold opacity-100">Connecting local African ventures to institutional capital on a global scale through strategic international alliances.</p>
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Join the Mission CTA */}
-      <section className="py-32 text-center relative overflow-hidden">
-        <div className="absolute inset-0 bg-gradient-to-b from-transparent via-nova-500/5 to-transparent"></div>
-        <div className="max-w-3xl mx-auto px-4 relative z-10">
-           <h2 className="text-5xl font-black text-white mb-8 uppercase italic tracking-tighter">Join the Alliance.</h2>
-           <p className="text-gray-100 mb-12 leading-relaxed text-xl font-bold">
-             We are constantly seeking high-caliber professionals who share our mission of continental economic advancement and financial inclusion.
-           </p>
-           <a href="mailto:careers@casiec.com" className="inline-flex items-center gap-4 px-12 py-5 bg-white text-nova-900 font-black uppercase tracking-widest text-sm rounded-full hover:bg-nova-400 hover:text-white transition-all shadow-2xl shadow-white/10">
-             View Open Positions <Briefcase size={22} />
-           </a>
         </div>
       </section>
     </div>

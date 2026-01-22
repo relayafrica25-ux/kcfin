@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react';
 import { storageService } from '../services/storageService';
 import { TickerItem } from '../types';
-import { TrendingUp, TrendingDown, Minus, Zap } from 'lucide-react';
+import { Flame, Radio, Zap } from 'lucide-react';
 
 export const NewsTicker: React.FC = () => {
   const [tickerContent, setTickerContent] = useState<TickerItem[]>([]);
@@ -12,63 +12,50 @@ export const NewsTicker: React.FC = () => {
     const loadTickerData = () => {
       try {
         const manualItems = storageService.getManualTickerItems();
-        
-        if (manualItems.length === 0) {
-          setTickerContent(getMockTickerItems());
-        } else {
-          // Loop twice for seamless marquee
-          setTickerContent([...manualItems, ...manualItems]); 
-        }
+        // Loop for seamless marquee
+        setTickerContent([...manualItems, ...manualItems]); 
       } catch (err) {
-        setTickerContent(getMockTickerItems());
+        setTickerContent([]);
       } finally {
         setLoading(false);
       }
     };
 
     loadTickerData();
+    const interval = setInterval(loadTickerData, 30000); // Refresh every 30s
+    return () => clearInterval(interval);
   }, []);
 
-  const getTrendIcon = (trend: string) => {
-    switch (trend) {
-      case 'Bullish': return <TrendingUp size={12} className="text-emerald-400" />;
-      case 'Bearish': return <TrendingDown size={12} className="text-rose-400" />;
-      default: return <Minus size={12} className="text-gray-500" />;
+  const getCategoryColor = (cat: string) => {
+    switch (cat) {
+      case 'Urgent': return 'text-red-500';
+      case 'Market': return 'text-orange-500';
+      case 'Corporate': return 'text-nova-400';
+      default: return 'text-gray-400';
     }
   };
 
   return (
-    <div className="fixed top-20 left-0 w-full z-40 bg-nova-900/90 backdrop-blur-xl border-b border-white/5 h-10 flex items-center overflow-hidden">
-      <div className="flex items-center gap-2 px-6 bg-nova-900 z-20 h-full border-r border-white/10">
-        <div className="h-1.5 w-1.5 rounded-full bg-red-500 animate-pulse"></div>
-        <span className="text-[9px] font-black text-white uppercase tracking-[0.4em] whitespace-nowrap">Live Feed</span>
+    <div className="fixed top-20 left-0 w-full z-40 bg-[#050508]/95 backdrop-blur-xl border-b border-white/5 h-10 flex items-center overflow-hidden">
+      <div className="flex items-center gap-2 px-6 bg-[#050508] z-20 h-full border-r border-white/10">
+        <div className="h-2 w-2 rounded-full bg-red-600 animate-pulse"></div>
+        <span className="text-[10px] font-black text-red-500 uppercase tracking-[0.4em] whitespace-nowrap italic">Breaking</span>
       </div>
       
       <div className="flex animate-marquee whitespace-nowrap items-center py-2">
         {tickerContent.map((item, idx) => (
-          <div key={`${item.id}-${idx}`} className="flex items-center mx-10 gap-3 group">
-            <Zap size={10} className="text-nova-400 animate-pulse" />
-            <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest group-hover:text-white transition-colors">{item.label}</span>
-            <span className={`text-[10px] font-black flex items-center gap-1.5 ${
-              item.trend === 'Bullish' ? 'text-emerald-400' : item.trend === 'Bearish' ? 'text-rose-400' : 'text-gray-400'
-            }`}>
-               {getTrendIcon(item.trend)}
-               {item.value}
+          <div key={`${item.id}-${idx}`} className="flex items-center mx-12 gap-4 group">
+            <Radio size={12} className="text-red-600 animate-pulse" />
+            <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border border-white/5 bg-white/5 ${getCategoryColor(item.category)}`}>
+               {item.category}
             </span>
-            <span className="text-white/5 mx-2 font-light">|</span>
+            <span className="text-[11px] text-white font-bold tracking-tight uppercase group-hover:text-nova-400 transition-colors">
+              {item.text}
+            </span>
+            <span className="text-white/10 mx-2 font-light">///</span>
           </div>
         ))}
       </div>
     </div>
   );
-};
-
-const getMockTickerItems = (): TickerItem[] => {
-  const base = [
-    { id: 'm1', label: 'NGN/USD', value: '750.2', trend: 'Bearish', isManual: true },
-    { id: 'm2', label: 'Lagos Index', value: '+1.4%', trend: 'Bullish', isManual: true },
-    { id: 'm3', label: 'Brent Crude', value: '$84.1', trend: 'Neutral', isManual: true },
-    { id: 'm4', label: 'Fintech Index', value: '+2.1%', trend: 'Bullish', isManual: true }
-  ] as TickerItem[];
-  return [...base, ...base];
 };

@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Menu, X, ChevronRight, Wallet, Briefcase, BookOpen, Info, Users, LineChart, Lock, ChevronsUpRight } from 'lucide-react';
+import { Menu, X, ChevronRight, Wallet, Briefcase, BookOpen, Info, Users, LineChart, Lock } from 'lucide-react';
 
 interface NavbarProps {
   onApplyClick: () => void;
@@ -11,13 +10,14 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ onApplyClick, currentView, onNavigate }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
+  // Standard public navigation items
   const navItems = [
     { id: 'about', label: 'Company', icon: <Info size={14} /> },
     { id: 'team', label: 'Leadership', icon: <Users size={14} /> },
     { id: 'financial-support', label: 'Capital Solutions', icon: <Wallet size={14} /> },
     { id: 'business-support', label: 'Advisory', icon: <Briefcase size={14} /> },
-    { id: 'investment', label: 'Wealth', icon: <LineChart size={14} /> },
-    { id: 'insights', label: 'Intelligence', icon: <BookOpen size={14} /> },
+    { id: 'investment', label: 'Investment', icon: <LineChart size={14} /> },
+    { id: 'insights', label: 'Insights', icon: <BookOpen size={14} /> },
   ];
 
   return (
@@ -25,7 +25,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onApplyClick, currentView, onNav
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
         <div className="flex items-center justify-between">
           <div className="flex items-center">
-            {/* Updated CASIEC Logo */}
+            {/* Logo */}
             <div 
               className="flex-shrink-0 flex items-center gap-1 cursor-pointer group" 
               onClick={() => onNavigate('home')}
@@ -66,17 +66,20 @@ export const Navbar: React.FC<NavbarProps> = ({ onApplyClick, currentView, onNav
           </div>
 
           <div className="hidden md:flex items-center gap-4">
+            {/* Staff Terminal Button */}
             <button 
               onClick={() => onNavigate('admin')}
-              className={`flex items-center gap-2 px-4 py-2 rounded-lg text-[10px] font-bold uppercase tracking-widest transition-all border ${
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border ${
                 currentView === 'admin' 
-                  ? 'bg-nova-500 text-white border-nova-500 shadow-lg' 
-                  : 'text-gray-400 border-white/10 bg-white/5 hover:text-white hover:bg-white/10'
+                  ? 'bg-nova-accent text-nova-950 border-nova-accent shadow-lg shadow-nova-accent/20' 
+                  : 'text-gray-400 border-white/10 bg-white/5 hover:border-nova-accent/50 hover:text-white'
               }`}
             >
-              <Lock size={12} /> Staff Terminal
+              <Lock size={12} className={currentView === 'admin' ? 'text-nova-950' : 'text-nova-accent'} />
+              Staff Terminal
             </button>
-            
+
+            {/* Public Inquiry Button */}
             <button 
               onClick={onApplyClick}
               className="bg-nova-500 text-white px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-nova-400 transition-all duration-300 flex items-center gap-2 shadow-lg shadow-nova-500/20"
@@ -115,20 +118,16 @@ export const Navbar: React.FC<NavbarProps> = ({ onApplyClick, currentView, onNav
                 {item.label}
               </button>
             ))}
-            
-            <button
-              onClick={() => {
-                onNavigate('admin');
-                setIsOpen(false);
-              }}
-              className={`flex items-center gap-4 w-full p-4 rounded-xl text-xs font-bold uppercase tracking-widest border transition-all ${
-                currentView === 'admin' ? 'bg-nova-500 text-white border-nova-500 shadow-lg' : 'text-nova-400 border-nova-500/20 bg-nova-500/5'
-              }`}
-            >
-              <Lock size={14} /> Staff Terminal
-            </button>
 
-            <div className="pt-4 grid grid-cols-1 gap-4">
+            <div className="pt-4 grid grid-cols-1 gap-4 border-t border-white/5 mt-4">
+                <button 
+                  onClick={() => { setIsOpen(false); onNavigate('admin'); }}
+                  className={`w-full py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 border ${
+                    currentView === 'admin' ? 'bg-nova-accent text-nova-950 border-nova-accent' : 'bg-white/5 text-nova-accent border-nova-accent/30'
+                  }`}
+                >
+                  <Lock size={16} /> Staff Terminal
+                </button>
                 <button 
                   onClick={() => { setIsOpen(false); onApplyClick(); }}
                   className="w-full py-4 bg-white text-nova-950 font-black text-xs uppercase tracking-widest rounded-xl text-center shadow-xl"

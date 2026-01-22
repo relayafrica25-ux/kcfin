@@ -31,27 +31,14 @@ const INITIAL_TEAM: TeamMember[] = [
     specialization: "Corporate Finance",
     linkedin: "https://linkedin.com",
     email: "cfo@casiec.com"
-  },
-  {
-    id: '3',
-    name: "Chidi Okafor",
-    role: "Head of Business Support",
-    bio: "Specialist in supply chain optimization and strategic outsourcing. Driving enterprise sustainability for NMSE growth across Africa.",
-    imageGradient: "from-emerald-600 to-teal-900",
-    specialization: "Operations & GSI",
-    linkedin: "https://linkedin.com",
-    email: "ops@casiec.com"
-  },
-  {
-    id: '4',
-    name: "Elena Rodriguez",
-    role: "Director of Wealth Advisory",
-    bio: "Architecting bespoke wealth preservation strategies for high-net-worth family offices and institutional capital partners.",
-    imageGradient: "from-amber-500 to-orange-700",
-    specialization: "Wealth Management",
-    linkedin: "https://linkedin.com",
-    email: "wealth@casiec.com"
   }
+];
+
+const INITIAL_BREAKING_NEWS: TickerItem[] = [
+  { id: 'bn1', text: "CASIEC FINANCIALS AUTHORIZES ₦2.5B IN NEW NMSE CREDIT FACILITIES.", category: 'Urgent', isManual: true },
+  { id: 'bn2', text: "BROASTREET DyDX ANNOUNCES STRATEGIC PARTNERSHIP WITH PAN-AFRICAN LOGISTICS GIANT.", category: 'Corporate', isManual: true },
+  { id: 'bn3', text: "MARKET ALERT: NIGERIAN FINTECH SECTOR SEES 15% INCREASE IN Q1 VENTURE INFLOW.", category: 'Market', isManual: true },
+  { id: 'bn4', text: "CASIEC SECURES INSTITUTIONAL DEBENTURE FOR INFRASTRUCTURE BRIDGE FUNDING.", category: 'Corporate', isManual: true }
 ];
 
 const INITIAL_ARTICLES: Article[] = [
@@ -79,30 +66,6 @@ const INITIAL_CAROUSEL: CarouselItem[] = [
     imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200",
     statLabel: "Interest Rate",
     statValue: "9.5% Fixed"
-  },
-  {
-    id: 'adv-2',
-    type: 'advert',
-    title: "Real Estate Bridge Facilities",
-    summary: "Close on prime property in as little as 5 days. Our bridge loans bridge the gap to your permanent financing.",
-    tag: "Real Estate",
-    linkText: "Check Terms",
-    imageGradient: "from-blue-600 via-cyan-500 to-nova-accent",
-    imageUrl: "https://images.unsplash.com/photo-1582408921715-18e7806365c1?auto=format&fit=crop&q=80&w=1200",
-    statLabel: "Approval",
-    statValue: "24-48 Hours"
-  },
-  {
-    id: 'adv-3',
-    type: 'advert',
-    title: "Global Supply Chain Credit",
-    summary: "Leverage your inventory to unlock liquid capital for cross-border commodity trading and distribution.",
-    tag: "Global Trade",
-    linkText: "View Program",
-    imageGradient: "from-emerald-600 via-teal-500 to-emerald-900",
-    imageUrl: "https://images.unsplash.com/photo-1586528116311-ad8dd3c8310d?auto=format&fit=crop&q=80&w=1200",
-    statLabel: "Leverage",
-    statValue: "Up to 85% LTC"
   }
 ];
 
@@ -237,10 +200,14 @@ export const storageService = {
     localStorage.setItem(INQUIRIES_KEY, JSON.stringify(inquiries));
   },
 
-  // Ticker Management
+  // Ticker Management (Breaking News)
   getManualTickerItems: (): TickerItem[] => {
     const saved = localStorage.getItem(TICKER_KEY);
-    return saved ? JSON.parse(saved) : [];
+    if (!saved) {
+      localStorage.setItem(TICKER_KEY, JSON.stringify(INITIAL_BREAKING_NEWS));
+      return INITIAL_BREAKING_NEWS;
+    }
+    return JSON.parse(saved);
   },
 
   saveTickerItem: (item: TickerItem) => {

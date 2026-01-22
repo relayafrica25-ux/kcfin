@@ -1,6 +1,5 @@
-
 import React from 'react';
-import { Rocket, Zap, Clock, ArrowRight, ShieldCheck, PieChart, Landmark, Coins, TrendingUp, HandCoins, Building, Palette, Users, Layers, Briefcase, FileCheck } from 'lucide-react';
+import { Rocket, Zap, Clock, ArrowRight, ShieldCheck, PieChart, Landmark, Coins, TrendingUp, HandCoins, Building, Palette, Users, Layers, Briefcase, FileCheck, Leaf } from 'lucide-react';
 
 interface BusinessFundingPageProps {
   onApplyClick: () => void;
@@ -10,89 +9,87 @@ export const BusinessFundingPage: React.FC<BusinessFundingPageProps> = ({ onAppl
   const offerings = [
     {
       title: "Asset Finance",
-      desc: "Strategic financing for heavy machinery, vehicles, and essential business equipment to scale your operations.",
       icon: <Building className="text-nova-400" />
     },
     {
       title: "Consumer Loan",
-      desc: "Flexible personal credit facilities and salary advance solutions for individuals and professional employees.",
       icon: <Coins className="text-purple-400" />
     },
     {
       title: "Working Capital Loans",
-      desc: "Optimized liquidity solutions to bridge operational gaps, manage inventory, and fuel day-to-day expansion.",
       icon: <TrendingUp className="text-nova-accent" />
     },
     {
       title: "Group Loans",
-      desc: "Community-based micro-credit solutions designed for collaborative enterprise development and mutual growth.",
       icon: <Users className="text-emerald-400" />
     },
     {
       title: "Gender Credit",
-      desc: "Specialized financing designed to empower female entrepreneurs and narrow the gender funding gap in business.",
       icon: <Zap className="text-pink-400" />
     },
     {
       title: "Refinancing Credit",
-      desc: "Restructuring existing debt to optimize your business cash flow and reduce overall long-term capital costs.",
       icon: <ShieldCheck className="text-orange-400" />
     },
     {
       title: "Creative Economy Loans",
-      desc: "Supporting the arts, media, and digital entertainment sectors with tailored credit for talent and production.",
       icon: <Palette className="text-indigo-400" />
     },
     {
       title: "TOP Onlending Loans",
-      desc: "Wholesale capital for microfinance institutions and cooperatives to stimulate the economy from the top down.",
       icon: <Layers className="text-amber-400" />
     },
     {
-      title: "Proof of Funds",
-      desc: "Verifiable capital documentation and financial guarantees for high-stakes trade and strategic investments.",
-      icon: <FileCheck className="text-blue-400" />
+      title: "Clean Energy Credit",
+      icon: <Leaf className="text-emerald-500" />
+    },
+    {
+      title: "And more...",
+      icon: <Rocket className="text-gray-400" />
     }
   ];
 
   return (
     <div className="pt-24 min-h-screen bg-nova-900">
       {/* Hero */}
-      <div className="relative py-20">
+      <div className="relative py-24 md:py-32 overflow-hidden border-b border-white/5">
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-nova-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-nova-500/10 border border-nova-500/30 text-nova-400 text-sm font-semibold mb-8">
-            <Landmark size={16} />
-            <span>CASIEC Financial Solutions</span>
+          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-nova-500/10 border border-nova-500/30 text-nova-400 text-[10px] font-black uppercase tracking-[0.4em] mb-12 animate-fade-in-up">
+            <Landmark size={14} />
+            <span>The Capital Mandate</span>
           </div>
-          <h1 className="text-5xl md:text-8xl font-bold mb-8 tracking-tight text-white">
-            Capital that <br/>
-            <span className="text-transparent bg-clip-text bg-gradient-to-r from-nova-400 via-white to-nova-accent animate-pulse-slow">
-              Empowers
-            </span>
+          
+          <h1 className="text-5xl md:text-7xl font-black mb-10 tracking-tighter text-white animate-fade-in-up uppercase italic leading-[0.95]">
+            Capital that <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-nova-400 to-nova-500">Empowers Change.</span>
           </h1>
-          <p className="text-xl text-gray-400 mb-10 max-w-3xl mx-auto">
-            From Asset Finance to Creative Economy support, CASIEC provides the specialized 
-            liquidity required to drive continental success and individual empowerment.
-          </p>
-          <button 
-            onClick={onApplyClick}
-            className="bg-white text-black px-10 py-4 rounded-full font-bold text-lg hover:bg-gray-200 transition-colors shadow-[0_0_20px_rgba(255,255,255,0.3)]"
-          >
-            Start Inquiry
-          </button>
+          
+          <div className="max-w-5xl mx-auto px-4">
+            <p className="text-2xl md:text-4xl text-white leading-[1.2] animate-fade-in-up font-black uppercase tracking-tighter italic">
+              From Asset finance, Gender Credit, Creative Support loan to Consumer Credit, Casiec’s bespoke funding + business support solutions drive scalable business growth in partnership with GSI Strategic Alliances (Broastreet DyDX)
+            </p>
+          </div>
+
+          <div className="mt-16 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
+            <button 
+              onClick={onApplyClick}
+              className="bg-white text-black px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-nova-500 hover:text-white transition-all shadow-2xl active:scale-95"
+            >
+              Start Your Inquiry
+            </button>
+          </div>
         </div>
       </div>
 
-      {/* Services Grid */}
+      {/* Services Grid - Minimalist */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-6">
           {offerings.map((item, i) => (
-            <div key={i} className="glass-panel p-8 rounded-3xl border border-white/5 hover:border-nova-500/50 transition-all group">
+            <div key={i} className="glass-panel p-8 rounded-3xl border border-white/5 hover:border-nova-500/50 transition-all group flex flex-col items-center text-center justify-center min-h-[180px]">
               <div className="w-14 h-14 bg-white/5 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                 {item.icon}
               </div>
-              <h3 className="text-xl font-bold text-white mb-3">{item.title}</h3>
-              <p className="text-gray-400 text-sm leading-relaxed">{item.desc}</p>
+              <h3 className="text-sm font-black text-white uppercase tracking-wider">{item.title}</h3>
             </div>
           ))}
         </div>
@@ -104,9 +101,8 @@ export const BusinessFundingPage: React.FC<BusinessFundingPageProps> = ({ onAppl
             <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/hexellence.png')] opacity-10"></div>
             <div className="relative z-10">
                 <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Inclusive Credit Mandate</h2>
-                <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10 leading-relaxed">
-                  Fostering economic advancement through financial inclusion. Our diverse credit products are 
-                  architected to stimulate every sector of the emerging African market.
+                <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+                  Our diverse credit products are designed to stimulate every sector of the market economy
                 </p>
                 <button onClick={onApplyClick} className="text-nova-400 font-bold flex items-center gap-2 mx-auto hover:text-white transition-colors">
                   Consult a Specialist <ArrowRight size={20} />

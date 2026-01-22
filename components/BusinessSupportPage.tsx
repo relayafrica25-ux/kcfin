@@ -1,50 +1,46 @@
-
 import React from 'react';
-import { Network, BrainCircuit, FileText, Scale, ArrowRight, Lightbulb, Users, Globe, Coins, LineChart, ShieldCheck, Database, Truck, BarChart3, Settings, Search, PackageSearch, Share2, Check } from 'lucide-react';
+import { ArrowRight, Check, Target, Award, Landmark, Rocket, Network, Compass, Briefcase } from 'lucide-react';
 
 interface BusinessSupportPageProps {
   onInquireClick: () => void;
 }
 
 export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInquireClick }) => {
-  const sections = [
+  const products = [
     {
-      title: "Business Support Services",
-      icon: <Users className="text-orange-400" />,
-      items: [
-        { label: "Business Development", desc: "Strategic mapping and pipeline expansion for emerging ventures and established firms." },
-        { label: "Strategic Outsourcing", desc: "E-Management System Optimization and leaner operational scaling strategies." },
-        { label: "Expert Advisory", desc: "Network management connecting you to industry-specific global specialists." }
-      ]
+      title: "Business Support",
+      description: "Delivering the corporate engineering required for enterprise sustainability through specialized research.",
+      icon: <Briefcase size={32} className="text-orange-400" />
     },
     {
-      title: "Corporate Finance, Research & Advisory",
-      icon: <BarChart3 className="text-orange-400" />,
-      items: [
-        { label: "Credit & Capital Raise", desc: "Full-cycle financing solutions and structured capital infusion for complex projects." },
-        { label: "Market Research", desc: "Evidence-based market intelligence and feasibility studies for strategic planning." },
-        { label: "Investment Advisory", desc: "Strategic guidance for high-stakes deal flow and institutional capital mapping." }
-      ]
+      title: "Business Development",
+      description: "Amplifying market lead with winning strategies to strengthen market position.",
+      icon: <Rocket size={32} className="text-orange-400" />
     },
     {
-      title: "Supply Chain, Commodity Trading & Distribution",
-      icon: <Truck className="text-orange-400" />,
-      items: [
-        { label: "Supply Chain Advisory", desc: "Optimizing logistics architecture and global procurement pipelines." },
-        { label: "Commodity Trading", desc: "Strategic positioning in global energy, agricultural, and mineral markets." },
-        { label: "Global Distribution", desc: "Integrated logistics networks for efficient continental product movement." }
-      ]
+      title: "Strategic Outsourcing",
+      description: "Unlocking efficiency and focusing on Core Strength.",
+      icon: <Network size={32} className="text-orange-400" />
+    },
+    {
+      title: "Expert Advisory",
+      description: "Guided Insights. Connecting businesses with Value drivers.",
+      icon: <Compass size={32} className="text-orange-400" />
+    },
+    {
+      title: "Corporate Finance & Advisory",
+      description: "Credit & Capital Raise: Scaling capital & Credit Access.",
+      icon: <Landmark size={32} className="text-orange-400" />
     }
   ];
 
   return (
     <div className="pt-24 min-h-screen bg-nova-900 selection:bg-orange-500">
       {/* Hero Section */}
-      <div className="relative py-20 overflow-hidden">
-        <div className="absolute top-0 right-0 w-[600px] h-[600px] bg-orange-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
+      <div className="relative py-20 md:py-32 overflow-hidden">
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-orange-300 text-sm font-semibold mb-8 backdrop-blur-md">
-            {/* Updated Branding in Badge */}
             <div className="flex items-center gap-1.5">
                <span className="font-black lowercase">broastreet</span>
                <Check size={14} className="text-orange-500" strokeWidth={4} />
@@ -52,113 +48,85 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
             </div>
           </div>
           
-          <h1 className="text-5xl md:text-7xl font-bold mb-8 tracking-tight text-white uppercase italic">
-            Institutional <br/>
+          <h1 className="text-5xl md:text-8xl font-black mb-8 tracking-tighter text-white uppercase italic leading-[0.9]">
+            Strategic <br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-white to-orange-200">
-              Backbone.
+              Architecture.
             </span>
           </h1>
           
-          <p className="text-xl text-gray-400 mb-10 max-w-3xl mx-auto leading-relaxed font-light">
-            GSI STRATEGIC ALLIANCES (Broastreet DyDX) provides the corporate engineering required for enterprise sustainability through specialized advisory, finance research, and global trade distribution.
+          <p className="text-xl md:text-2xl text-gray-400 mb-12 max-w-3xl mx-auto leading-relaxed font-light">
+            GSI STRATEGIC ALLIANCES (Broastreet DyDX) provides the corporate engineering required for enterprise sustainability through specialized advisory and research.
           </p>
           
           <button 
             onClick={onInquireClick}
-            className="px-10 py-4 rounded-full bg-orange-600 hover:bg-orange-500 text-white font-black uppercase tracking-widest text-sm transition-all shadow-xl shadow-orange-600/20"
+            className="px-12 py-5 rounded-full bg-orange-600 hover:bg-orange-500 text-white font-black uppercase tracking-widest text-xs transition-all shadow-2xl shadow-orange-600/30 active:scale-95"
           >
             Initiate Advisory
           </button>
         </div>
       </div>
 
-      {/* Main Pillars */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid lg:grid-cols-3 gap-8">
-          {sections.map((section, idx) => (
-            <div key={idx} className="glass-panel p-10 rounded-[3rem] border border-white/5 flex flex-col hover:border-orange-500/30 transition-all duration-500 group">
-               <div className="w-16 h-16 bg-white/5 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
-                  {section.icon}
-               </div>
-               <h3 className="text-2xl font-bold text-white mb-8 border-b border-white/5 pb-4 tracking-tighter italic">{section.title}</h3>
-               <div className="space-y-8 flex-grow">
-                 {section.items.map((item, i) => (
-                    <div key={i} className="group cursor-default">
-                       <div className="text-white font-bold mb-1 flex items-center gap-2 group-hover:text-orange-400 transition-colors">
-                          <div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div>
-                          {item.label}
-                       </div>
-                       <p className="text-gray-500 text-sm leading-relaxed">{item.desc}</p>
-                    </div>
-                 ))}
-               </div>
-               <div className="mt-12 pt-6 border-t border-white/5">
-                  <button onClick={onInquireClick} className="text-[10px] font-black uppercase tracking-[0.2em] text-orange-400 hover:text-white flex items-center gap-2 transition-colors">
-                     Consult Experts <ArrowRight size={14} />
-                  </button>
-               </div>
-            </div>
-          ))}
-        </div>
-      </div>
-
-      {/* Detailed Services Focus */}
-      <section className="bg-black/40 py-24 border-t border-white/5 relative overflow-hidden">
-         <div className="absolute top-0 left-0 w-full h-full bg-[url('https://www.transparenttextures.com/patterns/grid-me.png')] opacity-[0.03]"></div>
-         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-            <div className="grid md:grid-cols-2 gap-16 items-start">
-               <div className="animate-fade-in-up">
-                  <div className="flex items-center gap-4 mb-8">
-                    <Search className="text-orange-500" size={32} />
-                    <h2 className="text-3xl font-bold text-white uppercase tracking-tighter italic">Intelligence & Research</h2>
+      {/* Philosophy Section */}
+      <section className="py-24 relative border-y border-white/5">
+         <div className="absolute inset-0 bg-white/[0.01] pointer-events-none"></div>
+         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="grid md:grid-cols-3 gap-12">
+               <div className="flex flex-col items-center text-center p-8">
+                  <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 mb-8">
+                     <Target size={32} />
                   </div>
-                  <div className="space-y-6">
-                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-orange-500/20 transition-all">
-                        <h4 className="font-bold text-orange-400 mb-2 uppercase tracking-tight">Market Feasibility</h4>
-                        <p className="text-gray-400 text-sm leading-relaxed">Deep-dive analytics for continental market entry, risk assessment, and scalability mapping for NMSEs and corporate giants.</p>
-                     </div>
-                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-orange-500/20 transition-all">
-                        <h4 className="font-bold text-orange-400 mb-2 uppercase tracking-tight">Financial Modeling</h4>
-                        <p className="text-gray-400 text-sm leading-relaxed">Precision forecasting and valuation models tailored for the unique dynamics of emerging African economies.</p>
-                     </div>
-                  </div>
+                  <h3 className="text-xl font-bold text-white mb-4 uppercase italic tracking-tight">Precision Engineering</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">Tailored corporate frameworks designed for institutional resilience and market-leading scalability.</p>
                </div>
-               <div className="animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-                  <div className="flex items-center gap-4 mb-8">
-                    <PackageSearch className="text-orange-500" size={32} />
-                    <h2 className="text-3xl font-bold text-white uppercase tracking-tighter italic">Global Value Chain</h2>
+               <div className="flex flex-col items-center text-center p-8">
+                  <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 mb-8">
+                     <Award size={32} />
                   </div>
-                  <div className="space-y-6">
-                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-orange-500/20 transition-all">
-                        <h4 className="font-bold text-orange-400 mb-2 uppercase tracking-tight">Logistics Engineering</h4>
-                        <p className="text-gray-400 text-sm leading-relaxed">End-to-end supply chain optimization focusing on reducing lead times and operational overheads through GSI technology.</p>
-                     </div>
-                     <div className="p-8 bg-white/5 rounded-3xl border border-white/5 hover:border-orange-500/20 transition-all">
-                        <h4 className="font-bold text-orange-400 mb-2 uppercase tracking-tight">Asset Monetization</h4>
-                        <p className="text-gray-400 text-sm leading-relaxed">Strategic advisory on leveraging physical assets and inventory for liquid capital injection and trade financing.</p>
-                     </div>
-                  </div>
+                  <h3 className="text-xl font-bold text-white mb-4 uppercase italic tracking-tight">Institutional Excellence</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">Upholding the benchmark for advisory standards through rigorous research and ethical integrity.</p>
                </div>
-            </div>
-
-            <div className="mt-24 p-12 glass-panel rounded-[3rem] border border-white/5 text-center relative group overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-orange-500/10 to-orange-300/10 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
-                <div className="bg-orange-500 w-12 h-12 rounded-xl flex items-center justify-center mx-auto mb-6 shadow-xl shadow-orange-500/20">
-                   <Check size={32} className="text-white" strokeWidth={4} />
-                </div>
-                <h3 className="text-3xl font-bold text-white mb-6 tracking-tight uppercase italic">The Broastreet DyDX Ecosystem</h3>
-                <p className="text-gray-400 max-w-2xl mx-auto leading-relaxed mb-10 font-light">
-                    Harnessing the proprietary DyDX framework, we bridge the gap between institutional research and real-world execution. 
-                    Your enterprise success is our primary corporate mandate.
-                </p>
-                <button 
-                  onClick={onInquireClick}
-                  className="relative z-10 px-8 py-3 bg-white text-nova-900 rounded-full font-black uppercase tracking-widest text-xs hover:bg-orange-500 hover:text-white transition-all shadow-2xl"
-                >
-                  Join the Alliance
-                </button>
+               <div className="flex flex-col items-center text-center p-8">
+                  <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 mb-8">
+                     <Award size={32} className="text-orange-500" />
+                  </div>
+                  <h3 className="text-xl font-bold text-white mb-4 uppercase italic tracking-tight">Global Perspective</h3>
+                  <p className="text-gray-500 text-sm leading-relaxed">Leveraging international alliances to bridge local enterprise potential with global market dynamics.</p>
+               </div>
             </div>
          </div>
+      </section>
+
+      {/* Advisory Products Grid */}
+      <section className="py-32 relative bg-black/40">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="mb-20">
+             <h2 className="text-xs font-black text-orange-500 uppercase tracking-[0.4em] mb-4">Core Competencies</h2>
+             <h3 className="text-4xl font-black text-white tracking-tighter uppercase italic">Advisory Mandates.</h3>
+          </div>
+          
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+            {products.map((product, idx) => (
+              <div key={idx} className="group p-10 rounded-[3rem] bg-white/[0.02] border border-white/5 hover:border-orange-500/40 transition-all duration-500 flex flex-col">
+                <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">
+                  {product.icon}
+                </div>
+                <h4 className="text-xl font-bold text-white mb-4 leading-tight group-hover:text-orange-400 transition-colors uppercase italic tracking-tighter">
+                  {product.title}
+                </h4>
+                <p className="text-gray-400 text-sm leading-relaxed font-light">
+                  {product.description}
+                </p>
+                <div className="mt-auto pt-8 flex justify-end">
+                   <button onClick={onInquireClick} className="text-orange-500/50 group-hover:text-orange-500 transition-colors">
+                      <ArrowRight size={20} />
+                   </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </section>
     </div>
   );

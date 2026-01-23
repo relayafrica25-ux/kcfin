@@ -186,6 +186,9 @@ const App: React.FC = () => {
                 <div className="text-gray-600 text-[10px] uppercase tracking-[0.5em] font-black">
                   © 2024 CASIEC FINANCIALS & GSI. ALL RIGHTS RESERVED.
                 </div>
+                <div className="text-gray-500 text-[9px] uppercase tracking-[0.3em] font-bold">
+                  Affiliate Member of ANMFIN.
+                </div>
               </div>
               
               <div className="flex items-center gap-8">

@@ -33,6 +33,7 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
     email: '',
     phone: '',
     bvn: '',
+    isAcknowledged: false,
   });
 
   useEffect(() => {
@@ -45,6 +46,25 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
         setAppType(null);
       }
       setIsSubmitting(false);
+      setFormData({
+        loanType: '',
+        serviceType: '',
+        amount: '',
+        revenue: '',
+        bankStatementName: '',
+        description: '',
+        businessName: '',
+        cacNumber: '',
+        isCacRegistered: false,
+        industry: 'General',
+        state: 'Lagos',
+        fullName: '',
+        role: '',
+        email: '',
+        phone: '',
+        bvn: '',
+        isAcknowledged: false,
+      });
     }
   }, [isOpen, initialType]);
 
@@ -61,8 +81,29 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
     setStep(2);
   };
 
+  const isStepValid = () => {
+    switch (step) {
+      case 2:
+        return appType === 'financial' ? !!formData.loanType : !!formData.serviceType;
+      case 3:
+        return !!formData.businessName && !!formData.cacNumber && !!formData.description && !!formData.industry;
+      case 4:
+        return formData.isAcknowledged;
+      case 5:
+        const baseContactValid = !!formData.fullName && !!formData.role && !!formData.email && !!formData.phone;
+        if (appType === 'financial') {
+          return baseContactValid && formData.bvn.length === 11;
+        }
+        return baseContactValid;
+      default:
+        return true;
+    }
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!isStepValid()) return;
+    
     setIsSubmitting(true);
     
     const application: LoanApplication = {
@@ -76,11 +117,16 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
     storageService.saveApplication(application);
 
     await new Promise(resolve => setTimeout(resolve, 1500));
-    setStep(6); // Success is now step 6
+    setStep(6); 
     setIsSubmitting(false);
   };
 
-  const nextStep = () => setStep(prev => prev + 1);
+  const nextStep = () => {
+    if (isStepValid()) {
+      setStep(prev => prev + 1);
+    }
+  };
+  
   const prevStep = () => setStep(prev => prev - 1);
   const isFinancial = appType === 'financial';
 
@@ -144,6 +190,7 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
                   ))
                 )}
               </div>
+              <p className="text-[10px] text-gray-500 uppercase tracking-widest text-center mt-4">Required: Selection required to proceed.</p>
             </div>
           )}
 
@@ -164,16 +211,16 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
                   </label>
                 </div>
                 <div>
-                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">Business Name</label>
-                  <input type="text" name="businessName" value={formData.businessName} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">Business Name*</label>
+                  <input required type="text" name="businessName" value={formData.businessName} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
                 </div>
                 <div>
-                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">CAC / Registration No.</label>
-                  <input type="text" name="cacNumber" value={formData.cacNumber} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" placeholder={formData.isCacRegistered ? "Enter RC Number" : "Enter BN Number (if any)"} />
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">CAC / Registration No.*</label>
+                  <input required type="text" name="cacNumber" value={formData.cacNumber} onChange={handleInputChange} className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" placeholder={formData.isCacRegistered ? "Enter RC Number" : "Enter BN Number (if any)"} />
                 </div>
               </div>
               <div>
-                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">Industry Focus</label>
+                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">Industry Focus*</label>
                 <select name="industry" value={formData.industry} onChange={handleInputChange} className="w-full bg-nova-800 border border-white/10 rounded-lg py-3 px-4 text-white outline-none">
                   <option value="General">General</option>
                   <option value="Agriculture">Agriculture</option>
@@ -184,9 +231,10 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
                 </select>
               </div>
               <div>
-                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">Detailed Requirements</label>
-                <textarea name="description" value={formData.description} onChange={handleInputChange} className="w-full h-32 bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white resize-none focus:border-nova-500 outline-none transition-all" placeholder="How can we help you succeed?" />
+                <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">Detailed Requirements*</label>
+                <textarea required name="description" value={formData.description} onChange={handleInputChange} className="w-full h-32 bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white resize-none focus:border-nova-500 outline-none transition-all" placeholder="How can we help you succeed?" />
               </div>
+              <p className="text-[9px] text-gray-600 uppercase tracking-[0.2em] italic">* All fields in this section are mandatory.</p>
             </div>
           )}
 
@@ -249,7 +297,14 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
 
               <div className="pt-4">
                  <label className="flex items-center gap-4 p-5 bg-white/5 border border-nova-500/30 rounded-2xl cursor-pointer hover:bg-nova-500/10 transition-all">
-                    <input required type="checkbox" className="w-6 h-6 rounded border-white/20 bg-nova-800 text-nova-500 focus:ring-nova-500" />
+                    <input 
+                      required 
+                      type="checkbox" 
+                      name="isAcknowledged"
+                      checked={formData.isAcknowledged}
+                      onChange={handleInputChange}
+                      className="w-6 h-6 rounded border-white/20 bg-nova-800 text-nova-500 focus:ring-nova-500 cursor-pointer" 
+                    />
                     <span className="text-sm font-bold text-white">I acknowledge the documentation requirements and fee structure.</span>
                  </label>
               </div>
@@ -260,14 +315,30 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
             <form id="application-form" onSubmit={handleSubmit} className="space-y-6 animate-fade-in-up">
               <h3 className="text-2xl font-bold text-white mb-6 uppercase tracking-tight">Uplink Information</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <input required type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="Full Name" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
-                <input required type="text" name="role" value={formData.role} onChange={handleInputChange} placeholder="Designated Role" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
-                <input required type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Email" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
-                <input required type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
+                <div>
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">Full Name*</label>
+                  <input required type="text" name="fullName" value={formData.fullName} onChange={handleInputChange} placeholder="Full Name" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">Designated Role*</label>
+                  <input required type="text" name="role" value={formData.role} onChange={handleInputChange} placeholder="Designated Role" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">Corporate Email*</label>
+                  <input required type="email" name="email" value={formData.email} onChange={handleInputChange} placeholder="Email" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
+                </div>
+                <div>
+                  <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">Phone Number*</label>
+                  <input required type="tel" name="phone" value={formData.phone} onChange={handleInputChange} placeholder="Phone" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
+                </div>
                 {isFinancial && (
-                  <input required type="text" name="bvn" value={formData.bvn} onChange={handleInputChange} placeholder="BVN (11 Digits)" maxLength={11} pattern="\d{11}" title="Please enter an 11-digit BVN" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all md:col-span-2" />
+                  <div className="md:col-span-2">
+                    <label className="block text-[10px] font-black text-gray-500 uppercase tracking-widest mb-2 ml-2">Bank Verification Number (11 Digits)*</label>
+                    <input required type="text" name="bvn" value={formData.bvn} onChange={handleInputChange} placeholder="BVN (11 Digits)" maxLength={11} pattern="\d{11}" title="Please enter an 11-digit BVN" className="w-full bg-white/5 border border-white/10 rounded-lg py-3 px-4 text-white focus:border-nova-500 outline-none transition-all" />
+                  </div>
                 )}
               </div>
+              <p className="text-[10px] text-gray-600 text-center uppercase tracking-widest">By submitting, you agree to our privacy protocol and terms.</p>
             </form>
           )}
 
@@ -285,9 +356,24 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
           <div className="p-6 border-t border-white/10 bg-white/5 flex justify-between items-center">
             <button onClick={prevStep} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-xs font-black uppercase tracking-widest"><ChevronLeft size={16} /> Back</button>
             {step < 5 ? (
-              <button onClick={nextStep} className={`text-white px-8 py-2.5 rounded-full font-black text-xs uppercase tracking-widest flex items-center gap-2 shadow-lg ${isFinancial ? 'bg-nova-500 shadow-nova-500/20' : 'bg-purple-600 shadow-purple-600/20'}`}>Next Step <ChevronRight size={16} /></button>
+              <button 
+                onClick={nextStep} 
+                disabled={!isStepValid()}
+                className={`text-white px-8 py-2.5 rounded-full font-black text-xs uppercase tracking-widest flex items-center gap-2 shadow-lg transition-all ${
+                  !isStepValid() ? 'bg-gray-700 cursor-not-allowed opacity-50' : (isFinancial ? 'bg-nova-500 shadow-nova-500/20' : 'bg-purple-600 shadow-purple-600/20')
+                }`}
+              >
+                Next Step <ChevronRight size={16} />
+              </button>
             ) : (
-              <button form="application-form" type="submit" disabled={isSubmitting} className={`text-white px-10 py-3 rounded-full font-black text-xs uppercase tracking-widest shadow-xl flex items-center gap-3 ${isFinancial ? 'bg-nova-500 shadow-nova-500/30' : 'bg-purple-600 shadow-purple-600/30'}`}>
+              <button 
+                form="application-form" 
+                type="submit" 
+                disabled={isSubmitting || !isStepValid()} 
+                className={`text-white px-10 py-3 rounded-full font-black text-xs uppercase tracking-widest shadow-xl flex items-center gap-3 transition-all ${
+                  !isStepValid() || isSubmitting ? 'bg-gray-700 cursor-not-allowed opacity-50' : (isFinancial ? 'bg-nova-500 shadow-nova-500/30' : 'bg-purple-600 shadow-purple-600/30')
+                }`}
+              >
                 {isSubmitting ? 'Live Syncing...' : 'Initiate Inquiry'} <Check size={16} />
               </button>
             )}

@@ -1,4 +1,5 @@
 
+import axios from 'axios';
 import { Article, LoanApplication, ContactInquiry, NewsletterSubscription, TickerItem, CarouselItem, TeamMember } from '../types';
 
 const ARTICLES_KEY = 'casiec_articles';
@@ -227,17 +228,28 @@ export const storageService = {
     return saved ? JSON.parse(saved) : [];
   },
 
-  saveNewsletterSubscription: (email: string) => {
+  saveNewsletterSubscription: async (email: string): Promise<{ success: boolean; message?: string; statusCode?: number }> => {
     const subs = storageService.getNewsletterSubscriptions();
-    if (subs.find(s => s.email.toLowerCase() === email.toLowerCase())) return;
-    
-    const newSub: NewsletterSubscription = {
-      id: Math.random().toString(36).substr(2, 9),
-      email: email.toLowerCase(),
-      date: new Date().toLocaleString()
-    };
-    subs.unshift(newSub);
-    localStorage.setItem(NEWSLETTER_KEY, JSON.stringify(subs));
+    // if (subs.find(s => s.email.toLowerCase() === email.toLowerCase())) return;
+    try {
+      await axios.post('http://localhost:3000/contact', { email });
+      const newSub: NewsletterSubscription = {
+        id: Math.random().toString(36).substr(2, 9),
+        email: email.toLowerCase(),
+        date: new Date().toLocaleString()
+      };
+      subs.unshift(newSub);
+      localStorage.setItem(NEWSLETTER_KEY, JSON.stringify(subs));
+      return { success: true };
+    } catch (error) {
+      console.error('Failed to save newsletter subscription:', error);
+      if (axios.isAxiosError(error)) {
+        const statusCode = error.response?.status;
+        const message = error.response?.data?.message || error.message || 'Failed to subscribe to newsletter';
+        return { success: false, message, statusCode };
+      }
+      return { success: false, message: 'An unexpected error occurred' };
+    }
   },
 
   deleteNewsletterSubscription: (id: string) => {
@@ -263,8 +275,8 @@ export const storageService = {
   authenticateUser: (emailOrUsername: string, password: string) => {
     const users = storageService.getUsers();
     if (emailOrUsername === 'admin' && password === 'admin') return true;
-    
-    return users.some((u: any) => 
+
+    return users.some((u: any) =>
       (u.email === emailOrUsername || u.username === emailOrUsername) && u.password === password
     );
   }

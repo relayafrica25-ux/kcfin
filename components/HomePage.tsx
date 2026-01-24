@@ -92,15 +92,15 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12">
             
-            {/* Financial Support (CASIEC) */}
+            {/* Casiec Financials */}
             <div className="group relative bg-white/[0.03] border border-white/5 p-10 md:p-14 rounded-[3rem] hover:border-nova-500/40 transition-all duration-500 flex flex-col">
                <div className="w-16 h-16 bg-nova-500/10 rounded-2xl flex items-center justify-center text-nova-500 mb-10 group-hover:scale-110 transition-transform">
                   <Wallet size={32} />
                </div>
-               <h2 className="text-4xl font-bold text-white mb-4 tracking-tighter">Institutional Capital</h2>
+               <h2 className="text-4xl font-bold text-white mb-4 tracking-tighter">Casiec Financials</h2>
                <p className="text-gray-400 mb-8 leading-relaxed font-light">Lending solutions managed by CASIEC Financials, focused on financial intermediation and NMSE stimulation.</p>
                <ul className="space-y-4 mb-12 flex-grow">
-                 {["Strategic Asset Finance", "NMSE Development Credit", "Corporate Refinancing", "Supply Chain Liquidity"].map((item, i) => (
+                 {["Wealth Management", "NMSE Development Credit", "Wealth Management Advisory", "Supply Chain Liquidity"].map((item, i) => (
                    <li key={i} className="flex items-center gap-4 text-sm text-gray-300">
                       <div className="w-1.5 h-1.5 rounded-full bg-nova-500"></div>
                       {item}
@@ -112,12 +112,12 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
                </button>
             </div>
 
-            {/* Strategic Support (GSI) - Updated to Orange */}
+            {/* GSI Strategic Alliances - Updated Name */}
             <div className="group relative bg-white/[0.03] border border-white/5 p-10 md:p-14 rounded-[3rem] hover:border-orange-500/40 transition-all duration-500 flex flex-col">
                <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 mb-10 group-hover:scale-110 transition-transform">
                   <Briefcase size={32} />
                </div>
-               <h2 className="text-4xl font-bold text-white mb-4 tracking-tighter">Enterprise Advisory</h2>
+               <h2 className="text-4xl font-bold text-white mb-4 tracking-tighter">GSI Strategic Alliances</h2>
                <p className="text-gray-400 mb-8 leading-relaxed font-light">Global Strategic Alliances powered by Broastreet DyDX, delivering corporate research and logistics architecture.</p>
                <ul className="space-y-4 mb-12 flex-grow">
                  {["Corporate Finance Research", "Market Entry Intelligence", "Commodity Trading Distribution", "Logistics Architecture"].map((item, i) => (

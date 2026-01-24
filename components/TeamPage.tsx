@@ -30,7 +30,7 @@ export const TeamPage: React.FC = () => {
             The <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-nova-400 to-purple-400 uppercase italic">Architects.</span>
           </h1>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-light">
-            A diverse collective of financial engineers, strategic advisors, and market specialists dedicated to driving continental success and economic advancement.
+            A diverse collective of financial engineers, strategic advisors, and market specialists dedicated to ‘unlocking value across enterprises’
           </p>
         </div>
       </div>

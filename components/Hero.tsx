@@ -25,7 +25,7 @@ export const Hero: React.FC<HeroProps> = ({ onGetFundedClick }) => {
             </h1>
             
             <p className="text-lg text-gray-400 mb-12 max-w-xl mx-auto lg:mx-0 leading-relaxed font-light">
-              Expert financial services for commercial real estate and NMSE growth. We architect institutional-grade capital solutions to stimulate sustainable economic advancement.
+              Bespoke Credit solutions & business support services
             </p>
             
             <div className="flex flex-col sm:flex-row gap-5 justify-center lg:justify-start">

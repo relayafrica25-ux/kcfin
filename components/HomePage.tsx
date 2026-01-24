@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Hero } from './Hero';
 import { FuturisticCarousel } from './FuturisticCarousel';
 import { FAQSection } from './FAQSection';
+import { NewsFeed } from './NewsFeed';
 import { Wallet, Network, CheckCircle, Target, Compass, Zap, Gem, ShieldCheck, Mail, Globe, Phone, Send, Clock, ChevronRight, ArrowRight, Database, Landmark, Briefcase, ChevronsUpRight, Check } from 'lucide-react';
 import { storageService } from '../services/storageService';
 import { ContactInquiry, Article } from '../types';
@@ -21,15 +22,6 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
-  const [latestInsights, setLatestInsights] = useState<Article[]>([]);
-
-  useEffect(() => {
-    const loadLatestInsights = () => {
-      const stored = storageService.getArticles();
-      setLatestInsights(stored.slice(0, 3));
-    };
-    loadLatestInsights();
-  }, []);
 
   const handleContactSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,7 +47,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
     <article className="bg-nova-950 overflow-hidden">
       <Hero onGetFundedClick={onApplyClick} />
 
-      {/* Strategic Alliances Banner - Updated Logos */}
+      {/* Strategic Alliances Banner */}
       <section className="py-16 bg-white/[0.02] border-y border-white/5 overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="flex flex-col md:flex-row items-center justify-center gap-10 md:gap-32 opacity-30 grayscale hover:grayscale-0 hover:opacity-100 transition-all duration-700">
@@ -73,7 +65,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
 
               <div className="h-10 w-px bg-white/10 hidden md:block"></div>
 
-              {/* Broastreet DyDX Logo Component - Updated to Orange Checkmark */}
+              {/* Broastreet DyDX Logo Component */}
               <div className="flex flex-col items-center">
                 <div className="flex items-center gap-2">
                   <span className="text-3xl font-black text-white tracking-tighter lowercase">broastreet</span>
@@ -112,7 +104,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
                </button>
             </div>
 
-            {/* GSI Strategic Alliances - Updated Name */}
+            {/* GSI Strategic Alliances */}
             <div className="group relative bg-white/[0.03] border border-white/5 p-10 md:p-14 rounded-[3rem] hover:border-orange-500/40 transition-all duration-500 flex flex-col">
                <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 mb-10 group-hover:scale-110 transition-transform">
                   <Briefcase size={32} />
@@ -136,7 +128,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
         </div>
       </section>
 
-      {/* Corporate Identity Section - ENHANCED TEXT VISIBILITY */}
+      {/* Corporate Identity Section */}
       <section className="py-32 bg-nova-900/50">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
            <div className="max-w-3xl mb-24">
@@ -183,49 +175,10 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
         </div>
       </section>
 
-      {/* Market Intelligence Feed */}
-      <section className="py-32">
+      {/* Live Market Intelligence Feed */}
+      <section className="py-32 relative overflow-hidden">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col md:flex-row items-center justify-between mb-16 gap-8">
-            <div>
-              <h2 className="text-xs font-black text-nova-500 uppercase tracking-[0.5em] mb-6">Knowledge Base</h2>
-              <h3 className="text-4xl md:text-5xl font-black text-white tracking-tighter uppercase italic">Market Intel.</h3>
-            </div>
-            <button onClick={() => onNavigate('insights')} className="flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 rounded-xl text-white font-black uppercase tracking-widest text-[11px] hover:bg-white/10 transition-all">
-              All Insights <ChevronRight size={18} />
-            </button>
-          </div>
-
-          <div className="grid md:grid-cols-3 gap-10">
-            {latestInsights.map((article) => (
-              <div 
-                key={article.id}
-                onClick={() => onOpenArticle(article)}
-                className="group cursor-pointer flex flex-col"
-              >
-                <div className="h-64 rounded-3xl overflow-hidden mb-8 relative">
-                   {article.imageUrl ? (
-                     <img 
-                      src={article.imageUrl} 
-                      className="w-full h-full object-cover grayscale opacity-60 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" 
-                      alt={article.title}
-                      loading="lazy"
-                    />
-                   ) : (
-                     <div className={`w-full h-full bg-gradient-to-br ${article.imageGradient} opacity-30`}></div>
-                   )}
-                   <div className="absolute top-6 left-6">
-                      <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-[9px] font-black text-white uppercase tracking-widest rounded-full">{article.category}</span>
-                   </div>
-                </div>
-                <div className="flex items-center gap-3 text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">
-                  <Clock size={12} /> {article.date}
-                </div>
-                <h4 className="text-xl font-bold text-white mb-4 group-hover:text-nova-500 transition-colors leading-tight line-clamp-2 tracking-tight">{article.title}</h4>
-                <p className="text-gray-500 text-sm leading-relaxed line-clamp-2 font-light">{article.excerpt}</p>
-              </div>
-            ))}
-          </div>
+          <NewsFeed />
         </div>
       </section>
 
@@ -294,7 +247,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
                           </div>
                           <div>
                               <label className="block text-[10px] text-gray-600 uppercase font-black tracking-widest mb-3 ml-2">Subject of Inquiry</label>
-                              <input required type="text" value={contactForm.subject} onChange={(e) => setContactForm({...contactForm, subject: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:outline-none focus:border-nova-500 transition-all text-sm font-bold" placeholder="e.g. Asset Finance Inquiry" />
+                              <input required type="text" value={contactForm.subject} onChange={(e) => setContactForm({...contactForm, subject: e.target.value})} className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:border-nova-500 transition-all text-sm font-bold" placeholder="e.g. Asset Finance Inquiry" />
                           </div>
                           <div>
                               <label className="block text-[10px] text-gray-600 uppercase font-black tracking-widest mb-3 ml-2">Detailed Brief</label>

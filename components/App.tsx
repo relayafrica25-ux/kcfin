@@ -125,7 +125,7 @@ const App: React.FC = () => {
               <div className="lg:col-span-5">
                 <div className="flex flex-col items-start mb-10">
                    <div className="flex items-center gap-1 group cursor-pointer" onClick={() => handleNavigate('home')}>
-                     <span className="text-4xl font-black text-white tracking-tighter lowercase group-hover:text-nova-500 transition-colors">casiec financial</span>
+                     <span className="text-4xl font-black text-white tracking-tighter group-hover:text-nova-500 transition-colors">Casiec financial</span>
                      <div className="flex flex-col -mb-1 translate-y-[-1px]">
                         <ChevronRight size={22} className="text-nova-accent -rotate-45" strokeWidth={3} />
                         <ChevronRight size={22} className="text-nova-accent -rotate-45 -mt-4" strokeWidth={3} />

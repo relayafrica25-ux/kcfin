@@ -129,14 +129,6 @@ export const InvestmentPage: React.FC = () => {
               </a>
             </div>
           </div>
-
-        </div>
-
-        {/* Minimum Investment Banner */}
-        <div className="mt-24 p-12 rounded-[3.5rem] bg-gradient-to-r from-gray-900 via-gray-800 to-gray-900 border border-yellow-500/10 text-center relative overflow-hidden group">
-           <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/grid-me.png')] opacity-[0.03] pointer-events-none"></div>
-           <h3 className="text-sm font-black text-gray-500 uppercase tracking-[0.5em] mb-4">Entry Threshold</h3>
-           <div className="text-5xl md:text-7xl font-serif text-yellow-500 mb-6 drop-shadow-[0_0_15px_rgba(234,179,8,0.2)]">₦10,000,000</div>
         </div>
       </div>
     </div>

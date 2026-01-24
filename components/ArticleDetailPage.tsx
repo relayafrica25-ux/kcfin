@@ -11,10 +11,10 @@ interface ArticleDetailPageProps {
 }
 
 export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({ article, onBack, onOpenArticle }) => {
+  const [allArticles, setAllArticles] = useState<Article[]>([]);
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
-  const allArticles = useMemo(() => storageService.getArticles(), []);
-  
+
   // Filter related articles (same category, excluding current)
   const relatedArticles = useMemo(() => {
     const related = allArticles
@@ -31,12 +31,17 @@ export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({ article, o
 
   useEffect(() => {
     window.scrollTo(0, 0);
+    const loadAllArticles = async () => {
+      const articles = await storageService.getArticles();
+      setAllArticles(articles);
+    };
+    loadAllArticles();
   }, [article.id]);
 
-  const handleSubscribe = (e: React.FormEvent) => {
+  const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
     if (email.trim()) {
-      storageService.saveNewsletterSubscription(email);
+      await storageService.saveNewsletterSubscription(email);
       setSubscribed(true);
       setEmail('');
       setTimeout(() => setSubscribed(false), 5000);
@@ -59,7 +64,7 @@ export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({ article, o
         </div>
 
         <div className="max-w-4xl mx-auto px-4 relative z-10">
-          <button 
+          <button
             onClick={onBack}
             className="group flex items-center gap-2 text-gray-500 hover:text-white transition-all text-[10px] font-black uppercase tracking-[0.3em] mb-12"
           >
@@ -68,13 +73,13 @@ export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({ article, o
           </button>
 
           <div className="flex items-center gap-4 mb-8">
-             <span className="px-4 py-1.5 bg-nova-500/10 border border-nova-500/20 text-nova-400 text-[10px] font-black uppercase tracking-[0.3em] rounded-full">
-                {article.category}
-             </span>
-             <div className="h-px w-12 bg-white/10"></div>
-             <span className="flex items-center gap-2 text-[10px] text-gray-500 font-black uppercase tracking-widest">
-                <Clock size={12} /> {article.readTime}
-             </span>
+            <span className="px-4 py-1.5 bg-nova-500/10 border border-nova-500/20 text-nova-400 text-[10px] font-black uppercase tracking-[0.3em] rounded-full">
+              {article.category}
+            </span>
+            <div className="h-px w-12 bg-white/10"></div>
+            <span className="flex items-center gap-2 text-[10px] text-gray-500 font-black uppercase tracking-widest">
+              <Clock size={12} /> {article.readTime}
+            </span>
           </div>
 
           <h1 className="text-4xl md:text-7xl font-black text-white mb-10 tracking-tighter leading-tight uppercase italic animate-fade-in-up">
@@ -84,22 +89,22 @@ export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({ article, o
           <div className="flex flex-wrap items-center justify-between gap-6 pt-10 border-t border-white/5">
             <div className="flex items-center gap-4">
               <div className="w-12 h-12 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-gray-400 overflow-hidden">
-                 <User size={20} />
+                <User size={20} />
               </div>
               <div>
                 <p className="text-white font-bold text-sm">By {article.author}</p>
                 <p className="text-[10px] text-gray-500 uppercase tracking-widest font-black flex items-center gap-2">
-                   <Calendar size={10} /> {article.date}
+                  <Calendar size={10} /> {article.date}
                 </p>
               </div>
             </div>
-            
+
             <div className="flex gap-3">
-               {[Twitter, Facebook, Linkedin].map((Icon, idx) => (
-                 <button key={idx} className="p-3 bg-white/5 border border-white/10 rounded-xl text-gray-500 hover:text-white transition-colors">
-                    <Icon size={16} />
-                 </button>
-               ))}
+              {[Twitter, Facebook, Linkedin].map((Icon, idx) => (
+                <button key={idx} className="p-3 bg-white/5 border border-white/10 rounded-xl text-gray-500 hover:text-white transition-colors">
+                  <Icon size={16} />
+                </button>
+              ))}
             </div>
           </div>
         </div>
@@ -112,7 +117,7 @@ export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({ article, o
           <p className="text-2xl md:text-3xl text-gray-200 font-bold leading-snug tracking-tight mb-16 italic border-l-4 border-nova-500 pl-8">
             {article.excerpt}
           </p>
-          
+
           <div className="space-y-10 text-lg md:text-xl text-gray-300 leading-relaxed font-light">
             {!article.content ? (
               <>
@@ -145,38 +150,38 @@ export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({ article, o
 
         {/* Newsletter / CTA */}
         <div className="mt-32 p-12 bg-nova-500/10 border border-nova-500/20 rounded-[3rem] text-center relative overflow-hidden group">
-           <div className="absolute inset-0 bg-gradient-to-br from-nova-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-           <Newspaper size={40} className="text-nova-500 mx-auto mb-8" />
-           <h3 className="text-3xl font-black text-white mb-6 uppercase italic tracking-tighter">Join the Intelligence Feed.</h3>
-           <p className="text-gray-400 mb-10 max-w-lg mx-auto font-medium">Receive institutional-grade market briefs and deal flow alerts directly in your terminal.</p>
-           
-           {subscribed ? (
-             <div className="flex flex-col items-center animate-fade-in-up">
-                <CheckCircle2 size={48} className="text-emerald-500 mb-4" />
-                <p className="text-white font-black uppercase tracking-widest text-sm">Transmission Confirmed. You're on the list.</p>
-             </div>
-           ) : (
-             <form onSubmit={handleSubscribe} className="max-w-md mx-auto relative group">
-                <div className="flex flex-col sm:flex-row gap-4 items-center">
-                   <div className="relative flex-grow w-full">
-                      <input 
-                        required
-                        type="email" 
-                        value={email}
-                        onChange={(e) => setEmail(e.target.value)}
-                        placeholder="Institutional Email" 
-                        className="w-full bg-black/40 border border-white/10 rounded-full py-5 px-8 text-white text-sm font-bold focus:outline-none focus:border-nova-500 transition-all placeholder:text-gray-600"
-                      />
-                   </div>
-                   <button 
-                     type="submit"
-                     className="px-10 py-5 bg-white text-nova-900 font-black uppercase tracking-widest text-xs rounded-full hover:bg-nova-500 hover:text-white transition-all shadow-2xl flex items-center gap-2 active:scale-95 flex-shrink-0"
-                   >
-                      Subscribe <Send size={14} />
-                   </button>
+          <div className="absolute inset-0 bg-gradient-to-br from-nova-500/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <Newspaper size={40} className="text-nova-500 mx-auto mb-8" />
+          <h3 className="text-3xl font-black text-white mb-6 uppercase italic tracking-tighter">Join the Intelligence Feed.</h3>
+          <p className="text-gray-400 mb-10 max-w-lg mx-auto font-medium">Receive institutional-grade market briefs and deal flow alerts directly in your terminal.</p>
+
+          {subscribed ? (
+            <div className="flex flex-col items-center animate-fade-in-up">
+              <CheckCircle2 size={48} className="text-emerald-500 mb-4" />
+              <p className="text-white font-black uppercase tracking-widest text-sm">Transmission Confirmed. You're on the list.</p>
+            </div>
+          ) : (
+            <form onSubmit={handleSubscribe} className="max-w-md mx-auto relative group">
+              <div className="flex flex-col sm:flex-row gap-4 items-center">
+                <div className="relative flex-grow w-full">
+                  <input
+                    required
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Institutional Email"
+                    className="w-full bg-black/40 border border-white/10 rounded-full py-5 px-8 text-white text-sm font-bold focus:outline-none focus:border-nova-500 transition-all placeholder:text-gray-600"
+                  />
                 </div>
-             </form>
-           )}
+                <button
+                  type="submit"
+                  className="px-10 py-5 bg-white text-nova-900 font-black uppercase tracking-widest text-xs rounded-full hover:bg-nova-500 hover:text-white transition-all shadow-2xl flex items-center gap-2 active:scale-95 flex-shrink-0"
+                >
+                  Subscribe <Send size={14} />
+                </button>
+              </div>
+            </form>
+          )}
         </div>
       </main>
 
@@ -188,7 +193,7 @@ export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({ article, o
               <h2 className="text-[10px] font-black text-nova-500 uppercase tracking-[0.5em] mb-4">Discovery Engine</h2>
               <h3 className="text-4xl font-black text-white tracking-tighter uppercase italic">Related Insights.</h3>
             </div>
-            <button 
+            <button
               onClick={onBack}
               className="hidden md:flex items-center gap-3 px-8 py-4 bg-white/5 border border-white/10 rounded-xl text-white font-black uppercase tracking-widest text-[11px] hover:bg-white/10 transition-all"
             >
@@ -198,25 +203,25 @@ export const ArticleDetailPage: React.FC<ArticleDetailPageProps> = ({ article, o
 
           <div className="grid md:grid-cols-3 gap-10">
             {relatedArticles.map((rel) => (
-              <div 
+              <div
                 key={rel.id}
                 onClick={() => onOpenArticle(rel)}
                 className="group cursor-pointer flex flex-col"
               >
                 <div className="h-64 rounded-[2.5rem] overflow-hidden mb-8 relative">
-                   {rel.imageUrl ? (
-                     <img 
-                      src={rel.imageUrl} 
-                      className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700" 
+                  {rel.imageUrl ? (
+                    <img
+                      src={rel.imageUrl}
+                      className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700"
                       alt={rel.title}
                       loading="lazy"
                     />
-                   ) : (
-                     <div className={`w-full h-full bg-gradient-to-br ${rel.imageGradient} opacity-30`}></div>
-                   )}
-                   <div className="absolute top-6 left-6">
-                      <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-[9px] font-black text-white uppercase tracking-widest rounded-full">{rel.category}</span>
-                   </div>
+                  ) : (
+                    <div className={`w-full h-full bg-gradient-to-br ${rel.imageGradient} opacity-30`}></div>
+                  )}
+                  <div className="absolute top-6 left-6">
+                    <span className="px-3 py-1 bg-black/60 backdrop-blur-md text-[9px] font-black text-white uppercase tracking-widest rounded-full">{rel.category}</span>
+                  </div>
                 </div>
                 <div className="flex items-center gap-3 text-[10px] font-black text-gray-500 uppercase tracking-widest mb-4">
                   <Calendar size={12} /> {rel.date}

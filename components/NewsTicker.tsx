@@ -9,11 +9,11 @@ export const NewsTicker: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadTickerData = () => {
+    const loadTickerData = async () => {
       try {
-        const manualItems = storageService.getManualTickerItems();
+        const manualItems = await storageService.getManualTickerItems();
         // Loop for seamless marquee
-        setTickerContent([...manualItems, ...manualItems]); 
+        setTickerContent([...manualItems, ...manualItems]);
       } catch (err) {
         setTickerContent([]);
       } finally {
@@ -41,13 +41,13 @@ export const NewsTicker: React.FC = () => {
         <div className="h-2 w-2 rounded-full bg-red-600 animate-pulse"></div>
         <span className="text-[10px] font-black text-red-500 uppercase tracking-[0.4em] whitespace-nowrap italic">Breaking</span>
       </div>
-      
+
       <div className="flex animate-marquee whitespace-nowrap items-center py-2">
         {tickerContent.map((item, idx) => (
           <div key={`${item.id}-${idx}`} className="flex items-center mx-12 gap-4 group">
             <Radio size={12} className="text-red-600 animate-pulse" />
             <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border border-white/5 bg-white/5 ${getCategoryColor(item.category)}`}>
-               {item.category}
+              {item.category}
             </span>
             <span className="text-[11px] text-white font-bold tracking-tight uppercase group-hover:text-nova-400 transition-colors">
               {item.text}

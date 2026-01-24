@@ -1,6 +1,7 @@
-
 import axios from 'axios';
 import { Article, LoanApplication, ContactInquiry, NewsletterSubscription, TickerItem, CarouselItem, TeamMember } from '../types';
+
+const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
 const ARTICLES_KEY = 'casiec_articles';
 const APPLICATIONS_KEY = 'casiec_applications';
@@ -72,212 +73,316 @@ const INITIAL_CAROUSEL: CarouselItem[] = [
 
 export const storageService = {
   // Articles
-  getArticles: (): Article[] => {
-    const saved = localStorage.getItem(ARTICLES_KEY);
-    if (!saved) {
-      localStorage.setItem(ARTICLES_KEY, JSON.stringify(INITIAL_ARTICLES));
-      return INITIAL_ARTICLES;
+  getArticles: async (): Promise<Article[]> => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/article`);
+      return response.data.map((item: any) => ({
+        id: item.id,
+        title: item.headline,
+        excerpt: item.summary,
+        category: item.category,
+        readTime: item.readTime || '5 min read',
+        author: item.author || 'CASIEC Editorial',
+        date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : new Date().toLocaleDateString(),
+        imageGradient: item.imageGradient || 'from-gray-900 to-black',
+        imageUrl: item.image,
+        content: item.content
+      }));
+    } catch (error) {
+      console.error('Failed to fetch articles:', error);
+      return [];
     }
-    return JSON.parse(saved);
   },
 
-  saveArticle: (article: Article) => {
-    const articles = storageService.getArticles();
-    const existingIndex = articles.findIndex(a => a.id === article.id);
-    if (existingIndex > -1) {
-      articles[existingIndex] = article;
-    } else {
-      articles.unshift(article);
+  saveArticle: async (article: Article) => {
+    const payload = {
+      headline: article.title,
+      summary: article.excerpt,
+      category: article.category,
+      image: article.imageUrl,
+      readTime: article.readTime,
+      author: article.author,
+      imageGradient: article.imageGradient,
+      content: article.content
+    };
+    try {
+      if (article.id && !article.id.startsWith('temp-')) {
+        await axios.patch(`${API_BASE_URL}/article/${article.id}`, payload);
+      } else {
+        await axios.post(`${API_BASE_URL}/article`, payload);
+      }
+    } catch (error) {
+      console.error('Failed to save article:', error);
+      throw error;
     }
-    localStorage.setItem(ARTICLES_KEY, JSON.stringify(articles));
   },
 
-  deleteArticle: (id: string) => {
-    const articles = storageService.getArticles().filter(a => a.id !== id);
-    localStorage.setItem(ARTICLES_KEY, JSON.stringify(articles));
+  deleteArticle: async (id: string) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/article/${id}`);
+    } catch (error) {
+      console.error('Failed to delete article:', error);
+      throw error;
+    }
   },
 
   // Team Members
-  getTeamMembers: (): TeamMember[] => {
-    const saved = localStorage.getItem(TEAM_KEY);
-    if (!saved) {
-      localStorage.setItem(TEAM_KEY, JSON.stringify(INITIAL_TEAM));
+  getTeamMembers: async (): Promise<TeamMember[]> => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/team`);
+      if (response.data.length === 0) return INITIAL_TEAM;
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch team members:', error);
       return INITIAL_TEAM;
     }
-    return JSON.parse(saved);
   },
 
-  saveTeamMember: (member: TeamMember) => {
-    const members = storageService.getTeamMembers();
-    const existingIndex = members.findIndex(m => m.id === member.id);
-    if (existingIndex > -1) {
-      members[existingIndex] = member;
-    } else {
-      members.push(member);
+  saveTeamMember: async (member: TeamMember) => {
+    try {
+      if (member.id && !member.id.startsWith('temp-')) {
+        await axios.patch(`${API_BASE_URL}/team/${member.id}`, member);
+      } else {
+        const { id, ...payload } = member;
+        await axios.post(`${API_BASE_URL}/team`, payload);
+      }
+    } catch (error) {
+      console.error('Failed to save team member:', error);
+      throw error;
     }
-    localStorage.setItem(TEAM_KEY, JSON.stringify(members));
   },
 
-  deleteTeamMember: (id: string) => {
-    const members = storageService.getTeamMembers().filter(m => m.id !== id);
-    localStorage.setItem(TEAM_KEY, JSON.stringify(members));
+  deleteTeamMember: async (id: string) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/team/${id}`);
+    } catch (error) {
+      console.error('Failed to delete team member:', error);
+      throw error;
+    }
   },
 
   // Carousel
-  getCarouselItems: (): CarouselItem[] => {
-    const saved = localStorage.getItem(CAROUSEL_KEY);
-    if (!saved) {
-      localStorage.setItem(CAROUSEL_KEY, JSON.stringify(INITIAL_CAROUSEL));
+  getCarouselItems: async (): Promise<CarouselItem[]> => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/carousel`);
+      if (response.data.length === 0) return INITIAL_CAROUSEL;
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch carousel items:', error);
       return INITIAL_CAROUSEL;
     }
-    return JSON.parse(saved);
   },
 
-  saveCarouselItem: (item: CarouselItem) => {
-    const items = storageService.getCarouselItems();
-    const existingIndex = items.findIndex(i => i.id === item.id);
-    if (existingIndex > -1) {
-      items[existingIndex] = item;
-    } else {
-      items.unshift(item);
+  saveCarouselItem: async (item: CarouselItem) => {
+    try {
+      if (item.id && !item.id.startsWith('temp-')) {
+        await axios.patch(`${API_BASE_URL}/carousel/${item.id}`, item);
+      } else {
+        const { id, ...payload } = item;
+        await axios.post(`${API_BASE_URL}/carousel`, payload);
+      }
+    } catch (error) {
+      console.error('Failed to save carousel item:', error);
+      throw error;
     }
-    localStorage.setItem(CAROUSEL_KEY, JSON.stringify(items));
   },
 
-  deleteCarouselItem: (id: string) => {
-    const items = storageService.getCarouselItems().filter(i => i.id !== id);
-    localStorage.setItem(CAROUSEL_KEY, JSON.stringify(items));
+  deleteCarouselItem: async (id: string) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/carousel/${id}`);
+    } catch (error) {
+      console.error('Failed to delete carousel item:', error);
+      throw error;
+    }
   },
 
   // Applications
-  getApplications: (): LoanApplication[] => {
-    const saved = localStorage.getItem(APPLICATIONS_KEY);
-    return saved ? JSON.parse(saved) : [];
-  },
-
-  saveApplication: (app: LoanApplication) => {
-    const apps = storageService.getApplications();
-    apps.unshift(app);
-    localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(apps));
-  },
-
-  updateApplicationStatus: (id: string, status: LoanApplication['status']) => {
-    const apps = storageService.getApplications();
-    const app = apps.find(a => a.id === id);
-    if (app) {
-      app.status = status;
-      localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(apps));
+  getApplications: async (): Promise<LoanApplication[]> => {
+    try {
+      const [financeRes, supportRes] = await Promise.all([
+        axios.get(`${API_BASE_URL}/finance`),
+        axios.get(`${API_BASE_URL}/support`)
+      ]);
+      const financeApps = financeRes.data.map((app: any) => ({ ...app, type: 'financial' }));
+      const supportApps = supportRes.data.map((app: any) => ({ ...app, type: 'business_support' }));
+      return [...financeApps, ...supportApps].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+    } catch (error) {
+      console.error('Failed to fetch applications:', error);
+      return [];
     }
   },
 
-  deleteApplication: (id: string) => {
-    const apps = storageService.getApplications().filter(a => a.id !== id);
-    localStorage.setItem(APPLICATIONS_KEY, JSON.stringify(apps));
+  saveApplication: async (app: LoanApplication) => {
+    const endpoint = app.type === 'financial' ? 'finance' : 'support';
+    const payload = {
+      fullName: app.fullName,
+      email: app.email,
+      phone: app.phone,
+      designatedRole: app.role,
+      businessName: app.businessName,
+      isRegistered: app.cacNumber ? true : false,
+      regNumber: app.cacNumber,
+      industryFocus: app.industry,
+      requirement: app.description,
+      [app.type === 'financial' ? 'financialProduct' : 'advisoryPillars']: app.loanType || app.serviceType
+    };
+    try {
+      await axios.post(`${API_BASE_URL}/${endpoint}`, payload);
+    } catch (error) {
+      console.error(`Failed to save ${app.type} application:`, error);
+      throw error;
+    }
+  },
+
+  updateApplicationStatus: async (id: string, status: LoanApplication['status']) => {
+    // We determine the correct endpoint by fetching the application first or by convention
+    // Since we don't have a single "application" table in backend yet, we might need to try both or add it.
+    // For now, let's assume we can try to patch both or add a generic application module.
+    try {
+      // Try finance first
+      await axios.patch(`${API_BASE_URL}/finance/${id}`, { status });
+    } catch (e) {
+      try {
+        // Try support if finance fails
+        await axios.patch(`${API_BASE_URL}/support/${id}`, { status });
+      } catch (err) {
+        console.error('Failed to update application status:', err);
+      }
+    }
+  },
+
+  deleteApplication: async (id: string) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/finance/${id}`);
+    } catch (e) {
+      try {
+        await axios.delete(`${API_BASE_URL}/support/${id}`);
+      } catch (err) {
+        console.error('Failed to delete application:', err);
+      }
+    }
   },
 
   // Inquiries
-  getInquiries: (): ContactInquiry[] => {
-    const saved = localStorage.getItem(INQUIRIES_KEY);
-    return saved ? JSON.parse(saved) : [];
-  },
-
-  saveInquiry: (inquiry: ContactInquiry) => {
-    const inquiries = storageService.getInquiries();
-    inquiries.unshift(inquiry);
-    localStorage.setItem(INQUIRIES_KEY, JSON.stringify(inquiries));
-  },
-
-  updateInquiryStatus: (id: string, status: ContactInquiry['status']) => {
-    const inquiries = storageService.getInquiries();
-    const inquiry = inquiries.find(i => i.id === id);
-    if (inquiry) {
-      inquiry.status = status;
-      localStorage.setItem(INQUIRIES_KEY, JSON.stringify(inquiries));
+  getInquiries: async (): Promise<ContactInquiry[]> => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/contact`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch inquiries:', error);
+      return [];
     }
   },
 
-  deleteInquiry: (id: string) => {
-    const inquiries = storageService.getInquiries().filter(i => i.id !== id);
-    localStorage.setItem(INQUIRIES_KEY, JSON.stringify(inquiries));
+  saveInquiry: async (inquiry: ContactInquiry) => {
+    try {
+      await axios.post(`${API_BASE_URL}/contact`, {
+        email: inquiry.email,
+        fullName: inquiry.fullName,
+        subject: inquiry.subject,
+        message: inquiry.message
+      });
+    } catch (error) {
+      console.error('Failed to save inquiry:', error);
+      throw error;
+    }
+  },
+
+  updateInquiryStatus: async (id: string, status: ContactInquiry['status']) => {
+    try {
+      await axios.patch(`${API_BASE_URL}/contact/${id}`, { status });
+    } catch (error) {
+      console.error('Failed to update inquiry status:', error);
+    }
+  },
+
+  deleteInquiry: async (id: string) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/contact/${id}`);
+    } catch (error) {
+      console.error('Failed to delete inquiry:', error);
+    }
   },
 
   // Ticker Management (Breaking News)
-  getManualTickerItems: (): TickerItem[] => {
-    const saved = localStorage.getItem(TICKER_KEY);
-    if (!saved) {
-      localStorage.setItem(TICKER_KEY, JSON.stringify(INITIAL_BREAKING_NEWS));
+  getManualTickerItems: async (): Promise<TickerItem[]> => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/ticker`);
+      if (response.data.length === 0) return INITIAL_BREAKING_NEWS;
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch ticker items:', error);
       return INITIAL_BREAKING_NEWS;
     }
-    return JSON.parse(saved);
   },
 
-  saveTickerItem: (item: TickerItem) => {
-    const items = storageService.getManualTickerItems();
-    items.unshift(item);
-    localStorage.setItem(TICKER_KEY, JSON.stringify(items));
+  saveTickerItem: async (item: TickerItem) => {
+    try {
+      await axios.post(`${API_BASE_URL}/ticker`, {
+        text: item.text,
+        category: item.category,
+        isManual: item.isManual
+      });
+    } catch (error) {
+      console.error('Failed to save ticker item:', error);
+      throw error;
+    }
   },
 
-  deleteTickerItem: (id: string) => {
-    const items = storageService.getManualTickerItems().filter(i => i.id !== id);
-    localStorage.setItem(TICKER_KEY, JSON.stringify(items));
+  deleteTickerItem: async (id: string) => {
+    try {
+      await axios.delete(`${API_BASE_URL}/ticker/${id}`);
+    } catch (error) {
+      console.error('Failed to delete ticker item:', error);
+      throw error;
+    }
   },
 
   // Newsletter Subscriptions
-  getNewsletterSubscriptions: (): NewsletterSubscription[] => {
-    const saved = localStorage.getItem(NEWSLETTER_KEY);
-    return saved ? JSON.parse(saved) : [];
+  getNewsletterSubscriptions: async (): Promise<NewsletterSubscription[]> => {
+    try {
+      const response = await axios.get(`${API_BASE_URL}/contact`);
+      // Filter for newsletter-style inquiries or create a separate endpoint in future
+      return response.data.filter((i: any) => !i.subject);
+    } catch (error) {
+      console.error('Failed to fetch newsletter subscriptions:', error);
+      return [];
+    }
   },
 
   saveNewsletterSubscription: async (email: string): Promise<{ success: boolean; message?: string; statusCode?: number }> => {
-    const subs = storageService.getNewsletterSubscriptions();
-    // if (subs.find(s => s.email.toLowerCase() === email.toLowerCase())) return;
     try {
-      await axios.post('http://localhost:3000/contact', { email });
-      const newSub: NewsletterSubscription = {
-        id: Math.random().toString(36).substr(2, 9),
-        email: email.toLowerCase(),
-        date: new Date().toLocaleString()
-      };
-      subs.unshift(newSub);
-      localStorage.setItem(NEWSLETTER_KEY, JSON.stringify(subs));
+      await axios.post(`${API_BASE_URL}/contact`, { email: email.toLowerCase() });
       return { success: true };
     } catch (error) {
       console.error('Failed to save newsletter subscription:', error);
       if (axios.isAxiosError(error)) {
         const statusCode = error.response?.status;
-        const message = error.response?.data?.message || error.message || 'Failed to subscribe to newsletter';
+        const message = error.response?.data?.message || 'Failed to subscribe';
         return { success: false, message, statusCode };
       }
       return { success: false, message: 'An unexpected error occurred' };
     }
   },
 
-  deleteNewsletterSubscription: (id: string) => {
-    const subs = storageService.getNewsletterSubscriptions().filter(s => s.id !== id);
-    localStorage.setItem(NEWSLETTER_KEY, JSON.stringify(subs));
-  },
-
-  // Admin Users
-  getUsers: () => {
-    const saved = localStorage.getItem(USERS_KEY);
-    return saved ? JSON.parse(saved) : [];
-  },
-
-  registerUser: (username: string, email: string, password: string) => {
-    const users = storageService.getUsers();
-    if (users.find((u: any) => u.email === email || u.username === username)) {
-      throw new Error("User already exists");
+  // Auth
+  authenticateUser: async (emailOrUsername: string, password: string) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
+        email: emailOrUsername,
+        password: password
+      });
+      if (response.data.access_token) {
+        localStorage.setItem('casiec_token', response.data.access_token);
+        return true;
+      }
+      return false;
+    } catch (error) {
+      console.error('Auth failed:', error);
+      // Fallback for dev/legacy
+      if (emailOrUsername === 'admin' && password === 'admin') return true;
+      return false;
     }
-    users.push({ username, email, password });
-    localStorage.setItem(USERS_KEY, JSON.stringify(users));
-  },
-
-  authenticateUser: (emailOrUsername: string, password: string) => {
-    const users = storageService.getUsers();
-    if (emailOrUsername === 'admin' && password === 'admin') return true;
-
-    return users.some((u: any) =>
-      (u.email === emailOrUsername || u.username === emailOrUsername) && u.password === password
-    );
   }
 };
+

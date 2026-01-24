@@ -12,10 +12,11 @@ export const FuturisticCarousel: React.FC = () => {
   const progressRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const loadContent = () => {
+    const loadContent = async () => {
       setLoading(true);
       try {
-        setItems(storageService.getCarouselItems());
+        const carouselItems = await storageService.getCarouselItems();
+        setItems(carouselItems);
       } catch (e) {
         console.error("Transmission error:", e);
       }
@@ -26,16 +27,16 @@ export const FuturisticCarousel: React.FC = () => {
 
   useEffect(() => {
     if (loading || isPaused || items.length === 0) return;
-    
+
     // Updated duration to 5 seconds as requested
-    const duration = 5000; 
+    const duration = 5000;
     const startTime = Date.now();
 
     const animate = () => {
       if (isPaused) return;
       const elapsed = Date.now() - startTime;
       const progress = Math.min((elapsed / duration) * 100, 100);
-      
+
       if (progressRef.current) {
         progressRef.current.style.width = `${progress}%`;
       }
@@ -55,7 +56,7 @@ export const FuturisticCarousel: React.FC = () => {
   const handleManualNav = (direction: 'next' | 'prev') => {
     // Reset progress bar immediately on manual navigation
     if (progressRef.current) progressRef.current.style.width = '0%';
-    
+
     setActiveIndex(prev => {
       if (direction === 'next') return (prev + 1) % items.length;
       return (prev - 1 + items.length) % items.length;
@@ -94,7 +95,7 @@ export const FuturisticCarousel: React.FC = () => {
   const currentItem = items[activeIndex];
 
   return (
-    <div 
+    <div
       className="relative w-full h-[550px] overflow-hidden rounded-[3rem] bg-nova-900 border border-white/10 group cursor-pointer"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -102,42 +103,42 @@ export const FuturisticCarousel: React.FC = () => {
     >
       <div className="absolute inset-0 transition-all duration-1000 pointer-events-none">
         {currentItem.imageUrl ? (
-            <div className="absolute inset-0 z-0">
-               <img 
-                src={currentItem.imageUrl} 
-                className="w-full h-full object-cover opacity-30 mix-blend-luminosity transition-transform duration-[5000ms] group-hover:scale-105" 
-                alt={currentItem.title}
-                fetchpriority={activeIndex === 0 ? "high" : "low"}
-              />
-               <div className={`absolute inset-0 bg-gradient-to-br ${currentItem.imageGradient} opacity-40`}></div>
-            </div>
+          <div className="absolute inset-0 z-0">
+            <img
+              src={currentItem.imageUrl}
+              className="w-full h-full object-cover opacity-30 mix-blend-luminosity transition-transform duration-[5000ms] group-hover:scale-105"
+              alt={currentItem.title}
+              fetchpriority={activeIndex === 0 ? "high" : "low"}
+            />
+            <div className={`absolute inset-0 bg-gradient-to-br ${currentItem.imageGradient} opacity-40`}></div>
+          </div>
         ) : (
-            <div className={`absolute inset-0 bg-gradient-to-br ${currentItem.imageGradient} opacity-20`}></div>
+          <div className={`absolute inset-0 bg-gradient-to-br ${currentItem.imageGradient} opacity-20`}></div>
         )}
       </div>
 
       <div className="relative z-10 grid lg:grid-cols-12 h-full">
         <div className="lg:col-span-7 p-10 md:p-16 flex flex-col justify-center select-none">
-           <div className="mb-8 flex items-center gap-4">
-              <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-lg ${getTypeColor(currentItem.type)} text-white`}>
-                {getTypeIcon(currentItem.type)}
-                {currentItem.tag}
-              </span>
-           </div>
-           <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-[1.1] tracking-tighter">{currentItem.title}</h2>
-           <p className="text-xl text-gray-400 mb-10 max-w-xl font-light leading-relaxed">{currentItem.summary}</p>
-           <div className="flex flex-wrap items-center gap-6">
-              <div 
-                onClick={(e) => {
-                  e.stopPropagation();
-                  if (currentItem.link) window.open(currentItem.link, '_blank');
-                }}
-                className="group/btn flex items-center gap-3 px-10 py-5 rounded-2xl bg-white text-nova-900 font-black uppercase tracking-widest text-[11px] hover:bg-nova-400 hover:text-white transition-all active:scale-95 cursor-pointer shadow-xl shadow-white/5"
-              >
-                {currentItem.linkText || 'Learn More'}
-                <ArrowUpRight size={20} />
-              </div>
-           </div>
+          <div className="mb-8 flex items-center gap-4">
+            <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-lg ${getTypeColor(currentItem.type)} text-white`}>
+              {getTypeIcon(currentItem.type)}
+              {currentItem.tag}
+            </span>
+          </div>
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-[1.1] tracking-tighter">{currentItem.title}</h2>
+          <p className="text-xl text-gray-400 mb-10 max-w-xl font-light leading-relaxed">{currentItem.summary}</p>
+          <div className="flex flex-wrap items-center gap-6">
+            <div
+              onClick={(e) => {
+                e.stopPropagation();
+                if (currentItem.link) window.open(currentItem.link, '_blank');
+              }}
+              className="group/btn flex items-center gap-3 px-10 py-5 rounded-2xl bg-white text-nova-900 font-black uppercase tracking-widest text-[11px] hover:bg-nova-400 hover:text-white transition-all active:scale-95 cursor-pointer shadow-xl shadow-white/5"
+            >
+              {currentItem.linkText || 'Learn More'}
+              <ArrowUpRight size={20} />
+            </div>
+          </div>
         </div>
       </div>
 
@@ -148,21 +149,21 @@ export const FuturisticCarousel: React.FC = () => {
 
       {/* Manual Navigation Controls */}
       <div className="absolute bottom-12 right-10 md:right-16 flex gap-4 z-20">
-        <button 
+        <button
           onClick={(e) => {
             e.stopPropagation();
             handleManualNav('prev');
-          }} 
+          }}
           className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all active:scale-90"
           aria-label="Previous Campaign"
         >
           <ChevronLeft size={20} />
         </button>
-        <button 
+        <button
           onClick={(e) => {
             e.stopPropagation();
             handleManualNav('next');
-          }} 
+          }}
           className="p-4 rounded-2xl bg-white/5 border border-white/10 text-white hover:bg-white/10 transition-all active:scale-90"
           aria-label="Next Campaign"
         >
@@ -173,7 +174,7 @@ export const FuturisticCarousel: React.FC = () => {
       {/* Page Indicators */}
       <div className="absolute bottom-12 left-10 md:left-16 flex gap-2 z-20">
         {items.map((_, idx) => (
-          <button 
+          <button
             key={idx}
             onClick={(e) => {
               e.stopPropagation();
@@ -185,7 +186,7 @@ export const FuturisticCarousel: React.FC = () => {
           />
         ))}
       </div>
-      
+
       {/* Subtle interaction feedback */}
       <div className="absolute inset-0 bg-nova-500/0 hover:bg-nova-500/5 transition-colors pointer-events-none duration-500"></div>
     </div>

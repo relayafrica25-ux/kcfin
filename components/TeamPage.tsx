@@ -8,10 +8,11 @@ export const TeamPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loadTeam = () => {
+    const loadTeam = async () => {
       setLoading(true);
       try {
-        setTeam(storageService.getTeamMembers());
+        const teamMembers = await storageService.getTeamMembers();
+        setTeam(teamMembers);
       } catch (err) {
         console.error("Uplink failed:", err);
       }
@@ -48,30 +49,30 @@ export const TeamPage: React.FC = () => {
             {team.map((member) => (
               <div key={member.id} className="group relative flex flex-col glass-panel rounded-[2.5rem] border border-white/5 overflow-hidden hover:border-nova-500/30 transition-all duration-500 hover:translate-y-[-8px]">
                 <div className={`h-72 relative bg-gradient-to-br ${member.imageGradient} opacity-80 group-hover:opacity-100 transition-all duration-500`}>
-                   {member.imageUrl ? (
-                     <img src={member.imageUrl} className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={member.name} />
-                   ) : (
-                     <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
-                   )}
-                   <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center z-10">
-                      <span className="px-3 py-1 bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest rounded-full">
-                        {member.specialization}
-                      </span>
-                      {member.linkedin && (
-                        <a href={member.linkedin} target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white/50 group-hover:text-white transition-colors">
-                            <Linkedin size={14} />
-                        </a>
-                      )}
-                   </div>
+                  {member.imageUrl ? (
+                    <img src={member.imageUrl} className="absolute inset-0 w-full h-full object-cover transition-transform duration-1000 group-hover:scale-105" alt={member.name} />
+                  ) : (
+                    <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/carbon-fibre.png')] opacity-20"></div>
+                  )}
+                  <div className="absolute bottom-4 left-4 right-4 flex justify-between items-center z-10">
+                    <span className="px-3 py-1 bg-black/60 backdrop-blur-md border border-white/10 text-[10px] font-bold text-white uppercase tracking-widest rounded-full">
+                      {member.specialization}
+                    </span>
+                    {member.linkedin && (
+                      <a href={member.linkedin} target="_blank" rel="noreferrer" className="w-8 h-8 rounded-full bg-white/10 backdrop-blur-sm flex items-center justify-center text-white/50 group-hover:text-white transition-colors">
+                        <Linkedin size={14} />
+                      </a>
+                    )}
+                  </div>
                 </div>
-                
+
                 <div className="p-8 flex flex-col flex-grow bg-nova-900/40">
                   <h3 className="text-xl font-bold text-white mb-1 group-hover:text-nova-400 transition-colors">{member.name}</h3>
                   <p className="text-[10px] text-gray-500 uppercase tracking-widest font-black mb-6">{member.role}</p>
                   <p className="text-gray-400 text-sm leading-relaxed mb-8 line-clamp-4 font-light">
                     {member.bio}
                   </p>
-                  
+
                   <div className="mt-auto pt-6 border-t border-white/5 flex gap-4">
                     {member.linkedin && <a href={member.linkedin} target="_blank" rel="noreferrer" className="text-gray-600 hover:text-white transition-colors"><Linkedin size={18} /></a>}
                     {member.twitter && <a href={member.twitter} target="_blank" rel="noreferrer" className="text-gray-600 hover:text-white transition-colors"><Twitter size={18} /></a>}

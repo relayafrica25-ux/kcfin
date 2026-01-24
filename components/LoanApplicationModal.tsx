@@ -15,7 +15,7 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
   const [step, setStep] = useState(1);
   const [appType, setAppType] = useState<ApplicationType>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  
+
   const [formData, setFormData] = useState({
     loanType: '',
     serviceType: '',
@@ -103,9 +103,9 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isStepValid()) return;
-    
+
     setIsSubmitting(true);
-    
+
     const application: LoanApplication = {
       id: Math.random().toString(36).substr(2, 9),
       date: new Date().toLocaleDateString(),
@@ -114,10 +114,10 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
       status: 'Pending'
     };
 
-    storageService.saveApplication(application);
+    await storageService.saveApplication(application);
 
     await new Promise(resolve => setTimeout(resolve, 1500));
-    setStep(6); 
+    setStep(6);
     setIsSubmitting(false);
   };
 
@@ -126,7 +126,7 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
       setStep(prev => prev + 1);
     }
   };
-  
+
   const prevStep = () => setStep(prev => prev - 1);
   const isFinancial = appType === 'financial';
 
@@ -137,12 +137,12 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
     <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose}></div>
       <div className="relative w-full max-w-3xl bg-nova-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up font-sans">
-        
+
         <div className="flex items-center justify-between p-6 border-b border-white/10 bg-white/5">
           <div>
             <h2 className="text-xl font-bold text-white tracking-tight">
-                {step === 1 ? 'Initiate Inquiry' : 
-                 isFinancial ? 'CASIEC Financial Solutions' : 'GSI STRATEGIC ALLIANCES (Broastreet DyDX) Inquiry'}
+              {step === 1 ? 'Initiate Inquiry' :
+                isFinancial ? 'CASIEC Financial Solutions' : 'GSI STRATEGIC ALLIANCES (Broastreet DyDX) Inquiry'}
             </h2>
             <p className="text-sm text-gray-400">Step {step > totalSteps ? totalSteps : step} of {totalSteps}</p>
           </div>
@@ -178,13 +178,13 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {isFinancial ? (
                   ['Asset Finance', 'Consumer Loan', 'Working Capital Loans', 'Group Loans', 'Gender Credit', 'Refinancing Credit', 'Creative Economy Loans', 'TOP Onlending Loans', 'Clean Energy Credit'].map((label) => (
-                    <div key={label} onClick={() => { setFormData({...formData, loanType: label}); setTimeout(nextStep, 200); }} className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center gap-3 ${formData.loanType === label ? 'bg-nova-500/20 border-nova-500' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}>
+                    <div key={label} onClick={() => { setFormData({ ...formData, loanType: label }); setTimeout(nextStep, 200); }} className={`p-4 rounded-xl border cursor-pointer transition-all flex items-center gap-3 ${formData.loanType === label ? 'bg-nova-500/20 border-nova-500' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}>
                       <span className="font-bold text-sm tracking-tight">{label}</span>
                     </div>
                   ))
                 ) : (
                   ['Business Support Services', 'Corporate Finance, Research & Advisory', 'Supply Chain, Commodity Trading & Distribution'].map((label) => (
-                    <div key={label} onClick={() => { setFormData({...formData, serviceType: label}); setTimeout(nextStep, 200); }} className={`p-6 rounded-xl border cursor-pointer transition-all flex items-center gap-4 ${formData.serviceType === label ? 'bg-purple-500/20 border-purple-500' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}>
+                    <div key={label} onClick={() => { setFormData({ ...formData, serviceType: label }); setTimeout(nextStep, 200); }} className={`p-6 rounded-xl border cursor-pointer transition-all flex items-center gap-4 ${formData.serviceType === label ? 'bg-purple-500/20 border-purple-500' : 'bg-white/5 border-white/5 hover:bg-white/10'}`}>
                       <span className="font-bold text-base tracking-tight">{label}</span>
                     </div>
                   ))
@@ -200,10 +200,10 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div className="col-span-full">
                   <label className="flex items-center gap-3 p-4 bg-white/5 border border-white/10 rounded-2xl cursor-pointer hover:bg-white/10 transition-all">
-                    <input 
-                      type="checkbox" 
-                      name="isCacRegistered" 
-                      checked={formData.isCacRegistered} 
+                    <input
+                      type="checkbox"
+                      name="isCacRegistered"
+                      checked={formData.isCacRegistered}
                       onChange={handleInputChange}
                       className="w-5 h-5 rounded border-white/20 bg-nova-800 text-nova-500 focus:ring-nova-500"
                     />
@@ -244,7 +244,7 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
                 <FileText className="text-nova-400" size={28} />
                 <h3 className="text-2xl font-bold text-white uppercase tracking-tight">Documentation Checklist</h3>
               </div>
-              
+
               <div className="p-4 bg-white/5 border-l-4 border-nova-500 rounded-r-2xl mb-6">
                 <p className="text-sm text-gray-300 leading-relaxed italic">
                   To ensure a seamless processing experience, please acknowledge that you have or can provide the following documentation upon request.
@@ -253,33 +253,33 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
 
               <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 custom-scrollbar">
                 <div className="bg-white/5 p-6 rounded-3xl border border-white/5">
-                   <h4 className="text-[10px] font-black text-nova-400 uppercase tracking-[0.2em] mb-4">Lending Requirements</h4>
-                   <ul className="grid gap-3">
-                      {[
-                        "Completed Application letter (Form & Search Report)",
-                        "Bank Statement (6/12 months) or Financials (1 year)",
-                        "Valid ID (Passport/National ID/Driver's License) & Passport Photograph",
-                        "BVN and NIM (National Identification Number)",
-                        "Payment evidence of Search fee",
-                        "Guarantor(s) Form & Documentation",
-                        "Valid Cheque leaves (Guarantor and Borrower)",
-                        "Asset Debenture & Movable Stocks details",
-                        "Confirmed Address & Pledged Assets Verification",
-                        ...(formData.isCacRegistered ? [
-                          "CAC Registration Documents (Certificates/Status Reports)",
-                          "Valid Statutory Regulatory Certifications",
-                          "Transaction Brief / Business Plan (Recommended)"
-                        ] : [
-                          "Personal/Staff Support introduction letter (if applicable)",
-                          "Photocopy of valid Company ID card"
-                        ])
-                      ].map((item, i) => (
-                        <li key={i} className="flex gap-3 text-sm text-gray-400 items-start group">
-                           <CheckSquare size={16} className="text-nova-500 mt-0.5 flex-shrink-0" />
-                           <span className="group-hover:text-white transition-colors">{item}</span>
-                        </li>
-                      ))}
-                   </ul>
+                  <h4 className="text-[10px] font-black text-nova-400 uppercase tracking-[0.2em] mb-4">Lending Requirements</h4>
+                  <ul className="grid gap-3">
+                    {[
+                      "Completed Application letter (Form & Search Report)",
+                      "Bank Statement (6/12 months) or Financials (1 year)",
+                      "Valid ID (Passport/National ID/Driver's License) & Passport Photograph",
+                      "BVN and NIM (National Identification Number)",
+                      "Payment evidence of Search fee",
+                      "Guarantor(s) Form & Documentation",
+                      "Valid Cheque leaves (Guarantor and Borrower)",
+                      "Asset Debenture & Movable Stocks details",
+                      "Confirmed Address & Pledged Assets Verification",
+                      ...(formData.isCacRegistered ? [
+                        "CAC Registration Documents (Certificates/Status Reports)",
+                        "Valid Statutory Regulatory Certifications",
+                        "Transaction Brief / Business Plan (Recommended)"
+                      ] : [
+                        "Personal/Staff Support introduction letter (if applicable)",
+                        "Photocopy of valid Company ID card"
+                      ])
+                    ].map((item, i) => (
+                      <li key={i} className="flex gap-3 text-sm text-gray-400 items-start group">
+                        <CheckSquare size={16} className="text-nova-500 mt-0.5 flex-shrink-0" />
+                        <span className="group-hover:text-white transition-colors">{item}</span>
+                      </li>
+                    ))}
+                  </ul>
                 </div>
 
                 <div className="p-6 bg-nova-500/10 border border-nova-500/20 rounded-3xl flex items-start gap-4">
@@ -296,17 +296,17 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
               </div>
 
               <div className="pt-4">
-                 <label className="flex items-center gap-4 p-5 bg-white/5 border border-nova-500/30 rounded-2xl cursor-pointer hover:bg-nova-500/10 transition-all">
-                    <input 
-                      required 
-                      type="checkbox" 
-                      name="isAcknowledged"
-                      checked={formData.isAcknowledged}
-                      onChange={handleInputChange}
-                      className="w-6 h-6 rounded border-white/20 bg-nova-800 text-nova-500 focus:ring-nova-500 cursor-pointer" 
-                    />
-                    <span className="text-sm font-bold text-white">I acknowledge the documentation requirements and fee structure.</span>
-                 </label>
+                <label className="flex items-center gap-4 p-5 bg-white/5 border border-nova-500/30 rounded-2xl cursor-pointer hover:bg-nova-500/10 transition-all">
+                  <input
+                    required
+                    type="checkbox"
+                    name="isAcknowledged"
+                    checked={formData.isAcknowledged}
+                    onChange={handleInputChange}
+                    className="w-6 h-6 rounded border-white/20 bg-nova-800 text-nova-500 focus:ring-nova-500 cursor-pointer"
+                  />
+                  <span className="text-sm font-bold text-white">I acknowledge the documentation requirements and fee structure.</span>
+                </label>
               </div>
             </div>
           )}
@@ -356,23 +356,21 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
           <div className="p-6 border-t border-white/10 bg-white/5 flex justify-between items-center">
             <button onClick={prevStep} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-xs font-black uppercase tracking-widest"><ChevronLeft size={16} /> Back</button>
             {step < 5 ? (
-              <button 
-                onClick={nextStep} 
+              <button
+                onClick={nextStep}
                 disabled={!isStepValid()}
-                className={`text-white px-8 py-2.5 rounded-full font-black text-xs uppercase tracking-widest flex items-center gap-2 shadow-lg transition-all ${
-                  !isStepValid() ? 'bg-gray-700 cursor-not-allowed opacity-50' : (isFinancial ? 'bg-nova-500 shadow-nova-500/20' : 'bg-purple-600 shadow-purple-600/20')
-                }`}
+                className={`text-white px-8 py-2.5 rounded-full font-black text-xs uppercase tracking-widest flex items-center gap-2 shadow-lg transition-all ${!isStepValid() ? 'bg-gray-700 cursor-not-allowed opacity-50' : (isFinancial ? 'bg-nova-500 shadow-nova-500/20' : 'bg-purple-600 shadow-purple-600/20')
+                  }`}
               >
                 Next Step <ChevronRight size={16} />
               </button>
             ) : (
-              <button 
-                form="application-form" 
-                type="submit" 
-                disabled={isSubmitting || !isStepValid()} 
-                className={`text-white px-10 py-3 rounded-full font-black text-xs uppercase tracking-widest shadow-xl flex items-center gap-3 transition-all ${
-                  !isStepValid() || isSubmitting ? 'bg-gray-700 cursor-not-allowed opacity-50' : (isFinancial ? 'bg-nova-500 shadow-nova-500/30' : 'bg-purple-600 shadow-purple-600/30')
-                }`}
+              <button
+                form="application-form"
+                type="submit"
+                disabled={isSubmitting || !isStepValid()}
+                className={`text-white px-10 py-3 rounded-full font-black text-xs uppercase tracking-widest shadow-xl flex items-center gap-3 transition-all ${!isStepValid() || isSubmitting ? 'bg-gray-700 cursor-not-allowed opacity-50' : (isFinancial ? 'bg-nova-500 shadow-nova-500/30' : 'bg-purple-600 shadow-purple-600/30')
+                  }`}
               >
                 {isSubmitting ? 'Live Syncing...' : 'Initiate Inquiry'} <Check size={16} />
               </button>

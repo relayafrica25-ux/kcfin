@@ -5,6 +5,7 @@ import { FAQSection } from './FAQSection';
 import { Wallet, Network, CheckCircle, Target, Compass, Zap, Gem, ShieldCheck, Mail, Globe, Phone, Send, Clock, ChevronRight, ArrowRight, Database, Landmark, Briefcase, ChevronsRight, Check } from 'lucide-react';
 import { storageService } from '../services/storageService';
 import { ContactInquiry, Article } from '../types';
+import { useToast } from './Toast';
 
 interface HomePageProps {
   onApplyClick: () => void;
@@ -22,6 +23,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitted, setSubmitted] = useState(false);
   const [latestInsights, setLatestInsights] = useState<Article[]>([]);
+  const { showToast } = useToast();
 
   useEffect(() => {
     const loadLatestInsights = async () => {
@@ -35,20 +37,27 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
     e.preventDefault();
     setIsSubmitting(true);
 
-    const inquiry: ContactInquiry = {
-      id: Math.random().toString(36).substr(2, 9),
-      date: new Date().toLocaleString(),
-      ...contactForm,
-      status: 'Unread'
-    };
+    try {
+      const inquiry: ContactInquiry = {
+        id: Math.random().toString(36).substr(2, 9),
+        date: new Date().toLocaleString(),
+        ...contactForm,
+        status: 'Unread'
+      };
 
-    await storageService.saveInquiry(inquiry);
+      await storageService.saveInquiry(inquiry);
 
-    setIsSubmitting(false);
-    setSubmitted(true);
-    setContactForm({ fullName: '', email: '', subject: '', message: '' });
-    setTimeout(() => setSubmitted(false), 5000);
+      setIsSubmitting(false);
+      setSubmitted(true);
+      showToast('Inquiry sent successfully! We will get back to you soon.', 'success');
+      setContactForm({ fullName: '', email: '', subject: '', message: '' });
+      setTimeout(() => setSubmitted(false), 5000);
+    } catch (error) {
+      setIsSubmitting(false);
+      showToast('Failed to send inquiry. Please try again later.', 'error');
+    }
   };
+
 
   return (
     <article className="bg-nova-950 overflow-hidden">

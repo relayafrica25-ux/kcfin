@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, createContext, useContext, useCallback } from 'react';
 import { X, AlertCircle, CheckCircle2, Info } from 'lucide-react';
 
 export interface ToastMessage {
@@ -6,6 +6,12 @@ export interface ToastMessage {
     message: string;
     type: 'success' | 'error' | 'info';
 }
+
+interface ToastContextType {
+    showToast: (message: string, type?: 'success' | 'error' | 'info') => void;
+}
+
+const ToastContext = createContext<ToastContextType | undefined>(undefined);
 
 interface ToastProps {
     message: ToastMessage;
@@ -37,7 +43,7 @@ const Toast: React.FC<ToastProps> = ({ message, onClose }) => {
 
     return (
         <div
-            className={`flex items-start gap-3 bg-gradient-to-r ${colors[message.type]} border backdrop-blur-md rounded-xl p-4 shadow-lg min-w-[300px] max-w-md animate-slide-in-right`}
+            className={`flex items-start gap-3 bg-gradient-to-r ${colors[message.type]} border backdrop-blur-md rounded-xl p-4 shadow-lg min-w-[300px] max-w-md animate-slide-in-right z-[500]`}
         >
             <Icon className={`${iconColors[message.type]} flex-shrink-0 mt-0.5`} size={20} />
             <p className="text-white text-sm flex-1">{message.message}</p>
@@ -51,31 +57,37 @@ const Toast: React.FC<ToastProps> = ({ message, onClose }) => {
     );
 };
 
-export const ToastContainer: React.FC<{ messages: ToastMessage[]; onClose: (id: string) => void }> = ({
-    messages,
-    onClose,
-}) => {
+export const ToastProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+    const [messages, setMessages] = useState<ToastMessage[]>([]);
+
+    const showToast = useCallback((message: string, type: 'success' | 'error' | 'info' = 'info') => {
+        const id = Math.random().toString(36).substr(2, 9);
+        setMessages((prev) => [...prev, { id, message, type }]);
+    }, []);
+
+    const closeToast = useCallback((id: string) => {
+        setMessages((prev) => prev.filter((msg) => msg.id !== id));
+    }, []);
+
     return (
-        <div className="fixed top-4 right-4 z-[200] flex flex-col gap-3">
-            {messages.map((message) => (
-                <Toast key={message.id} message={message} onClose={onClose} />
-            ))}
-        </div>
+        <ToastContext.Provider value={{ showToast }}>
+            {children}
+            <div className="fixed top-4 right-4 z-[500] flex flex-col gap-3 pointer-events-none">
+                {messages.map((message) => (
+                    <div key={message.id} className="pointer-events-auto">
+                        <Toast message={message} onClose={closeToast} />
+                    </div>
+                ))}
+            </div>
+        </ToastContext.Provider>
     );
 };
 
-// Hook for managing toasts
 export const useToast = () => {
-    const [messages, setMessages] = useState<ToastMessage[]>([]);
-
-    const showToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
-        const id = Math.random().toString(36).substr(2, 9);
-        setMessages((prev) => [...prev, { id, message, type }]);
-    };
-
-    const closeToast = (id: string) => {
-        setMessages((prev) => prev.filter((msg) => msg.id !== id));
-    };
-
-    return { messages, showToast, closeToast };
+    const context = useContext(ToastContext);
+    if (!context) {
+        throw new Error('useToast must be used within a ToastProvider');
+    }
+    return context;
 };
+

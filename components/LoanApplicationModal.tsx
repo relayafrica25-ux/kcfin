@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { X, ChevronRight, ChevronLeft, Check, Building2, Wallet, User, Calculator, CheckCircle2, Briefcase, MapPin, UploadCloud, FileText, Trash2, Scale, BrainCircuit, Globe, Landmark, TrendingUp, Network, AlertCircle, ShieldCheck, CheckSquare, Info } from 'lucide-react';
 import { storageService } from '../services/storageService';
 import { LoanApplication } from '../types';
+import { useToast } from './Toast';
 
 interface LoanApplicationModalProps {
   isOpen: boolean;
@@ -15,6 +16,8 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
   const [step, setStep] = useState(1);
   const [appType, setAppType] = useState<ApplicationType>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const { showToast } = useToast();
+
 
   const [formData, setFormData] = useState({
     loanType: '',
@@ -106,20 +109,27 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
 
     setIsSubmitting(true);
 
-    const application: LoanApplication = {
-      id: Math.random().toString(36).substr(2, 9),
-      date: new Date().toLocaleDateString(),
-      type: appType!,
-      ...formData,
-      status: 'Pending'
-    };
+    try {
+      const application: LoanApplication = {
+        id: Math.random().toString(36).substr(2, 9),
+        date: new Date().toLocaleDateString(),
+        type: appType!,
+        ...formData,
+        status: 'Pending'
+      };
 
-    await storageService.saveApplication(application);
+      await storageService.saveApplication(application);
 
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    setStep(6);
-    setIsSubmitting(false);
+      await new Promise(resolve => setTimeout(resolve, 1500));
+      setStep(6);
+      showToast('Application submitted successfully!', 'success');
+    } catch (error) {
+      showToast('Failed to submit application. Please try again later.', 'error');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
+
 
   const nextStep = () => {
     if (isStepValid()) {

@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from 'react';
 import { X, Mail, Zap, CheckCircle2 } from 'lucide-react';
 import { storageService } from '../services/storageService';
-import { useToast, ToastContainer } from './Toast';
+import { useToast } from './Toast';
 
 export const NewsletterPopup: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
@@ -10,7 +10,7 @@ export const NewsletterPopup: React.FC = () => {
   const [hasSubscribed, setHasSubscribed] = useState(false);
   const [email, setEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const { messages, showToast, closeToast } = useToast();
+  const { showToast } = useToast();
 
   useEffect(() => {
     // Show after 2 seconds, every time the component mounts (page load)
@@ -42,6 +42,7 @@ export const NewsletterPopup: React.FC = () => {
 
       if (result.success) {
         setHasSubscribed(true);
+        showToast('Successfully subscribed to newsletter!', 'success');
         // Close after showing success message for a bit
         setTimeout(() => {
           handleClose();
@@ -64,7 +65,6 @@ export const NewsletterPopup: React.FC = () => {
 
   return (
     <>
-      <ToastContainer messages={messages} onClose={closeToast} />
       <div className={`fixed inset-0 z-[100] flex items-center justify-center p-4 transition-opacity duration-300 ${isClosing ? 'opacity-0' : 'opacity-100'}`}>
         {/* Backdrop */}
         <div

@@ -203,9 +203,40 @@ export const storageService = {
         axios.get(`${API_BASE_URL}/finance`),
         axios.get(`${API_BASE_URL}/support`)
       ]);
-      const financeApps = financeRes.data.map((app: any) => ({ ...app, type: 'financial' }));
-      const supportApps = supportRes.data.map((app: any) => ({ ...app, type: 'business_support' }));
-      return [...financeApps, ...supportApps].sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+      const financeApps = financeRes.data.map((app: any) => ({
+        id: app.id,
+        date: app.createdAt ? new Date(app.createdAt).toLocaleDateString() : new Date().toLocaleDateString(),
+        type: 'financial',
+        loanType: app.financialProduct,
+        businessName: app.businessName,
+        cacNumber: app.regNumber,
+        industry: app.industryFocus,
+        fullName: app.fullName,
+        role: app.designatedRole,
+        email: app.email,
+        phone: app.phone,
+        description: app.requirement,
+        status: app.status || 'Pending'
+      }));
+
+      const supportApps = supportRes.data.map((app: any) => ({
+        id: app.id,
+        date: app.createdAt ? new Date(app.createdAt).toLocaleDateString() : new Date().toLocaleDateString(),
+        type: 'business_support',
+        serviceType: app.advisoryPillars,
+        businessName: app.businessName,
+        cacNumber: app.regNumber,
+        industry: app.industryFocus,
+        fullName: app.fullName,
+        role: app.designatedRole,
+        email: app.email,
+        phone: app.phone,
+        description: app.requirement,
+        status: app.status || 'Pending'
+      }));
+
+      return [...financeApps, ...supportApps].sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
     } catch (error) {
       console.error('Failed to fetch applications:', error);
       return [];
@@ -267,7 +298,15 @@ export const storageService = {
   getInquiries: async (): Promise<ContactInquiry[]> => {
     try {
       const response = await axios.get(`${API_BASE_URL}/contact`);
-      return response.data;
+      return response.data.map((item: any) => ({
+        id: item.id,
+        date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : new Date().toLocaleDateString(),
+        fullName: item.fullName || 'Anonymous',
+        email: item.email,
+        subject: item.subject || 'Newsletter/General',
+        message: item.message || 'No message provided',
+        status: item.status || 'Unread'
+      }));
     } catch (error) {
       console.error('Failed to fetch inquiries:', error);
       return [];
@@ -366,22 +405,42 @@ export const storageService = {
   },
 
   // Auth
-  authenticateUser: async (emailOrUsername: string, password: string) => {
+  loginStep1: async (emailOrUsername: string, password: string) => {
+    console.log(emailOrUsername, password);
     try {
       const response = await axios.post(`${API_BASE_URL}/auth/login`, {
         email: emailOrUsername,
         password: password
       });
+      // Backend returns message and email if successful
+      return { success: true, data: response.data };
+    } catch (error) {
+      console.error('Login Step 1 failed:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        return { success: false, message: error.response.data.message || 'Authentication failed' };
+      }
+      return { success: false, message: 'Institutional link Failure' };
+    }
+  },
+
+  verify2FA: async (email: string, code: string) => {
+    try {
+      const response = await axios.post(`${API_BASE_URL}/auth/verify-2fa`, {
+        email: email.toLowerCase(),
+        code: code
+      });
+
       if (response.data.access_token) {
         localStorage.setItem('casiec_token', response.data.access_token);
-        return true;
+        return { success: true, data: response.data };
       }
-      return false;
+      return { success: false, message: 'Invalid Verification response' };
     } catch (error) {
-      console.error('Auth failed:', error);
-      // Fallback for dev/legacy
-      if (emailOrUsername === 'admin' && password === 'admin') return true;
-      return false;
+      console.error('2FA verification failed:', error);
+      if (axios.isAxiosError(error) && error.response) {
+        return { success: false, message: error.response.data.message || 'Verification failed' };
+      }
+      return { success: false, message: 'Link synchronization error' };
     }
   }
 };

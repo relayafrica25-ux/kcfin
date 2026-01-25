@@ -1,4 +1,3 @@
-
 import { Article, LoanApplication, ContactInquiry, NewsletterSubscription, TickerItem, CarouselItem, TeamMember } from '../types';
 
 const ARTICLES_KEY = 'casiec_articles';

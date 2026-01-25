@@ -1,5 +1,6 @@
 import React from 'react';
-import { ArrowRight, Check, Target, Award, Landmark, Rocket, Network, Compass, Briefcase } from 'lucide-react';
+import { ArrowRight, Check, Target, Award, Landmark, Rocket, Network, Compass, Briefcase, Globe } from 'lucide-react';
+import { BroastreetLogo } from './BroastreetLogo';
 
 interface BusinessSupportPageProps {
   onInquireClick: () => void;
@@ -7,11 +8,6 @@ interface BusinessSupportPageProps {
 
 export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInquireClick }) => {
   const products = [
-    {
-      title: "Business Support",
-      description: "Delivering the corporate engineering required for enterprise sustainability through specialized research.",
-      icon: <Briefcase size={32} className="text-orange-400" />
-    },
     {
       title: "Business Development",
       description: "Amplifying market lead with winning strategies to strengthen market position.",
@@ -40,18 +36,14 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
       <div className="relative py-20 md:py-32 overflow-hidden">
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-orange-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-white/5 border border-white/10 text-orange-300 text-sm font-semibold mb-8 backdrop-blur-md">
-            <div className="flex items-center gap-1.5">
-               <span className="font-black lowercase">broastreet</span>
-               <Check size={14} className="text-orange-500" strokeWidth={4} />
-               <span className="font-black italic uppercase">DyDX</span>
-            </div>
+          <div className="inline-flex items-center gap-2 mb-8 transform hover:scale-105 transition-transform duration-500">
+            <BroastreetLogo size="md" />
           </div>
           
           <h1 className="text-5xl md:text-8xl font-black mb-8 tracking-tighter text-white uppercase italic leading-[0.9]">
             Strategic <br/>
             <span className="text-transparent bg-clip-text bg-gradient-to-r from-orange-400 via-white to-orange-200">
-              Architecture.
+              Intervention.
             </span>
           </h1>
           
@@ -72,27 +64,18 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
       <section className="py-24 relative border-y border-white/5">
          <div className="absolute inset-0 bg-white/[0.01] pointer-events-none"></div>
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div className="grid md:grid-cols-3 gap-12">
-               <div className="flex flex-col items-center text-center p-8">
-                  <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 mb-8">
-                     <Target size={32} />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-4 uppercase italic tracking-tight">Precision Engineering</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">Tailored corporate frameworks designed for institutional resilience and market-leading scalability.</p>
-               </div>
+            <div className="grid md:grid-cols-2 gap-12">
                <div className="flex flex-col items-center text-center p-8">
                   <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 mb-8">
                      <Award size={32} />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-4 uppercase italic tracking-tight">Institutional Excellence</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">Upholding the benchmark for advisory standards through rigorous research and ethical integrity.</p>
                </div>
                <div className="flex flex-col items-center text-center p-8">
                   <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center text-orange-500 mb-8">
-                     <Award size={32} className="text-orange-500" />
+                     <Globe size={32} className="text-orange-500" />
                   </div>
                   <h3 className="text-xl font-bold text-white mb-4 uppercase italic tracking-tight">Global Perspective</h3>
-                  <p className="text-gray-500 text-sm leading-relaxed">Leveraging international alliances to bridge local enterprise potential with global market dynamics.</p>
                </div>
             </div>
          </div>
@@ -106,7 +89,7 @@ export const BusinessSupportPage: React.FC<BusinessSupportPageProps> = ({ onInqu
              <h3 className="text-4xl font-black text-white tracking-tighter uppercase italic">Advisory Mandates.</h3>
           </div>
           
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-8">
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {products.map((product, idx) => (
               <div key={idx} className="group p-10 rounded-[3rem] bg-white/[0.02] border border-white/5 hover:border-orange-500/40 transition-all duration-500 flex flex-col">
                 <div className="w-16 h-16 bg-orange-500/10 rounded-2xl flex items-center justify-center mb-8 group-hover:scale-110 transition-transform">

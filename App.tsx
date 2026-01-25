@@ -15,8 +15,10 @@ import { TeamPage } from './components/TeamPage';
 import { AboutPage } from './components/AboutPage';
 import { ArticleDetailPage } from './components/ArticleDetailPage';
 import { Article } from './types';
-import { Globe, Linkedin, Twitter, ChevronRight } from 'lucide-react';
+import { Globe, Linkedin, Twitter, ChevronRight, Lock } from 'lucide-react';
+import { Logo } from './components/Logo';
 
+// Main Application Component for CASIEC Financials
 const App: React.FC = () => {
   const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'financial' | 'business_support' | null>(null);
@@ -45,7 +47,7 @@ const App: React.FC = () => {
     window.scrollTo(0, 0);
   };
 
-  // Router logic
+  // Router logic to render different views based on state
   const renderView = () => {
     if (currentView === 'admin') {
       return <AdminDashboard onBack={() => handleNavigate('home')} />;
@@ -125,18 +127,16 @@ const App: React.FC = () => {
               
               <div className="lg:col-span-5">
                 <div className="flex flex-col items-start mb-10">
-                   <div className="flex items-center gap-1 group cursor-pointer" onClick={() => handleNavigate('home')}>
-                     <span className="text-4xl font-black text-white tracking-tighter group-hover:text-nova-500 transition-colors">Casiec financial</span>
-                     <div className="flex flex-col -mb-1 translate-y-[-1px]">
-                        <ChevronRight size={22} className="text-nova-accent -rotate-45" strokeWidth={3} />
-                        <ChevronRight size={22} className="text-nova-accent -rotate-45 -mt-4" strokeWidth={3} />
-                     </div>
+                   <div 
+                    className="cursor-pointer group" 
+                    onClick={() => handleNavigate('home')}
+                   >
+                     <Logo size="lg" className="group-hover:opacity-80 transition-opacity" />
                    </div>
                    
                    <div className="mt-8">
-                      <h5 className="text-white font-black text-xl mb-4 uppercase italic">CASIEC</h5>
                       <p className="text-gray-400 text-sm leading-relaxed font-medium">
-                        Casiec provides credit solutions through lending, while GSI deliver business support solutions, and in partnership the two firms promote the concept of sustainable enterprise.
+                        Casiec Financials provides credit solutions through lending, while GSI deliver business support solutions, and in partnership the two firms promote the concept of sustainable enterprise.
                       </p>
                    </div>
                 </div>
@@ -148,7 +148,7 @@ const App: React.FC = () => {
                   <ul className="space-y-4">
                     <li><button onClick={() => handleNavigate('home')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium">Homepage</button></li>
                     <li><button onClick={() => handleNavigate('insights')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium">Insights</button></li>
-                    <li><button onClick={() => handleNavigate('team')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium">Our Leadership</button></li>
+                    <li><button onClick={() => handleNavigate('team')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium text-left">Our Team</button></li>
                   </ul>
                 </div>
 
@@ -158,6 +158,14 @@ const App: React.FC = () => {
                     <li><button onClick={() => handleNavigate('financial-support')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium text-left">Capital Solution</button></li>
                     <li><button onClick={() => handleNavigate('business-support')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium text-left">Strategic Advisory</button></li>
                     <li><button onClick={() => handleNavigate('investment')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium text-left">Investment</button></li>
+                    <li>
+                      <button 
+                        onClick={() => handleNavigate('admin')}
+                        className="flex items-center gap-2 text-nova-accent hover:text-white transition-all text-sm font-bold mt-4"
+                      >
+                        <Lock size={14} /> Staff Terminal
+                      </button>
+                    </li>
                   </ul>
                 </div>
 
@@ -167,7 +175,7 @@ const App: React.FC = () => {
                     <li className="flex items-start gap-3 group">
                       <Globe size={18} className="text-nova-500 mt-0.5" />
                       <div className="flex flex-col gap-1">
-                         <a href="mailto:support@casiec.com" className="text-sm font-medium hover:text-white transition-colors">support@casiec.com</a>
+                         <a href="mailto:info@casiecfinancials.com" className="text-sm font-medium hover:text-white transition-colors">info@casiecfinancials.com</a>
                          <a href="mailto:customercare@casiecfinancials.com" className="text-sm font-medium hover:text-white transition-colors">customercare@casiecfinancials.com</a>
                          <span className="text-xs text-gray-600">Lagos, Nigeria</span>
                       </div>
@@ -185,7 +193,7 @@ const App: React.FC = () => {
             <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-10">
               <div className="flex flex-col gap-2">
                 <div className="text-gray-600 text-[10px] uppercase tracking-[0.5em] font-black">
-                  © 2024 CASIEC FINANCIALS & GSI. ALL RIGHTS RESERVED.
+                  © 2025 CASIEC FINANCIALS & GSI. ALL RIGHTS RESERVED.
                 </div>
                 <div className="text-gray-500 text-[9px] uppercase tracking-[0.3em] font-bold">
                   Affiliate Member of ANMFIN.
@@ -212,4 +220,5 @@ const App: React.FC = () => {
   );
 };
 
+// Fixed error in index.tsx by providing a default export for the App component
 export default App;

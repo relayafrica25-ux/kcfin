@@ -164,7 +164,7 @@ export const storageService = {
   // Articles
   getArticles: async (): Promise<Article[]> => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/article`);
+      const response = await api.get(`${API_BASE_URL}/article`);
       return response.data.map((item: any) => ({
         id: item.id,
         title: item.headline,
@@ -183,7 +183,7 @@ export const storageService = {
     }
   },
 
-  saveArticle: async (article: Article) => {
+  saveArticle: async (article: Article, file?: File | null) => {
     const payload = {
       headline: article.title,
       summary: article.excerpt,
@@ -198,7 +198,20 @@ export const storageService = {
       if (article.id && !article.id.startsWith('temp-')) {
         await api.patch(`${API_BASE_URL}/article/${article.id}`, payload);
       } else {
-        await api.post(`${API_BASE_URL}/article`, payload);
+        if (file) {
+          const formData = new FormData();
+          formData.append('headline', article.title);
+          formData.append('summary', article.excerpt);
+          formData.append('category', article.category);
+          formData.append('readTime', article.readTime);
+          formData.append('author', article.author);
+          formData.append('imageGradient', article.imageGradient);
+          if (article.content) formData.append('content', article.content);
+          formData.append('image', file);
+          await api.post(`${API_BASE_URL}/article`, formData);
+        } else {
+          await api.post(`${API_BASE_URL}/article`, payload);
+        }
       }
     } catch (error) {
       console.error('Failed to save article:', error);
@@ -218,7 +231,7 @@ export const storageService = {
   // Team Members
   getTeamMembers: async (): Promise<TeamMember[]> => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/team`);
+      const response = await api.get(`${API_BASE_URL}/team`);
       if (response.data.length === 0) return INITIAL_TEAM;
       return response.data;
     } catch (error) {
@@ -253,7 +266,7 @@ export const storageService = {
   // Carousel
   getCarouselItems: async (): Promise<CarouselItem[]> => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/carousel`);
+      const response = await api.get(`${API_BASE_URL}/carousel`);
       if (response.data.length === 0) return INITIAL_CAROUSEL;
       return response.data;
     } catch (error) {
@@ -289,8 +302,8 @@ export const storageService = {
   getApplications: async (): Promise<LoanApplication[]> => {
     try {
       const [financeRes, supportRes] = await Promise.all([
-        axios.get(`${API_BASE_URL}/finance`),
-        axios.get(`${API_BASE_URL}/support`)
+        api.get(`${API_BASE_URL}/finance`),
+        api.get(`${API_BASE_URL}/support`)
       ]);
 
       const financeApps = financeRes.data.map((app: any) => ({
@@ -444,7 +457,7 @@ export const storageService = {
   // Ticker Management (Breaking News)
   getManualTickerItems: async (): Promise<TickerItem[]> => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/ticker`);
+      const response = await api.get(`${API_BASE_URL}/ticker`);
       if (response.data.length === 0) return INITIAL_BREAKING_NEWS;
       return response.data;
     } catch (error) {

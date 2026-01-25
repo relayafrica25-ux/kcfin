@@ -73,6 +73,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   const [editingArticleId, setEditingArticleId] = useState<string | null>(null);
   const [isEditingTeam, setIsEditingTeam] = useState(false);
   const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
+  const [articleFile, setArticleFile] = useState<File | null>(null);
 
   const [newArticle, setNewArticle] = useState<Partial<Article>>({
     title: '',
@@ -259,7 +260,20 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     }
   };
 
+  const handleArticleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      setArticleFile(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setNewArticle((prev: any) => ({ ...prev, imageUrl: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
   const handleEditArticle = (article: Article) => {
+    setArticleFile(null);
     setIsEditingArticle(true);
     setEditingArticleId(article.id);
     setNewArticle({
@@ -297,16 +311,17 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     try {
       const article: Article = {
         ...(newArticle as Article),
-        id: isEditingArticle && editingArticleId ? editingArticleId : Math.random().toString(36).substr(2, 9),
+        id: isEditingArticle && editingArticleId ? editingArticleId : `temp-${Math.random().toString(36).substr(2, 9)}`,
         date: newArticle.date || new Date().toISOString().split('T')[0],
         readTime: newArticle.readTime || '5 min read',
         imageGradient: newArticle.imageGradient || 'from-nova-500 to-purple-600'
       };
-      await storageService.saveArticle(article);
+      await storageService.saveArticle(article, articleFile);
       refreshData();
       setIsArticleModalOpen(false);
       setIsEditingArticle(false);
       setEditingArticleId(null);
+      setArticleFile(null);
       showToast(isEditingArticle ? 'Insight updated.' : 'Insight deployed to hub.', 'success');
     } catch (err) {
       showToast(getErrorMessage(err, 'Failed to save insight.'), 'error');
@@ -318,7 +333,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     try {
       const member: TeamMember = {
         ...(newTeamMember as TeamMember),
-        id: isEditingTeam && editingTeamId ? editingTeamId : Math.random().toString(36).substr(2, 9),
+        id: isEditingTeam && editingTeamId ? editingTeamId : `temp-${Math.random().toString(36).substr(2, 9)}`,
         imageGradient: newTeamMember.imageGradient || 'from-blue-600 to-indigo-900'
       };
       await storageService.saveTeamMember(member);
@@ -338,7 +353,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     try {
       const item: CarouselItem = {
         ...(newCarousel as CarouselItem),
-        id: Math.random().toString(36).substr(2, 9),
+        id: `temp-${Math.random().toString(36).substr(2, 9)}`,
         type: 'advert'
       };
       await storageService.saveCarouselItem(item);
@@ -659,6 +674,76 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
           </div>
         )}
 
+        {/* TAB: ARTICLES (INSIGHTS HUB) */}
+        {activeTab === 'articles' && (
+          <div className="animate-fade-in-up">
+            <div className="flex justify-between items-center mb-12">
+              <div>
+                <h1 className="text-4xl font-black uppercase italic tracking-tighter">Strategic Intelligence</h1>
+                <p className="text-gray-500 text-xs font-bold uppercase tracking-widest mt-1">Insights & Market Analysis</p>
+              </div>
+              <button onClick={() => {
+                setIsEditingArticle(false);
+                setArticleFile(null);
+                setNewArticle({
+                  title: '',
+                  excerpt: '',
+                  category: 'Strategy',
+                  author: 'Admin',
+                  imageGradient: 'from-nova-500 to-purple-600',
+                  date: new Date().toISOString().split('T')[0],
+                  readTime: '5 min read',
+                  imageUrl: ''
+                });
+                setIsArticleModalOpen(true);
+              }}
+                className="px-6 py-3 bg-nova-500 hover:bg-nova-400 rounded-xl text-xs font-black uppercase flex items-center gap-2 transition-all">
+                <Plus size={16} /> Curate Insight
+              </button>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-8">
+              {articles.length > 0 ? articles.map(article => (
+                <div key={article.id} className="glass-panel p-8 rounded-[2rem] border border-white/5 group hover:border-nova-500/30 transition-all">
+                  <div className="flex justify-between items-start mb-6">
+                    <span className="px-3 py-1 rounded-lg bg-nova-500/10 text-nova-400 text-[10px] font-black uppercase tracking-widest border border-nova-500/20">{article.category}</span>
+                    <div className="flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <button onClick={() => handleEditArticle(article)} className="p-2 hover:bg-white/10 rounded-lg text-white"><Edit3 size={16} /></button>
+                      <button onClick={() => handleDeleteArticle(article.id)} className="p-2 hover:bg-red-500/10 rounded-lg text-red-500"><Trash2 size={16} /></button>
+                    </div>
+                  </div>
+
+                  <div className="flex gap-6 mb-6">
+                    <div className="w-24 h-24 flex-shrink-0 rounded-2xl overflow-hidden bg-white/5">
+                      {article.imageUrl ? (
+                        <img src={article.imageUrl} alt={article.title} className="w-full h-full object-cover" />
+                      ) : (
+                        <div className={`w-full h-full bg-gradient-to-br ${article.imageGradient || 'from-gray-800 to-black'}`} />
+                      )}
+                    </div>
+                    <div>
+                      <h3 className="text-xl font-bold text-white mb-2 leading-tight line-clamp-2">{article.title}</h3>
+                      <p className="text-sm text-gray-500 line-clamp-2">{article.excerpt}</p>
+                    </div>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-6 border-t border-white/5">
+                    <div className="flex items-center gap-2">
+                      <span className="w-6 h-6 rounded-full bg-gradient-to-br from-gray-700 to-gray-900 flex items-center justify-center text-[10px] font-bold text-white">{article.author.charAt(0)}</span>
+                      <span className="text-xs text-gray-400 font-bold uppercase">{article.author}</span>
+                    </div>
+                    <span className="text-[10px] text-gray-600 font-mono">{article.readTime}</span>
+                  </div>
+                </div>
+              )) : (
+                <div className="col-span-2 py-20 text-center border border-dashed border-white/10 rounded-[3rem]">
+                  <p className="text-gray-600 text-xs font-bold uppercase tracking-widest">No Intelligence Data Found</p>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
         {/* TAB: APPLICATIONS */}
         {activeTab === 'applications' && (
           <div className="animate-fade-in-up">
@@ -823,7 +908,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                   <input type="text" placeholder="Image URL" className="w-full bg-black/40 border border-white/10 rounded-xl py-3 px-4 text-xs text-white" value={newArticle.imageUrl} onChange={(e) => setNewArticle({ ...newArticle, imageUrl: e.target.value })} />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
-                  <label className="flex items-center justify-center gap-2 px-6 py-4 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase cursor-pointer hover:bg-white/10 transition-all"><Upload size={16} /> Upload <input type="file" className="hidden" onChange={(e) => handleFileUpload(e, setNewArticle)} /></label>
+                  <label className="flex items-center justify-center gap-2 px-6 py-4 bg-white/5 border border-white/10 rounded-xl text-[10px] font-black uppercase cursor-pointer hover:bg-white/10 transition-all"><Upload size={16} /> Upload <input type="file" className="hidden" onChange={handleArticleFileUpload} /></label>
                   <button type="button" onClick={() => handleGenerateAIImage('article')} disabled={isGeneratingImage} className="flex items-center justify-center gap-2 px-6 py-4 bg-nova-500/10 border border-nova-500/20 rounded-xl text-[10px] font-black uppercase"><Zap size={16} /> AI Gen</button>
                 </div>
               </div>

@@ -12,6 +12,95 @@ const USERS_KEY = 'casiec_admin_users';
 const CAROUSEL_KEY = 'casiec_carousel_items';
 const TEAM_KEY = 'casiec_team_members';
 
+// Create axios instance with interceptors
+const api = axios.create({
+  baseURL: API_BASE_URL
+});
+
+// Request interceptor to attach token
+api.interceptors.request.use(
+  (config) => {
+    const token = localStorage.getItem('casiec_token');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error)
+);
+
+// Response interceptor to handle token refresh
+let isRefreshing = false;
+let failedQueue: any[] = [];
+
+const processQueue = (error: any, token: string | null = null) => {
+  failedQueue.forEach((prom) => {
+    if (error) {
+      prom.reject(error);
+    } else {
+      prom.resolve(token);
+    }
+  });
+  failedQueue = [];
+};
+
+api.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+
+    if (error.response?.status === 401 && !originalRequest._retry) {
+      if (isRefreshing) {
+        return new Promise((resolve, reject) => {
+          failedQueue.push({ resolve, reject });
+        })
+          .then((token) => {
+            originalRequest.headers.Authorization = `Bearer ${token}`;
+            return api(originalRequest);
+          })
+          .catch((err) => Promise.reject(err));
+      }
+
+      originalRequest._retry = true;
+      isRefreshing = true;
+
+      try {
+        const refreshToken = localStorage.getItem('casiec_refresh_token');
+        if (!refreshToken) {
+          throw new Error('No refresh token available');
+        }
+
+        const response = await api.post(`${API_BASE_URL}/auth/refresh`, {
+          refresh_token: refreshToken
+        });
+
+        const { access_token } = response.data;
+        localStorage.setItem('casiec_token', access_token);
+
+        api.defaults.headers.common.Authorization = `Bearer ${access_token}`;
+        originalRequest.headers.Authorization = `Bearer ${access_token}`;
+
+        processQueue(null, access_token);
+        isRefreshing = false;
+
+        return api(originalRequest);
+      } catch (err) {
+        processQueue(err, null);
+        isRefreshing = false;
+
+        // Clear tokens and redirect to login
+        localStorage.removeItem('casiec_token');
+        localStorage.removeItem('casiec_refresh_token');
+        window.location.hash = 'home';
+
+        return Promise.reject(err);
+      }
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 const INITIAL_TEAM: TeamMember[] = [
   {
     id: '1',
@@ -107,9 +196,9 @@ export const storageService = {
     };
     try {
       if (article.id && !article.id.startsWith('temp-')) {
-        await axios.patch(`${API_BASE_URL}/article/${article.id}`, payload);
+        await api.patch(`${API_BASE_URL}/article/${article.id}`, payload);
       } else {
-        await axios.post(`${API_BASE_URL}/article`, payload);
+        await api.post(`${API_BASE_URL}/article`, payload);
       }
     } catch (error) {
       console.error('Failed to save article:', error);
@@ -119,7 +208,7 @@ export const storageService = {
 
   deleteArticle: async (id: string) => {
     try {
-      await axios.delete(`${API_BASE_URL}/article/${id}`);
+      await api.delete(`${API_BASE_URL}/article/${id}`);
     } catch (error) {
       console.error('Failed to delete article:', error);
       throw error;
@@ -141,10 +230,10 @@ export const storageService = {
   saveTeamMember: async (member: TeamMember) => {
     try {
       if (member.id && !member.id.startsWith('temp-')) {
-        await axios.patch(`${API_BASE_URL}/team/${member.id}`, member);
+        await api.patch(`${API_BASE_URL}/team/${member.id}`, member);
       } else {
         const { id, ...payload } = member;
-        await axios.post(`${API_BASE_URL}/team`, payload);
+        await api.post(`${API_BASE_URL}/team`, payload);
       }
     } catch (error) {
       console.error('Failed to save team member:', error);
@@ -154,7 +243,7 @@ export const storageService = {
 
   deleteTeamMember: async (id: string) => {
     try {
-      await axios.delete(`${API_BASE_URL}/team/${id}`);
+      await api.delete(`${API_BASE_URL}/team/${id}`);
     } catch (error) {
       console.error('Failed to delete team member:', error);
       throw error;
@@ -176,10 +265,10 @@ export const storageService = {
   saveCarouselItem: async (item: CarouselItem) => {
     try {
       if (item.id && !item.id.startsWith('temp-')) {
-        await axios.patch(`${API_BASE_URL}/carousel/${item.id}`, item);
+        await api.patch(`${API_BASE_URL}/carousel/${item.id}`, item);
       } else {
         const { id, ...payload } = item;
-        await axios.post(`${API_BASE_URL}/carousel`, payload);
+        await api.post(`${API_BASE_URL}/carousel`, payload);
       }
     } catch (error) {
       console.error('Failed to save carousel item:', error);
@@ -189,7 +278,7 @@ export const storageService = {
 
   deleteCarouselItem: async (id: string) => {
     try {
-      await axios.delete(`${API_BASE_URL}/carousel/${id}`);
+      await api.delete(`${API_BASE_URL}/carousel/${id}`);
     } catch (error) {
       console.error('Failed to delete carousel item:', error);
       throw error;
@@ -258,7 +347,7 @@ export const storageService = {
       [app.type === 'financial' ? 'financialProduct' : 'advisoryPillars']: app.loanType || app.serviceType
     };
     try {
-      await axios.post(`${API_BASE_URL}/${endpoint}`, payload);
+      await api.post(`${API_BASE_URL}/${endpoint}`, payload);
     } catch (error) {
       console.error(`Failed to save ${app.type} application:`, error);
       throw error;
@@ -270,12 +359,12 @@ export const storageService = {
     // Since we don't have a single "application" table in backend yet, we might need to try both or add it.
     // For now, let's assume we can try to patch both or add a generic application module.
     try {
-      // Try finance first
-      await axios.patch(`${API_BASE_URL}/finance/${id}`, { status });
+      // Try finance first - send status in lowercase
+      await api.patch(`${API_BASE_URL}/finance/${id}`, { status: status.toLowerCase() });
     } catch (e) {
       try {
-        // Try support if finance fails
-        await axios.patch(`${API_BASE_URL}/support/${id}`, { status });
+        // Try support if finance fails - send status in lowercase
+        await api.patch(`${API_BASE_URL}/support/${id}`, { status: status.toLowerCase() });
       } catch (err) {
         console.error('Failed to update application status:', err);
       }
@@ -284,10 +373,10 @@ export const storageService = {
 
   deleteApplication: async (id: string) => {
     try {
-      await axios.delete(`${API_BASE_URL}/finance/${id}`);
+      await api.delete(`${API_BASE_URL}/finance/${id}`);
     } catch (e) {
       try {
-        await axios.delete(`${API_BASE_URL}/support/${id}`);
+        await api.delete(`${API_BASE_URL}/support/${id}`);
       } catch (err) {
         console.error('Failed to delete application:', err);
       }
@@ -297,7 +386,7 @@ export const storageService = {
   // Inquiries
   getInquiries: async (): Promise<ContactInquiry[]> => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/contact`);
+      const response = await api.get(`${API_BASE_URL}/contact`);
       return response.data.map((item: any) => ({
         id: item.id,
         date: item.createdAt ? new Date(item.createdAt).toLocaleDateString() : new Date().toLocaleDateString(),
@@ -305,7 +394,8 @@ export const storageService = {
         email: item.email,
         subject: item.subject || 'Newsletter/General',
         message: item.message || 'No message provided',
-        status: item.status || 'Unread'
+        status: item.status || 'Unread',
+        opened: item.opened || false
       }));
     } catch (error) {
       console.error('Failed to fetch inquiries:', error);
@@ -315,7 +405,7 @@ export const storageService = {
 
   saveInquiry: async (inquiry: ContactInquiry) => {
     try {
-      await axios.post(`${API_BASE_URL}/contact`, {
+      await api.post(`${API_BASE_URL}/contact`, {
         email: inquiry.email,
         fullName: inquiry.fullName,
         subject: inquiry.subject,
@@ -329,15 +419,23 @@ export const storageService = {
 
   updateInquiryStatus: async (id: string, status: ContactInquiry['status']) => {
     try {
-      await axios.patch(`${API_BASE_URL}/contact/${id}`, { status });
+      await api.patch(`${API_BASE_URL}/contact/${id}`, { status });
     } catch (error) {
       console.error('Failed to update inquiry status:', error);
     }
   },
 
+  updateContactOpened: async (id: string) => {
+    try {
+      await api.put(`${API_BASE_URL}/contact/${id}/opened`);
+    } catch (error) {
+      console.error('Failed to update contact opened status:', error);
+    }
+  },
+
   deleteInquiry: async (id: string) => {
     try {
-      await axios.delete(`${API_BASE_URL}/contact/${id}`);
+      await api.delete(`${API_BASE_URL}/contact/${id}`);
     } catch (error) {
       console.error('Failed to delete inquiry:', error);
     }
@@ -357,7 +455,7 @@ export const storageService = {
 
   saveTickerItem: async (item: TickerItem) => {
     try {
-      await axios.post(`${API_BASE_URL}/ticker`, {
+      await api.post(`${API_BASE_URL}/ticker`, {
         text: item.text,
         category: item.category,
         isManual: item.isManual
@@ -370,7 +468,7 @@ export const storageService = {
 
   deleteTickerItem: async (id: string) => {
     try {
-      await axios.delete(`${API_BASE_URL}/ticker/${id}`);
+      await api.delete(`${API_BASE_URL}/ticker/${id}`);
     } catch (error) {
       console.error('Failed to delete ticker item:', error);
       throw error;
@@ -380,7 +478,7 @@ export const storageService = {
   // Newsletter Subscriptions
   getNewsletterSubscriptions: async (): Promise<NewsletterSubscription[]> => {
     try {
-      const response = await axios.get(`${API_BASE_URL}/contact`);
+      const response = await api.get(`${API_BASE_URL}/contact`);
       // Filter for newsletter-style inquiries or create a separate endpoint in future
       return response.data.filter((i: any) => !i.subject);
     } catch (error) {
@@ -391,7 +489,7 @@ export const storageService = {
 
   saveNewsletterSubscription: async (email: string): Promise<{ success: boolean; message?: string; statusCode?: number }> => {
     try {
-      await axios.post(`${API_BASE_URL}/contact`, { email: email.toLowerCase() });
+      await api.post(`${API_BASE_URL}/contact`, { email: email.toLowerCase() });
       return { success: true };
     } catch (error) {
       console.error('Failed to save newsletter subscription:', error);
@@ -408,7 +506,7 @@ export const storageService = {
   loginStep1: async (emailOrUsername: string, password: string) => {
     console.log(emailOrUsername, password);
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/login`, {
+      const response = await api.post(`${API_BASE_URL}/auth/login`, {
         email: emailOrUsername,
         password: password
       });
@@ -425,13 +523,19 @@ export const storageService = {
 
   verify2FA: async (email: string, code: string) => {
     try {
-      const response = await axios.post(`${API_BASE_URL}/auth/verify-2fa`, {
+      const response = await api.post(`${API_BASE_URL}/auth/verify-2fa`, {
         email: email.toLowerCase(),
         code: code
       });
 
       if (response.data.access_token) {
         localStorage.setItem('casiec_token', response.data.access_token);
+
+        // Store refresh token if provided
+        if (response.data.refresh_token) {
+          localStorage.setItem('casiec_refresh_token', response.data.refresh_token);
+        }
+
         return { success: true, data: response.data };
       }
       return { success: false, message: 'Invalid Verification response' };
@@ -441,6 +545,20 @@ export const storageService = {
         return { success: false, message: error.response.data.message || 'Verification failed' };
       }
       return { success: false, message: 'Link synchronization error' };
+    }
+  },
+
+  logout: async () => {
+    try {
+      // Call backend logout endpoint if available
+      await api.post(`${API_BASE_URL}/auth/logout`);
+    } catch (error) {
+      console.error('Logout endpoint failed:', error);
+      // Continue with local logout even if backend call fails
+    } finally {
+      // Clear all tokens from localStorage
+      localStorage.removeItem('casiec_token');
+      localStorage.removeItem('casiec_refresh_token');
     }
   }
 };

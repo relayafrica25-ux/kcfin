@@ -1,5 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 import {
   FileText,
   Users,
@@ -113,6 +114,15 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     statValue: 'High'
   });
 
+  // Session recovery
+  useEffect(() => {
+    const token = localStorage.getItem('casiec_token');
+    if (token) {
+      // In a real app, you might want to verify the token here
+      setIsAuthenticated(true);
+    }
+  }, []);
+
   // Auto-refresh logic
   useEffect(() => {
     if (isAuthenticated) {
@@ -183,6 +193,26 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     setIsScanning(true);
     await new Promise(resolve => setTimeout(resolve, 800));
     setIsAuthenticated(true);
+  };
+
+  // Helper function to extract error message from server response
+  const getErrorMessage = (error: any, fallbackMessage: string = 'An error occurred'): string => {
+    if (axios.isAxiosError(error) && error.response?.data?.message) {
+      return error.response.data.message;
+    }
+    return fallbackMessage;
+  };
+
+  const handleLogout = async () => {
+    try {
+      await storageService.logout();
+      showToast('Logged out successfully.', 'info');
+      onBack();
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Still log out locally even if backend call fails
+      onBack();
+    }
   };
 
   const handleGenerateAIImage = async (context: 'article' | 'carousel' | 'team') => {
@@ -279,7 +309,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
       setEditingArticleId(null);
       showToast(isEditingArticle ? 'Insight updated.' : 'Insight deployed to hub.', 'success');
     } catch (err) {
-      showToast('Failed to save insight.', 'error');
+      showToast(getErrorMessage(err, 'Failed to save insight.'), 'error');
     }
   };
 
@@ -299,7 +329,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
       showToast(isEditingTeam ? 'Leadership record updated.' : 'New leader added to records.', 'success');
       setNewTeamMember({ name: '', role: '', bio: '', specialization: '', linkedin: '', twitter: '', email: '', imageUrl: '', imageGradient: 'from-blue-600 to-indigo-900' });
     } catch (err) {
-      showToast('Failed to save leadership record.', 'error');
+      showToast(getErrorMessage(err, 'Failed to save leadership record.'), 'error');
     }
   };
 
@@ -317,7 +347,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
       showToast('Campaign item saved.', 'success');
       setNewCarousel({ type: 'advert', title: '', summary: '', tag: 'Active', linkText: 'Learn More', imageGradient: 'from-nova-500 to-purple-600', imageUrl: '' });
     } catch (err) {
-      showToast('Failed to save campaign.', 'error');
+      showToast(getErrorMessage(err, 'Failed to save campaign.'), 'error');
     }
   };
 
@@ -328,7 +358,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
         refreshData();
         showToast('Insight erased.', 'info');
       } catch (err) {
-        showToast('Erase operation rejected.', 'error');
+        showToast(getErrorMessage(err, 'Erase operation rejected.'), 'error');
       }
     }
   };
@@ -340,7 +370,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
         refreshData();
         showToast('Leadership record purged.', 'info');
       } catch (err) {
-        showToast('System rejected purge operation.', 'error');
+        showToast(getErrorMessage(err, 'System rejected purge operation.'), 'error');
       }
     }
   };
@@ -352,7 +382,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
         refreshData();
         showToast('Campaign item purged.', 'info');
       } catch (err) {
-        showToast('Action rejected by system.', 'error');
+        showToast(getErrorMessage(err, 'Action rejected by system.'), 'error');
       }
     }
   };
@@ -372,7 +402,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
       showToast('Headline broadcast success.', 'success');
       setNewTicker({ text: '', category: 'Market' });
     } catch (err) {
-      showToast('Broadcast transmission failed.', 'error');
+      showToast(getErrorMessage(err, 'Broadcast transmission failed.'), 'error');
     }
   };
 
@@ -390,7 +420,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
         showToast('Inquiry purged from logs.', 'info');
         if (selectedInquiry?.id === id) setSelectedInquiry(null);
       } catch (err) {
-        showToast('System rejected log purge.', 'error');
+        showToast(getErrorMessage(err, 'System rejected log purge.'), 'error');
       }
     }
   };
@@ -404,7 +434,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
         showToast('Record purged successfully.', 'info');
         if (selectedApplication?.id === id) setSelectedApplication(null);
       } catch (err) {
-        showToast('Record purge failed.', 'error');
+        showToast(getErrorMessage(err, 'Record purge failed.'), 'error');
       }
     }
   };
@@ -418,7 +448,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
       }
       showToast(`Status updated to ${status}.`, 'info');
     } catch (err) {
-      showToast('Status sync protocol failed.', 'error');
+      showToast(getErrorMessage(err, 'Status sync protocol failed.'), 'error');
     }
   };
 
@@ -431,11 +461,11 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
       }
       showToast(`Inquiry marked as ${status}.`, 'info');
     } catch (err) {
-      showToast('Synchronization error.', 'error');
+      showToast(getErrorMessage(err, 'Synchronization error.'), 'error');
     }
   };
 
-  const unreadInquiries = inquiries.filter(i => i.status === 'Unread').length;
+  const unreadInquiries = inquiries.filter(i => i.status === 'Unread' && !i.opened).length;
   const pendingApps = applications.filter(a => a.status === 'Pending').length;
 
   if (!isAuthenticated) {
@@ -516,7 +546,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
           ))}
         </nav>
         <div className="mt-8 pt-8 border-t border-white/5">
-          <button onClick={onBack} className="w-full flex items-center gap-3 px-6 py-4 text-gray-500 hover:text-white transition-all text-xs font-black uppercase tracking-widest group"><LogOut size={16} /> Exit Terminal</button>
+          <button onClick={handleLogout} className="w-full flex items-center gap-3 px-6 py-4 text-gray-500 hover:text-white transition-all text-xs font-black uppercase tracking-widest group"><LogOut size={16} /> Exit Terminal</button>
         </div>
       </div>
 
@@ -708,7 +738,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                 </thead>
                 <tbody className="divide-y divide-white/5">
                   {inquiries.length > 0 ? inquiries.map(inq => (
-                    <tr key={inq.id} onClick={() => setSelectedInquiry(inq)} className="hover:bg-white/[0.02] cursor-pointer group">
+                    <tr key={inq.id} onClick={async () => { setSelectedInquiry(inq); await storageService.updateContactOpened(inq.id); refreshData(); }} className="hover:bg-white/[0.02] cursor-pointer group">
                       <td className="px-8 py-6 text-sm text-gray-400">{inq.date}</td>
                       <td className="px-8 py-6">
                         <div className="font-bold text-white">{inq.fullName}</div>

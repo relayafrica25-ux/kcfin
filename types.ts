@@ -62,7 +62,8 @@ export interface ContactInquiry {
   email: string;
   subject: string;
   message: string;
-  status: 'Unread' | 'Replied' | 'Archived';
+  status: 'Unread' | 'Replied' | 'Archived' | 'opened';
+  opened?: boolean;
 }
 
 export interface NewsletterSubscription {

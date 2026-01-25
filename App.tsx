@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Navbar } from './components/Navbar';
 import { NewsTicker } from './components/NewsTicker';
 import { LoanApplicationModal } from './components/LoanApplicationModal';
@@ -22,8 +22,25 @@ import { ToastProvider } from './components/Toast';
 const App: React.FC = () => {
   const [isLoanModalOpen, setIsLoanModalOpen] = useState(false);
   const [modalType, setModalType] = useState<'financial' | 'business_support' | null>(null);
-  const [currentView, setCurrentView] = useState('home');
+  const [currentView, setCurrentView] = useState(() => {
+    const hash = window.location.hash.replace('#', '');
+    return hash || 'home';
+  });
   const [selectedArticle, setSelectedArticle] = useState<Article | null>(null);
+
+  useEffect(() => {
+    const handleHashChange = () => {
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        setCurrentView(hash);
+      } else {
+        setCurrentView('home');
+      }
+    };
+
+    window.addEventListener('hashchange', handleHashChange);
+    return () => window.removeEventListener('hashchange', handleHashChange);
+  }, []);
 
   const openLoanModal = (type?: 'financial' | 'business_support') => {
     setModalType(type || null);
@@ -36,15 +53,15 @@ const App: React.FC = () => {
   };
 
   const handleNavigate = (view: string) => {
-    setCurrentView(view);
+    window.location.hash = view;
+    // State will be updated by hashchange listener
     setSelectedArticle(null);
     window.scrollTo(0, 0);
   };
 
   const handleOpenArticle = (article: Article) => {
     setSelectedArticle(article);
-    setCurrentView('article-detail');
-    window.scrollTo(0, 0);
+    handleNavigate('article-detail');
   };
 
   // Router logic

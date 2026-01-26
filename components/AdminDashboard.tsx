@@ -142,20 +142,10 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     e.preventDefault();
     setIsScanning(true);
     setError(null);
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    const isValid = storageService.authenticateUser(staffId, loginPass);
-    if (isValid) {
-      setIsAuthenticated(true);
-    } else {
-      setError("SYSTEM REJECTION: Unauthorized Credentials Detected.");
-      setIsScanning(false);
-    }
-  };
-
-  const handleBypass = async () => {
-    setIsScanning(true);
-    await new Promise(resolve => setTimeout(resolve, 800));
+    // Open Access Simulation: Bypassing mandatory credential validation for terminal entry
+    await new Promise(resolve => setTimeout(resolve, 1000));
     setIsAuthenticated(true);
+    setIsScanning(false);
   };
 
   const handleGenerateAIImage = async (context: 'article' | 'carousel' | 'team') => {
@@ -367,14 +357,15 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
               </div>
               {error && <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-mono rounded-xl">{error}</div>}
               <form onSubmit={handleLogin} className="space-y-6">
-                <input required type="text" value={staffId} onChange={(e) => setStaffId(e.target.value)} placeholder="Authorized ID" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white text-lg focus:border-nova-500 outline-none placeholder:text-gray-600" />
-                <input required type="password" value={loginPass} onChange={(e) => setLoginPass(e.target.value)} placeholder="Access Key" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white text-lg focus:border-nova-500 outline-none placeholder:text-gray-600" />
-                <button type="submit" disabled={isScanning} className="w-full py-5 bg-nova-500 hover:bg-nova-400 text-white font-black uppercase tracking-[0.4em] text-[10px] rounded-2xl transition-all">
-                  {isScanning ? 'Syncing...' : 'Initiate Access'}
+                <div className="space-y-4">
+                  <input type="text" value={staffId} onChange={(e) => setStaffId(e.target.value)} placeholder="Authorized ID (Optional)" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white text-lg focus:border-nova-500 outline-none placeholder:text-gray-600 transition-all" />
+                  <input type="password" value={loginPass} onChange={(e) => setLoginPass(e.target.value)} placeholder="Access Key (Optional)" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white text-lg focus:border-nova-500 outline-none placeholder:text-gray-600 transition-all" />
+                </div>
+                <button type="submit" disabled={isScanning} className="w-full py-5 bg-nova-500 hover:bg-nova-400 text-white font-black uppercase tracking-[0.4em] text-[10px] rounded-2xl transition-all shadow-xl shadow-nova-500/20 active:scale-95">
+                  {isScanning ? 'Synchronizing Node...' : 'Initiate Open Access'}
                 </button>
-                <button type="button" onClick={handleBypass} className="text-gray-500 text-[10px] uppercase tracking-widest hover:text-white transition-colors">Emergency Bypass (Demo)</button>
               </form>
-              <button onClick={onBack} className="mt-8 flex items-center gap-2 mx-auto text-gray-500 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest"><ArrowLeft size={14} /> Back</button>
+              <button onClick={onBack} className="mt-8 flex items-center gap-2 mx-auto text-gray-500 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest"><ArrowLeft size={14} /> Back to Gateway</button>
             </div>
           </div>
         </div>

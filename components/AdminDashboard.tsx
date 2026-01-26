@@ -40,7 +40,6 @@ import {
   Inbox,
   Eye,
   CheckCircle,
-  /* Added BrainCircuit to fix missing import error */
   BrainCircuit
 } from 'lucide-react';
 import { storageService } from '../services/storageService';
@@ -817,6 +816,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                           <Upload size={16} /> Manual Upload
                           <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewArticle)} className="hidden" />
                        </label>
+                       <p className="text-[9px] text-gray-500 italic mt-1 ml-1 font-medium">Recommended: 1200x800px (3:2 ratio)</p>
                     </div>
                   </div>
                 </div>
@@ -873,6 +873,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                     <div className="flex flex-col gap-2 flex-grow">
                        <button type="button" onClick={() => handleGenerateAIImage('team')} disabled={isGeneratingImage} className="flex-1 bg-nova-500 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2"><BrainCircuit size={14} /> Gemini Portrait Sync</button>
                        <label className="flex-1 bg-white/5 border border-white/10 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 cursor-pointer"><Upload size={14} /> Headshot Upload <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewTeamMember)} className="hidden" /></label>
+                       <p className="text-[9px] text-gray-500 italic mt-1 ml-1 font-medium">Recommended: 800x800px (Square)</p>
                     </div>
                   </div>
                 </div>
@@ -958,6 +959,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                     <div className="flex flex-col gap-2 flex-grow">
                        <button type="button" onClick={() => handleGenerateAIImage('carousel')} disabled={isGeneratingImage} className="flex-1 bg-nova-500 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2"><BrainCircuit size={14} /> AI Visualization Sync</button>
                        <label className="flex-1 bg-white/5 border border-white/10 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 cursor-pointer"><Upload size={14} /> Campaign Asset Upload <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewCarousel)} className="hidden" /></label>
+                       <p className="text-[9px] text-gray-500 italic mt-1 ml-1 font-medium">Recommended: 1600x800px (2:1 aspect ratio)</p>
                     </div>
                   </div>
                 </div>

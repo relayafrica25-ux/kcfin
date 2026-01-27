@@ -49,7 +49,15 @@ api.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
+    // If error is 401 and not already retried
     if (error.response?.status === 401 && !originalRequest._retry) {
+      const refreshToken = localStorage.getItem('casiec_refresh_token');
+
+      // If no refresh token, don't even try to refresh - just reject the 401
+      if (!refreshToken) {
+        return Promise.reject(error);
+      }
+
       if (isRefreshing) {
         return new Promise((resolve, reject) => {
           failedQueue.push({ resolve, reject });
@@ -65,17 +73,16 @@ api.interceptors.response.use(
       isRefreshing = true;
 
       try {
-        const refreshToken = localStorage.getItem('casiec_refresh_token');
-        if (!refreshToken) {
-          throw new Error('No refresh token available');
-        }
-
-        const response = await api.post(`${API_BASE_URL}/auth/refresh`, {
+        // Use axios directly to avoid interceptor interference during refresh
+        const response = await axios.post(`${API_BASE_URL}/auth/refresh`, {
           refresh_token: refreshToken
         });
 
-        const { access_token } = response.data;
+        const { access_token, refresh_token: new_refresh_token } = response.data;
         localStorage.setItem('casiec_token', access_token);
+        if (new_refresh_token) {
+          localStorage.setItem('casiec_refresh_token', new_refresh_token);
+        }
 
         api.defaults.headers.common.Authorization = `Bearer ${access_token}`;
         originalRequest.headers.Authorization = `Bearer ${access_token}`;
@@ -88,10 +95,14 @@ api.interceptors.response.use(
         processQueue(err, null);
         isRefreshing = false;
 
-        // Clear tokens and redirect to login
+        // Clear tokens on definitive failure
         localStorage.removeItem('casiec_token');
         localStorage.removeItem('casiec_refresh_token');
-        window.location.hash = 'home';
+
+        // Only redirect if we are not already on the home/login page to avoid loops
+        if (!window.location.hash.includes('home') && !window.location.pathname.includes('login')) {
+          window.location.hash = 'home';
+        }
 
         return Promise.reject(err);
       }
@@ -516,6 +527,32 @@ export const storageService = {
   },
 
   // Auth
+  openAccessLogin: async () => {
+    try {
+      // Use specific open-access credentials if backend supports it
+      // or a generic staff account that is permitted for simulation
+      const response = await api.post(`${API_BASE_URL}/auth/login`, {
+        email: 'staff@casiecfinancials.com', // Demo/Staff access
+        password: 'open-access-sim'
+      });
+
+      if (response.data.access_token) {
+        localStorage.setItem('casiec_token', response.data.access_token);
+        if (response.data.refresh_token) {
+          localStorage.setItem('casiec_refresh_token', response.data.refresh_token);
+        }
+        return { success: true };
+      }
+
+      // If login returns success but no token, we might need 2FA (handle accordingly)
+      return { success: true, data: response.data, requiresOTP: true };
+    } catch (error) {
+      console.error('Open Access login failed:', error);
+      // Fallback for demo environments without real backend response
+      return { success: false, message: 'Institutional link Failure' };
+    }
+  },
+
   loginStep1: async (emailOrUsername: string, password: string) => {
     console.log(emailOrUsername, password);
     try {
@@ -524,7 +561,7 @@ export const storageService = {
         password: password
       });
       // Backend returns message and email if successful
-      return { success: true, data: response.data };
+      return { success: true, data: response.data, requiresOTP: true };
     } catch (error) {
       console.error('Login Step 1 failed:', error);
       if (axios.isAxiosError(error) && error.response) {

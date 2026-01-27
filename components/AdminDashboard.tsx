@@ -164,11 +164,55 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    // Open Access Simulation: Bypassing mandatory credential validation for terminal entry
     setIsScanning(true);
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    setIsAuthenticated(true);
-    setIsScanning(false);
+    setError(null);
+
+    try {
+      // Open Access Simulation: Bypassing mandatory credential validation for terminal entry
+      // but ensuring we obtain a valid operational token for the session
+      const response = await storageService.loginStep1(staffId, loginPass);
+
+      if (response.success) {
+        if (response.requiresOTP) {
+          setLoginPhase('otp');
+          showToast('Verification code transmitted to authorized terminal.', 'info');
+        } else {
+          await new Promise(resolve => setTimeout(resolve, 800)); // Maintain the UX delay
+          setIsAuthenticated(true);
+          showToast('Session Synchronized. Welcome to Staff Terminal.', 'success');
+        }
+      } else {
+        setError("SYSTEM REJECTION: Unauthorized Terminal Entry.");
+        showToast('Authentication Link Failure.', 'error');
+      }
+    } catch (err) {
+      setError("CRITICAL: Authentication Server Unreachable.");
+      showToast('System Link Error.', 'error');
+    } finally {
+      setIsScanning(false);
+    }
+  };
+
+  const handleVerifyOTP = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsScanning(true);
+    setError(null);
+    try {
+      // Use the authorized email for 2FA verification
+      const email = staffId;
+      const response = await storageService.verify2FA(email, otpCode);
+      if (response.success) {
+        setIsAuthenticated(true);
+        showToast('System Authenticated. Welcome, Administrator.', 'success');
+      } else {
+        setError(response.message || "INVALID VERIFICATION CODE.");
+        showToast(response.message || 'Verification Failed.', 'error');
+      }
+    } catch (error) {
+      showToast('Verification Link Failure.', 'error');
+    } finally {
+      setIsScanning(false);
+    }
   };
 
   // Helper function to extract error message from server response
@@ -473,15 +517,26 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                 <span className="text-[12px] font-black text-nova-accent tracking-[0.4em] lowercase mt-2 opacity-80">staff terminal</span>
               </div>
               {error && <div className="mb-6 p-4 bg-red-500/10 border border-red-500/20 text-red-400 text-xs font-mono rounded-xl">{error}</div>}
-              <form onSubmit={handleLogin} className="space-y-6">
-                <div className="space-y-4">
-                  <input type="text" value={staffId} onChange={(e) => setStaffId(e.target.value)} placeholder="Authorized ID (Optional)" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white text-lg focus:border-nova-500 outline-none placeholder:text-gray-600 transition-all" />
-                  <input type="password" value={loginPass} onChange={(e) => setLoginPass(e.target.value)} placeholder="Access Key (Optional)" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white text-lg focus:border-nova-500 outline-none placeholder:text-gray-600 transition-all" />
-                </div>
-                <button type="submit" disabled={isScanning} className="w-full py-5 bg-nova-500 hover:bg-nova-400 text-white font-black uppercase tracking-[0.4em] text-[10px] rounded-2xl transition-all shadow-xl shadow-nova-500/20 active:scale-95">
-                  {isScanning ? 'Synchronizing Node...' : 'Initiate Open Access'}
-                </button>
-              </form>
+              {loginPhase === 'credentials' ? (
+                <form onSubmit={handleLogin} className="space-y-6">
+                  <div className="space-y-4">
+                    <input type="text" value={staffId} onChange={(e) => setStaffId(e.target.value)} placeholder="Authorized ID (Optional)" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white text-lg focus:border-nova-500 outline-none placeholder:text-gray-600 transition-all" />
+                    <input type="password" value={loginPass} onChange={(e) => setLoginPass(e.target.value)} placeholder="Access Key (Optional)" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white text-lg focus:border-nova-500 outline-none placeholder:text-gray-600 transition-all" />
+                  </div>
+                  <button type="submit" disabled={isScanning} className="w-full py-5 bg-nova-500 hover:bg-nova-400 text-white font-black uppercase tracking-[0.4em] text-[10px] rounded-2xl transition-all shadow-xl shadow-nova-500/20 active:scale-95">
+                    {isScanning ? 'Synchronizing Node...' : 'Initiate Open Access'}
+                  </button>
+                </form>
+              ) : (
+                <form onSubmit={handleVerifyOTP} className="space-y-6">
+                  <div className="text-sm text-gray-400 mb-4 uppercase tracking-widest">Enter Secure Link Code</div>
+                  <input required type="text" value={otpCode} onChange={(e) => setOtpCode(e.target.value)} placeholder="6-DIGIT CODE" maxLength={6} className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white text-3xl font-black tracking-[0.5em] text-center focus:border-nova-500 outline-none" />
+                  <button type="submit" disabled={isScanning} className="w-full py-5 bg-nova-accent hover:bg-nova-400 text-white font-black uppercase tracking-[0.4em] text-[10px] rounded-2xl transition-all shadow-lg shadow-nova-accent/20">
+                    {isScanning ? 'Verifying...' : 'Finalize Uplink'}
+                  </button>
+                  <button type="button" onClick={() => setLoginPhase('credentials')} className="text-gray-500 text-[10px] uppercase tracking-widest hover:text-white transition-colors mt-4">Back to Identity Entry</button>
+                </form>
+              )}
               <button onClick={onBack} className="mt-8 flex items-center gap-2 mx-auto text-gray-500 hover:text-white transition-colors text-xs font-bold uppercase tracking-widest"><ArrowLeft size={14} /> Back to Gateway</button>
             </div>
           </div>

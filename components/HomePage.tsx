@@ -19,6 +19,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
   const [contactForm, setContactForm] = useState({
     fullName: '',
     email: '',
+    phone: '',
     subject: '',
     message: ''
   });
@@ -52,7 +53,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
       setIsSubmitting(false);
       setSubmitted(true);
       showToast('Inquiry sent successfully! We will get back to you soon.', 'success');
-      setContactForm({ fullName: '', email: '', subject: '', message: '' });
+      setContactForm({ fullName: '', email: '', phone: '', subject: '', message: '' });
       setTimeout(() => setSubmitted(false), 5000);
     } catch (error) {
       setIsSubmitting(false);
@@ -251,7 +252,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
               </div>
             </div>
 
-            <div className="p-1 bg-gradient-to-br from-white/20 via-transparent to-white/10 rounded-[3rem]">
+            {/* <div className="p-1 bg-gradient-to-br from-white/20 via-transparent to-white/10 rounded-[3rem]">
               <div className="bg-nova-900 rounded-[2.8rem] p-10 md:p-14 shadow-2xl border border-white/5">
                 {submitted ? (
                   <div className="text-center py-16 animate-fade-in-up">
@@ -272,6 +273,10 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
                       </div>
                     </div>
                     <div>
+                      <label className="block text-[10px] text-gray-400 uppercase font-black tracking-widest mb-3 ml-2">Contact Number</label>
+                      <input required type="tel" value={contactForm.phone} onChange={(e) => setContactForm({ ...contactForm, phone: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:outline-none focus:border-nova-500 transition-all text-sm font-bold placeholder:text-gray-600" placeholder="+234..." />
+                    </div>
+                    <div>
                       <label className="block text-[10px] text-gray-400 uppercase font-black tracking-widest mb-3 ml-2">Subject of Inquiry</label>
                       <input required type="text" value={contactForm.subject} onChange={(e) => setContactForm({ ...contactForm, subject: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-xl py-4 px-6 text-white focus:outline-none focus:border-nova-500 transition-all text-sm font-bold placeholder:text-gray-600" placeholder="e.g. Asset Finance Inquiry" />
                     </div>
@@ -285,7 +290,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
                   </form>
                 )}
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </section>

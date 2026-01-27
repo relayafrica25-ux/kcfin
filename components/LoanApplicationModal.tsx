@@ -105,7 +105,10 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!isStepValid()) return;
+    if (!isStepValid()) {
+      showToast('Please complete all required fields.', 'error');
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -337,6 +340,18 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
                 )}
               </div>
               <p className="text-[10px] text-gray-600 text-center uppercase tracking-widest">By submitting, you agree to our privacy protocol and terms.</p>
+
+              {/* Added submit button inside form for better initiation reliability */}
+              <div className="pt-6 flex justify-end">
+                <button
+                  type="submit"
+                  disabled={isSubmitting || !isStepValid()}
+                  className={`text-white px-10 py-3 rounded-full font-black text-xs uppercase tracking-widest shadow-xl flex items-center gap-3 transition-all ${!isStepValid() || isSubmitting ? 'bg-gray-700 cursor-not-allowed opacity-50' : (isFinancial ? 'bg-nova-500 shadow-nova-500/30' : 'bg-purple-600 shadow-purple-600/30')
+                    }`}
+                >
+                  {isSubmitting ? 'Live Syncing...' : 'Initiate Inquiry'} <Check size={16} />
+                </button>
+              </div>
             </form>
           )}
 
@@ -350,29 +365,23 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
           )}
         </div>
 
-        {step > 1 && step < 6 && (
+        {step > 1 && step < 5 && (
           <div className="p-6 border-t border-white/10 bg-white/5 flex justify-between items-center">
             <button onClick={prevStep} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-xs font-black uppercase tracking-widest"><ChevronLeft size={16} /> Back</button>
-            {step < 5 ? (
-              <button
-                onClick={nextStep}
-                disabled={!isStepValid()}
-                className={`text-white px-8 py-2.5 rounded-full font-black text-xs uppercase tracking-widest flex items-center gap-2 shadow-lg transition-all ${!isStepValid() ? 'bg-gray-700 cursor-not-allowed opacity-50' : (isFinancial ? 'bg-nova-500 shadow-nova-500/20' : 'bg-purple-600 shadow-purple-600/20')
-                  }`}
-              >
-                Next Step <ChevronRight size={16} />
-              </button>
-            ) : (
-              <button
-                form="application-form"
-                type="submit"
-                disabled={isSubmitting || !isStepValid()}
-                className={`text-white px-10 py-3 rounded-full font-black text-xs uppercase tracking-widest shadow-xl flex items-center gap-3 transition-all ${!isStepValid() || isSubmitting ? 'bg-gray-700 cursor-not-allowed opacity-50' : (isFinancial ? 'bg-nova-500 shadow-nova-500/30' : 'bg-purple-600 shadow-purple-600/30')
-                  }`}
-              >
-                {isSubmitting ? 'Live Syncing...' : 'Initiate Inquiry'} <Check size={16} />
-              </button>
-            )}
+            <button
+              onClick={nextStep}
+              disabled={!isStepValid()}
+              className={`text-white px-8 py-2.5 rounded-full font-black text-xs uppercase tracking-widest flex items-center gap-2 shadow-lg transition-all ${!isStepValid() ? 'bg-gray-700 cursor-not-allowed opacity-50' : (isFinancial ? 'bg-nova-500 shadow-nova-500/20' : 'bg-purple-600 shadow-purple-600/20')
+                }`}
+            >
+              Next Step <ChevronRight size={16} />
+            </button>
+          </div>
+        )}
+
+        {step === 5 && (
+          <div className="p-6 border-t border-white/10 bg-white/5 flex justify-start items-center">
+            <button onClick={prevStep} className="flex items-center gap-2 text-gray-400 hover:text-white transition-colors text-xs font-black uppercase tracking-widest"><ChevronLeft size={16} /> Back</button>
           </div>
         )}
       </div>

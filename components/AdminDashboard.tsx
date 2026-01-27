@@ -86,6 +86,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   const [isEditingTeam, setIsEditingTeam] = useState(false);
   const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
   const [articleFile, setArticleFile] = useState<File | null>(null);
+  const [teamFile, setTeamFile] = useState<File | null>(null);
 
   const [newArticle, setNewArticle] = useState<Partial<Article>>({
     title: '',
@@ -268,9 +269,10 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     setIsGeneratingImage(false);
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: any) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: any, fileSetter?: (f: File | null) => void) => {
     const file = e.target.files?.[0];
     if (file) {
+      if (fileSetter) fileSetter(file);
       const reader = new FileReader();
       reader.onloadend = () => {
         setter((prev: any) => ({ ...prev, imageUrl: reader.result as string }));
@@ -356,11 +358,12 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
         id: isEditingTeam && editingTeamId ? editingTeamId : `temp-${Math.random().toString(36).substr(2, 9)}`,
         imageGradient: newTeamMember.imageGradient || 'from-blue-600 to-indigo-900'
       };
-      await storageService.saveTeamMember(member);
+      await storageService.saveTeamMember(member, teamFile);
       refreshData();
       setIsTeamModalOpen(false);
       setIsEditingTeam(false);
       setEditingTeamId(null);
+      setTeamFile(null);
       showToast(isEditingTeam ? 'Leadership record updated.' : 'New leader added to records.', 'success');
       setNewTeamMember({ name: '', role: '', bio: '', specialization: '', linkedin: '', twitter: '', email: '', imageUrl: '', imageGradient: 'from-blue-600 to-indigo-900' });
     } catch (err) {
@@ -387,12 +390,14 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   };
 
   const handleDeleteArticle = async (id: string) => {
+    console.log('Attempting to erase insight with ID:', id);
     if (window.confirm('Erase this insight?')) {
       try {
         await storageService.deleteArticle(id);
         refreshData();
         showToast('Insight erased.', 'info');
       } catch (err) {
+        console.error('Delete article error:', err);
         showToast(getErrorMessage(err, 'Erase operation rejected.'), 'error');
       }
     }
@@ -691,6 +696,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                     <div className="w-8 h-8 rounded-full bg-nova-500/20 flex items-center justify-center text-nova-400"><User size={14} /></div>
                     <div>
                       <p className="text-xs font-bold text-white">{inq.fullName}</p>
+                      <p className="text-[9px] text-nova-400 font-mono lower">{inq.email}</p>
                       <p className="text-[10px] text-gray-500 font-mono">{inq.date}</p>
                     </div>
                   </div>
@@ -928,7 +934,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                       </button>
                       <label className="flex-1 bg-white/5 border border-white/10 text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-white/10 transition-all flex items-center justify-center gap-2 cursor-pointer">
                         <Upload size={16} /> Manual Upload
-                        <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewArticle)} className="hidden" />
+                        <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewArticle, setArticleFile)} className="hidden" />
                       </label>
                       <p className="text-[9px] text-gray-500 italic mt-1 ml-1 font-medium">Recommended: 1200x800px (3:2 ratio)</p>
                     </div>
@@ -985,7 +991,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                     </div>
                     <div className="flex flex-col gap-2 flex-grow">
                       <button type="button" onClick={() => handleGenerateAIImage('team')} disabled={isGeneratingImage} className="flex-1 bg-nova-500 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2"><BrainCircuit size={14} /> Gemini Portrait Sync</button>
-                      <label className="flex-1 bg-white/5 border border-white/10 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 cursor-pointer"><Upload size={14} /> Headshot Upload <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewTeamMember)} className="hidden" /></label>
+                      <label className="flex-1 bg-white/5 border border-white/10 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 cursor-pointer"><Upload size={14} /> Headshot Upload <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewTeamMember, setTeamFile)} className="hidden" /></label>
                       <p className="text-[9px] text-gray-500 italic mt-1 ml-1 font-medium">Recommended: 800x800px (Square)</p>
                     </div>
                   </div>
@@ -998,260 +1004,6 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
           </div>
         </div>
       )}
-
-      {/* MODAL: INQUIRY DETAIL */}
-      {
-        selectedInquiry && (
-          <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setSelectedInquiry(null)}></div>
-            <div className="relative w-full max-w-xl glass-panel rounded-[3rem] border border-white/10 overflow-hidden shadow-2xl flex flex-col animate-fade-in-up">
-              <div className="p-10 border-b border-white/5 flex justify-between items-center bg-white/5">
-                <div>
-                  <h2 className="text-2xl font-black text-white tracking-tighter uppercase italic">Inquiry Review</h2>
-                  <p className="text-[10px] text-gray-400 font-black uppercase tracking-widest mt-1">Status: {selectedInquiry.status}</p>
-                </div>
-                <button onClick={() => setSelectedInquiry(null)} className="p-2 hover:bg-white/10 rounded-full text-gray-400 transition-colors"><X size={24} /></button>
-              </div>
-              <div className="p-10 space-y-8">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded-full bg-nova-500/20 flex items-center justify-center text-nova-400"><User size={24} /></div>
-                  <div><p className="text-xl font-bold text-white">{selectedInquiry.fullName}</p><p className="text-gray-500 font-mono text-xs">{selectedInquiry.email}</p></div>
-                </div>
-                <div>
-                  <p className="text-[10px] text-gray-500 uppercase font-black tracking-widest mb-2">Subject</p>
-                  <h3 className="text-lg font-bold text-white">{selectedInquiry.subject}</h3>
-                </div>
-                <div className="p-8 bg-white/5 rounded-3xl border border-white/5">
-                  <p className="text-gray-200 leading-relaxed font-medium italic">"{selectedInquiry.message}"</p>
-                </div>
-                <div className="flex gap-4">
-                  <button onClick={() => updateInquiryStatus(selectedInquiry.id, 'Replied')} className="flex-1 py-4 bg-nova-500 text-white rounded-2xl flex items-center justify-center gap-2 hover:bg-nova-400 transition-all font-black uppercase tracking-widest text-[10px] shadow-lg shadow-nova-500/20"><CheckCircle size={16} /> Mark as Replied</button>
-                  <button onClick={() => handleDeleteInquiry(selectedInquiry.id)} className="flex-1 py-4 bg-red-600/20 text-red-500 border border-red-500/20 rounded-2xl flex items-center justify-center gap-2 hover:bg-red-600 hover:text-white transition-all font-black uppercase tracking-widest text-[10px]"><Trash2 size={16} /> Erase log</button>
-                </div>
-              </div>
-              <div className="p-6 text-center text-[9px] text-gray-600 font-black uppercase tracking-widest opacity-40">Received on {selectedInquiry.date}</div>
-            </div>
-          </div>
-        )
-      }
-
-      {/* MODAL: ARTICLE ENTRY */}
-      {
-        isArticleModalOpen && (
-          <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsArticleModalOpen(false)}></div>
-            <div className="relative w-full max-w-4xl glass-panel rounded-[3rem] border border-white/10 overflow-hidden shadow-2xl flex flex-col animate-fade-in-up">
-              <div className="p-10 border-b border-white/5 flex justify-between items-center bg-white/5">
-                <h2 className="text-2xl font-black text-white tracking-tighter uppercase italic">{isEditingArticle ? 'Refine Insight' : 'Manifest Insight'}</h2>
-                <button onClick={() => setIsArticleModalOpen(false)} className="p-2 hover:bg-white/10 rounded-full text-gray-400 transition-colors"><X size={24} /></button>
-              </div>
-              <div className="p-10 overflow-y-auto max-h-[70vh] custom-scrollbar">
-                <form onSubmit={handlePostArticle} className="space-y-8">
-                  <div className="grid md:grid-cols-2 gap-8">
-                    <div className="md:col-span-2">
-                      <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Intel Title*</label>
-                      <input required type="text" value={newArticle.title} onChange={(e) => setNewArticle({ ...newArticle, title: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:border-nova-500 outline-none font-bold" placeholder="e.g. Asset Finance Trends Q3" />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Section*</label>
-                      <select value={newArticle.category} onChange={(e) => setNewArticle({ ...newArticle, category: e.target.value })} className="w-full bg-nova-800 border border-white/10 rounded-2xl py-4 px-6 text-white outline-none font-bold">
-                        <option value="Strategy">Strategy</option>
-                        <option value="Real Estate">Real Estate</option>
-                        <option value="Eco-Finance">Eco-Finance</option>
-                        <option value="Guide">Guide</option>
-                        <option value="Tech">Tech</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Author Terminal*</label>
-                      <input required type="text" value={newArticle.author} onChange={(e) => setNewArticle({ ...newArticle, author: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:border-nova-500 outline-none font-bold" />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Executive Summary*</label>
-                    <textarea required value={newArticle.excerpt} onChange={(e) => setNewArticle({ ...newArticle, excerpt: e.target.value })} className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:border-nova-500 outline-none resize-none italic font-medium" />
-                  </div>
-
-                  {/* Visual Uplink */}
-                  <div className="space-y-4">
-                    <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Visual Synchronization</label>
-                    <div className="flex gap-4">
-                      <div className="w-40 h-24 bg-nova-800 rounded-2xl border border-white/10 overflow-hidden flex items-center justify-center relative">
-                        {newArticle.imageUrl ? (
-                          <img src={newArticle.imageUrl} className="w-full h-full object-cover" alt="Preview" />
-                        ) : (
-                          <ImageIcon className="text-gray-700" size={32} />
-                        )}
-                        {isGeneratingImage && <div className="absolute inset-0 bg-black/60 flex items-center justify-center"><Loader2 className="animate-spin text-nova-400" size={24} /></div>}
-                      </div>
-                      <div className="flex flex-col gap-2 flex-grow">
-                        <button type="button" onClick={() => handleGenerateAIImage('article')} disabled={isGeneratingImage} className="flex-1 bg-nova-500 text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-nova-400 transition-all flex items-center justify-center gap-2">
-                          <BrainCircuit size={16} /> {isGeneratingImage ? 'Syncing...' : 'Gemini AI Vision Sync'}
-                        </button>
-                        <label className="flex-1 bg-white/5 border border-white/10 text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-white/10 transition-all flex items-center justify-center gap-2 cursor-pointer">
-                          <Upload size={16} /> Manual Upload
-                          <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewArticle)} className="hidden" />
-                        </label>
-                        <p className="text-[9px] text-gray-500 italic mt-1 ml-1 font-medium">Recommended: 1200x800px (3:2 ratio)</p>
-                      </div>
-                    </div>
-                  </div>
-
-                  <button type="submit" className="w-full py-5 bg-white text-nova-900 font-black text-[11px] uppercase tracking-[0.4em] rounded-2xl hover:bg-nova-500 hover:text-white transition-all shadow-xl active:scale-95">
-                    {isEditingArticle ? 'Update Intel' : 'Initialize Transmit'}
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        )
-      }
-
-      {/* MODAL: TEAM ENTRY */}
-      {
-        isTeamModalOpen && (
-          <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsTeamModalOpen(false)}></div>
-            <div className="relative w-full max-w-2xl glass-panel rounded-[3rem] border border-white/10 overflow-hidden shadow-2xl flex flex-col animate-fade-in-up">
-              <div className="p-10 border-b border-white/5 flex justify-between items-center bg-white/5">
-                <h2 className="text-2xl font-black text-white tracking-tighter uppercase italic">{isEditingTeam ? 'Refine Leader Profile' : 'Initialize New Leader'}</h2>
-                <button onClick={() => setIsTeamModalOpen(false)} className="p-2 hover:bg-white/10 rounded-full text-gray-400 transition-colors"><X size={24} /></button>
-              </div>
-              <div className="p-10 overflow-y-auto max-h-[70vh] custom-scrollbar">
-                <form onSubmit={handlePostTeam} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Ident Name*</label>
-                      <input required type="text" value={newTeamMember.name} onChange={(e) => setNewTeamMember({ ...newTeamMember, name: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:border-nova-500 outline-none font-bold" />
-                    </div>
-                    <div>
-                      <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Official Designation*</label>
-                      <input required type="text" value={newTeamMember.role} onChange={(e) => setNewTeamMember({ ...newTeamMember, role: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:border-nova-500 outline-none font-bold" />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Specialized Domain*</label>
-                    <input required type="text" value={newTeamMember.specialization} onChange={(e) => setNewTeamMember({ ...newTeamMember, specialization: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:border-nova-500 outline-none font-bold" placeholder="e.g. Asset Engineering" />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Leader Intel / Bio*</label>
-                    <textarea required value={newTeamMember.bio} onChange={(e) => setNewTeamMember({ ...newTeamMember, bio: e.target.value })} className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:border-nova-500 outline-none resize-none font-medium italic" />
-                  </div>
-                  <div className="grid md:grid-cols-3 gap-4">
-                    <input type="text" value={newTeamMember.linkedin} onChange={(e) => setNewTeamMember({ ...newTeamMember, linkedin: e.target.value })} placeholder="LinkedIn URI" className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs font-bold" />
-                    <input type="text" value={newTeamMember.twitter} onChange={(e) => setNewTeamMember({ ...newTeamMember, twitter: e.target.value })} placeholder="Twitter URI" className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs font-bold" />
-                    <input type="email" value={newTeamMember.email} onChange={(e) => setNewTeamMember({ ...newTeamMember, email: e.target.value })} placeholder="Terminal Email" className="w-full bg-white/5 border border-white/10 rounded-xl py-3 px-4 text-xs font-bold" />
-                  </div>
-                  <div className="space-y-4 pt-4 border-t border-white/5">
-                    <div className="flex gap-4">
-                      <div className="w-24 h-24 bg-nova-800 rounded-2xl border border-white/10 overflow-hidden flex items-center justify-center relative">
-                        {newTeamMember.imageUrl ? <img src={newTeamMember.imageUrl} className="w-full h-full object-cover" alt="Headshot" /> : <User className="text-gray-700" size={32} />}
-                        {isGeneratingImage && <div className="absolute inset-0 bg-black/60 flex items-center justify-center"><Loader2 className="animate-spin text-nova-400" size={16} /></div>}
-                      </div>
-                      <div className="flex flex-col gap-2 flex-grow">
-                        <button type="button" onClick={() => handleGenerateAIImage('team')} disabled={isGeneratingImage} className="flex-1 bg-nova-500 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2"><BrainCircuit size={14} /> Gemini Portrait Sync</button>
-                        <label className="flex-1 bg-white/5 border border-white/10 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 cursor-pointer"><Upload size={14} /> Headshot Upload <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewTeamMember)} className="hidden" /></label>
-                        <p className="text-[9px] text-gray-500 italic mt-1 ml-1 font-medium">Recommended: 800x800px (Square)</p>
-                      </div>
-                    </div>
-                  </div>
-                  <button type="submit" className="w-full py-5 bg-white text-nova-900 font-black text-[10px] uppercase tracking-[0.4em] rounded-2xl hover:bg-nova-500 hover:text-white transition-all shadow-xl active:scale-95">
-                    {isEditingTeam ? 'Refine Records' : 'Initialize Profile'}
-                  </button>
-                </form>
-              </div>
-            </div>
-          </div>
-        )
-      }
-
-      {/* MODAL: TICKER ENTRY */}
-      {
-        isTickerModalOpen && (
-          <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsTickerModalOpen(false)}></div>
-            <div className="relative w-full max-w-md glass-panel rounded-[3rem] border border-white/10 overflow-hidden shadow-2xl flex flex-col animate-fade-in-up">
-              <div className="p-10 border-b border-white/5 flex justify-between items-center bg-white/5">
-                <h2 className="text-2xl font-black text-white tracking-tighter uppercase italic">Alert Broadcast</h2>
-                <button onClick={() => setIsTickerModalOpen(false)} className="p-2 hover:bg-white/10 rounded-full text-gray-400 transition-colors"><X size={24} /></button>
-              </div>
-              <div className="p-10">
-                <form onSubmit={handlePostTicker} className="space-y-6">
-                  <div>
-                    <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Alert Level*</label>
-                    <select value={newTicker.category} onChange={(e) => setNewTicker({ ...newTicker, category: e.target.value as any })} className="w-full bg-nova-800 border border-white/10 rounded-2xl py-4 px-6 text-white outline-none font-bold">
-                      <option value="Urgent">Urgent Alert</option>
-                      <option value="Market">Market Alert</option>
-                      <option value="Corporate">Corporate Alert</option>
-                    </select>
-                  </div>
-                  <div>
-                    <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Broadcast Text*</label>
-                    <textarea required maxLength={120} value={newTicker.text} onChange={(e) => setNewTicker({ ...newTicker, text: e.target.value })} className="w-full h-32 bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:border-red-500 outline-none resize-none font-bold uppercase tracking-tight italic" placeholder="MAX 120 CHARS FOR OPTIMAL SCROLL" />
-                  </div>
-                  <button type="submit" className="w-full py-5 bg-red-600 text-white font-black text-[10px] uppercase tracking-[0.4em] rounded-2xl hover:bg-red-500 transition-all shadow-xl active:scale-95">Initiate Broadcast</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        )
-      }
-
-      {/* MODAL: CAROUSEL ENTRY */}
-      {
-        isCarouselModalOpen && (
-          <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
-            <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsCarouselModalOpen(false)}></div>
-            <div className="relative w-full max-w-2xl glass-panel rounded-[3rem] border border-white/10 overflow-hidden shadow-2xl flex flex-col animate-fade-in-up">
-              <div className="p-10 border-b border-white/5 flex justify-between items-center bg-white/5">
-                <h2 className="text-2xl font-black text-white tracking-tighter uppercase italic">Campaign Builder</h2>
-                <button onClick={() => setIsCarouselModalOpen(false)} className="p-2 hover:bg-white/10 rounded-full text-gray-400 transition-colors"><X size={24} /></button>
-              </div>
-              <div className="p-10 overflow-y-auto max-h-[70vh] custom-scrollbar">
-                <form onSubmit={handlePostCarousel} className="space-y-6">
-                  <div className="grid md:grid-cols-2 gap-6">
-                    <div>
-                      <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Context Type*</label>
-                      <select value={newCarousel.type} onChange={(e) => setNewCarousel({ ...newCarousel, type: e.target.value as any })} className="w-full bg-nova-800 border border-white/10 rounded-2xl py-4 px-6 text-white outline-none font-bold">
-                        <option value="advert">Institutional Advert</option>
-                        <option value="product">Product Campaign</option>
-                        <option value="customer">Client Success</option>
-                        <option value="news">Market Intelligence</option>
-                      </select>
-                    </div>
-                    <div>
-                      <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Short Tag*</label>
-                      <input required type="text" value={newCarousel.tag} onChange={(e) => setNewCarousel({ ...newCarousel, tag: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white font-bold" placeholder="e.g. Active Campaign" />
-                    </div>
-                  </div>
-                  <div>
-                    <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Headline*</label>
-                    <input required type="text" value={newCarousel.title} onChange={(e) => setNewCarousel({ ...newCarousel, title: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white font-bold text-lg" />
-                  </div>
-                  <div>
-                    <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Summary*</label>
-                    <textarea required value={newCarousel.summary} onChange={(e) => setNewCarousel({ ...newCarousel, summary: e.target.value })} className="w-full h-24 bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:border-nova-500 outline-none resize-none font-medium italic" />
-                  </div>
-                  <div className="space-y-4 pt-4 border-t border-white/5">
-                    <div className="flex gap-4">
-                      <div className="w-32 h-20 bg-nova-800 rounded-2xl border border-white/10 overflow-hidden flex items-center justify-center relative">
-                        {newCarousel.imageUrl ? <img src={newCarousel.imageUrl} className="w-full h-full object-cover" alt="Campaign" /> : <ImageIcon className="text-gray-700" size={24} />}
-                        {isGeneratingImage && <div className="absolute inset-0 bg-black/60 flex items-center justify-center"><Loader2 className="animate-spin text-nova-400" size={16} /></div>}
-                      </div>
-                      <div className="flex flex-col gap-2 flex-grow">
-                        <button type="button" onClick={() => handleGenerateAIImage('carousel')} disabled={isGeneratingImage} className="flex-1 bg-nova-500 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2"><BrainCircuit size={14} /> AI Visualization Sync</button>
-                        <label className="flex-1 bg-white/5 border border-white/10 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 cursor-pointer"><Upload size={14} /> Campaign Asset Upload <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewCarousel)} className="hidden" /></label>
-                        <p className="text-[9px] text-gray-500 italic mt-1 ml-1 font-medium">Recommended: 1600x800px (2:1 aspect ratio)</p>
-                      </div>
-                    </div>
-                  </div>
-                  <button type="submit" className="w-full py-5 bg-white text-nova-900 font-black text-[10px] uppercase tracking-[0.4em] rounded-2xl hover:bg-nova-500 hover:text-white transition-all shadow-xl active:scale-95">Initiate Campaign</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        )
-      }
 
       {/* Application Detail Modal */}
       {

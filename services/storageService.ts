@@ -112,64 +112,17 @@ api.interceptors.response.use(
   }
 );
 
-const INITIAL_TEAM: TeamMember[] = [
-  {
-    id: '1',
-    name: "Dr. Adebayo Ogunlesi",
-    role: "Managing Director / CEO",
-    bio: "Visionary leader with 20+ years in investment banking and structured finance across emerging markets. Architect of the CASIEC institutional framework.",
-    imageGradient: "from-blue-600 to-indigo-900",
-    specialization: "Strategic Leadership",
-    linkedin: "https://linkedin.com",
-    twitter: "https://twitter.com",
-    email: "ceo@casiec.com"
-  },
-  {
-    id: '2',
-    name: "Sarah Jenkins",
-    role: "Chief Financial Officer",
-    bio: "Expert in mezzanine financing and corporate treasury management with a focus on institutional risk assessment and capital mapping.",
-    imageGradient: "from-purple-600 to-nova-500",
-    specialization: "Corporate Finance",
-    linkedin: "https://linkedin.com",
-    email: "cfo@casiec.com"
+// Utility for phone normalization
+export const normalizePhoneNumber = (phone: string) => {
+  let cleaned = phone.replace(/\D/g, '');
+  if (cleaned.startsWith('0')) {
+    cleaned = cleaned.substring(1);
   }
-];
-
-const INITIAL_BREAKING_NEWS: TickerItem[] = [
-  { id: 'bn1', text: "CASIEC FINANCIALS AUTHORIZES ₦2.5B IN NEW NMSE CREDIT FACILITIES.", category: 'Urgent', isManual: true },
-  { id: 'bn2', text: "BROASTREET DyDX ANNOUNCES STRATEGIC PARTNERSHIP WITH PAN-AFRICAN LOGISTICS GIANT.", category: 'Corporate', isManual: true },
-  { id: 'bn3', text: "MARKET ALERT: NIGERIAN FINTECH SECTOR SEES 15% INCREASE IN Q1 VENTURE INFLOW.", category: 'Market', isManual: true },
-  { id: 'bn4', text: "CASIEC SECURES INSTITUTIONAL DEBENTURE FOR INFRASTRUCTURE BRIDGE FUNDING.", category: 'Corporate', isManual: true }
-];
-
-const INITIAL_ARTICLES: Article[] = [
-  {
-    id: '1',
-    title: "The Architecture of Capital: Structuring Debt for Growth",
-    excerpt: "Why standard term loans aren't always the answer. Explore how mezzanine financing and structured equity can accelerate your expansion.",
-    category: "Strategy",
-    readTime: "8 min read",
-    author: "Sarah Jenkins, CFO",
-    date: new Date().toLocaleDateString(),
-    imageGradient: "from-purple-600 to-blue-600",
+  if (!cleaned.startsWith('234')) {
+    cleaned = '234' + cleaned;
   }
-];
-
-const INITIAL_CAROUSEL: CarouselItem[] = [
-  {
-    id: 'adv-1',
-    type: 'advert',
-    title: "Expansion Capital Phase II",
-    summary: "Fueling the next generation of African retail giants with structured credit facilities up to ₦500M.",
-    tag: "Active Campaign",
-    linkText: "Learn More",
-    imageGradient: "from-nova-500 via-indigo-600 to-purple-800",
-    imageUrl: "https://images.unsplash.com/photo-1460925895917-afdab827c52f?auto=format&fit=crop&q=80&w=1200",
-    statLabel: "Interest Rate",
-    statValue: "9.5% Fixed"
-  }
-];
+  return '+' + cleaned;
+};
 
 export const storageService = {
   // Articles
@@ -239,25 +192,37 @@ export const storageService = {
     }
   },
 
-  // Team Members
   getTeamMembers: async (): Promise<TeamMember[]> => {
     try {
       const response = await api.get(`${API_BASE_URL}/team`);
-      if (response.data.length === 0) return INITIAL_TEAM;
       return response.data;
     } catch (error) {
       console.error('Failed to fetch team members:', error);
-      return INITIAL_TEAM;
+      return [];
     }
   },
 
-  saveTeamMember: async (member: TeamMember) => {
+  saveTeamMember: async (member: TeamMember, file?: File | null) => {
     try {
       if (member.id && !member.id.startsWith('temp-')) {
         await api.patch(`${API_BASE_URL}/team/${member.id}`, member);
       } else {
-        const { id, ...payload } = member;
-        await api.post(`${API_BASE_URL}/team`, payload);
+        if (file) {
+          const formData = new FormData();
+          formData.append('name', member.name);
+          formData.append('role', member.role);
+          formData.append('bio', member.bio);
+          formData.append('specialization', member.specialization);
+          if (member.linkedin) formData.append('linkedin', member.linkedin);
+          if (member.twitter) formData.append('twitter', member.twitter);
+          if (member.email) formData.append('email', member.email);
+          formData.append('imageGradient', member.imageGradient || 'from-blue-600 to-indigo-900');
+          formData.append('image', file);
+          await api.post(`${API_BASE_URL}/team`, formData);
+        } else {
+          const { id, ...payload } = member;
+          await api.post(`${API_BASE_URL}/team`, payload);
+        }
       }
     } catch (error) {
       console.error('Failed to save team member:', error);
@@ -274,15 +239,13 @@ export const storageService = {
     }
   },
 
-  // Carousel
   getCarouselItems: async (): Promise<CarouselItem[]> => {
     try {
       const response = await api.get(`${API_BASE_URL}/carousel`);
-      if (response.data.length === 0) return INITIAL_CAROUSEL;
       return response.data;
     } catch (error) {
       console.error('Failed to fetch carousel items:', error);
-      return INITIAL_CAROUSEL;
+      return [];
     }
   },
 
@@ -361,7 +324,7 @@ export const storageService = {
     const payload = {
       fullName: app.fullName,
       email: app.email,
-      phone: app.phone,
+      phone: normalizePhoneNumber(app.phone),
       designatedRole: app.role,
       businessName: app.businessName,
       isRegistered: app.cacNumber ? true : false,
@@ -433,7 +396,8 @@ export const storageService = {
         email: inquiry.email,
         fullName: inquiry.fullName,
         subject: inquiry.subject,
-        message: inquiry.message
+        message: inquiry.message,
+        phone: inquiry.phone ? normalizePhoneNumber(inquiry.phone) : undefined
       });
     } catch (error) {
       console.error('Failed to save inquiry:', error);
@@ -465,15 +429,13 @@ export const storageService = {
     }
   },
 
-  // Ticker Management (Breaking News)
   getManualTickerItems: async (): Promise<TickerItem[]> => {
     try {
       const response = await api.get(`${API_BASE_URL}/ticker`);
-      if (response.data.length === 0) return INITIAL_BREAKING_NEWS;
       return response.data;
     } catch (error) {
       console.error('Failed to fetch ticker items:', error);
-      return INITIAL_BREAKING_NEWS;
+      return [];
     }
   },
 

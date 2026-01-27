@@ -57,7 +57,9 @@ const App: React.FC = () => {
   const handleNavigate = (view: string) => {
     window.location.hash = view;
     // State will be updated by hashchange listener
-    setSelectedArticle(null);
+    if (view !== 'article-detail') {
+      setSelectedArticle(null);
+    }
     window.scrollTo(0, 0);
   };
 
@@ -213,7 +215,7 @@ const App: React.FC = () => {
               <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center gap-10">
                 <div className="flex flex-col gap-2">
                   <div className="text-gray-600 text-[10px] uppercase tracking-[0.5em] font-black">
-                    © 2025 CASIEC FINANCIALS & GSI. ALL RIGHTS RESERVED.
+                    © 2026 CASIEC FINANCIALS & GSI. ALL RIGHTS RESERVED.
                   </div>
                   <div className="text-gray-500 text-[9px] uppercase tracking-[0.3em] font-bold">
                     Affiliate Member of ANMFIN.

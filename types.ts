@@ -60,6 +60,7 @@ export interface ContactInquiry {
   date: string;
   fullName: string;
   email: string;
+  phone?: string;
   subject: string;
   message: string;
   status: 'Unread' | 'Replied' | 'Archived' | 'opened';

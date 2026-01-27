@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Article, LoanApplication, ContactInquiry, NewsletterSubscription, TickerItem, CarouselItem, TeamMember } from '../types';
+import { Article, LoanApplication, ContactInquiry, NewsletterSubscription, TickerItem, CarouselItem, TeamMember, Campaign } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || 'http://localhost:3000';
 
@@ -148,33 +148,45 @@ export const storageService = {
   },
 
   saveArticle: async (article: Article, file?: File | null) => {
-    const payload = {
-      headline: article.title,
-      summary: article.excerpt,
-      category: article.category,
-      image: article.imageUrl,
-      readTime: article.readTime,
-      author: article.author,
-      imageGradient: article.imageGradient,
-      content: article.content
-    };
     try {
-      if (article.id && !article.id.startsWith('temp-')) {
-        await api.patch(`${API_BASE_URL}/article/${article.id}`, payload);
-      } else {
-        if (file) {
-          const formData = new FormData();
-          formData.append('headline', article.title);
-          formData.append('summary', article.excerpt);
-          formData.append('category', article.category);
-          formData.append('readTime', article.readTime);
-          formData.append('author', article.author);
-          formData.append('imageGradient', article.imageGradient);
-          if (article.content) formData.append('content', article.content);
-          formData.append('image', file);
-          await api.post(`${API_BASE_URL}/article`, formData);
+      const isUpdate = article.id && !article.id.startsWith('temp-');
+      const url = isUpdate ? `${API_BASE_URL}/article/${article.id}` : `${API_BASE_URL}/article`;
+
+      if (file) {
+        // Multipart Upload
+        const formData = new FormData();
+        formData.append('headline', article.title);
+        formData.append('summary', article.excerpt);
+        formData.append('category', article.category);
+        formData.append('readTime', article.readTime);
+        formData.append('author', article.author);
+        formData.append('imageGradient', article.imageGradient);
+        if (article.content) formData.append('content', article.content);
+
+        // Use key 'image' for the file part as requested
+        formData.append('image', file);
+
+        if (isUpdate) {
+          await api.patch(url, formData);
         } else {
-          await api.post(`${API_BASE_URL}/article`, payload);
+          await api.post(url, formData);
+        }
+      } else {
+        // Standard JSON Payload
+        const payload = {
+          headline: article.title,
+          summary: article.excerpt,
+          category: article.category,
+          image: article.imageUrl, // Existing string
+          readTime: article.readTime,
+          author: article.author,
+          imageGradient: article.imageGradient,
+          content: article.content
+        };
+        if (isUpdate) {
+          await api.patch(url, payload);
+        } else {
+          await api.post(url, payload);
         }
       }
     } catch (error) {
@@ -204,24 +216,34 @@ export const storageService = {
 
   saveTeamMember: async (member: TeamMember, file?: File | null) => {
     try {
-      if (member.id && !member.id.startsWith('temp-')) {
-        await api.patch(`${API_BASE_URL}/team/${member.id}`, member);
-      } else {
-        if (file) {
-          const formData = new FormData();
-          formData.append('name', member.name);
-          formData.append('role', member.role);
-          formData.append('bio', member.bio);
-          formData.append('specialization', member.specialization);
-          if (member.linkedin) formData.append('linkedin', member.linkedin);
-          if (member.twitter) formData.append('twitter', member.twitter);
-          if (member.email) formData.append('email', member.email);
-          formData.append('imageGradient', member.imageGradient || 'from-blue-600 to-indigo-900');
-          formData.append('image', file);
-          await api.post(`${API_BASE_URL}/team`, formData);
+      const isUpdate = member.id && !member.id.startsWith('temp-');
+      const url = isUpdate ? `${API_BASE_URL}/team/${member.id}` : `${API_BASE_URL}/team`;
+
+      if (file) {
+        const formData = new FormData();
+        formData.append('name', member.name);
+        formData.append('role', member.role);
+        formData.append('bio', member.bio);
+        formData.append('specialization', member.specialization);
+        if (member.linkedin) formData.append('linkedin', member.linkedin);
+        if (member.twitter) formData.append('twitter', member.twitter);
+        if (member.email) formData.append('email', member.email);
+        formData.append('imageGradient', member.imageGradient || 'from-blue-600 to-indigo-900');
+
+        // Append raw file
+        formData.append('image', file);
+
+        if (isUpdate) {
+          await api.patch(url, formData);
         } else {
-          const { id, ...payload } = member;
-          await api.post(`${API_BASE_URL}/team`, payload);
+          await api.post(url, formData);
+        }
+      } else {
+        const { id, ...payload } = member;
+        if (isUpdate) {
+          await api.patch(url, payload);
+        } else {
+          await api.post(url, payload);
         }
       }
     } catch (error) {
@@ -235,6 +257,61 @@ export const storageService = {
       await api.delete(`${API_BASE_URL}/team/${id}`);
     } catch (error) {
       console.error('Failed to delete team member:', error);
+      throw error;
+    }
+  },
+
+  getCampaigns: async (): Promise<Campaign[]> => {
+    try {
+      const response = await api.get(`${API_BASE_URL}/campaign`);
+      return response.data;
+    } catch (error) {
+      console.error('Failed to fetch campaigns:', error);
+      return [];
+    }
+  },
+
+  saveCampaign: async (campaign: Partial<Campaign>, imageFile?: File | null) => {
+    try {
+      const isUpdate = campaign.id && !campaign.id.startsWith('temp-');
+      const url = isUpdate ? `${API_BASE_URL}/campaign/${campaign.id}` : `${API_BASE_URL}/campaign`;
+
+      if (imageFile) {
+        const formData = new FormData();
+        formData.append('headline', campaign.headline || '');
+        formData.append('summary', campaign.summary || '');
+        formData.append('contextType', campaign.contextType || 'advert');
+        formData.append('tag', campaign.tag || 'Active');
+        if (campaign.url) formData.append('url', campaign.url);
+
+        // Append raw file. DO NOT include string 'image' field in this payload.
+        formData.append('image', imageFile);
+
+        if (isUpdate) {
+          await api.patch(url, formData);
+        } else {
+          await api.post(url, formData);
+        }
+      } else {
+        // Pure JSON for text updates
+        const { id, ...payload } = campaign;
+        if (isUpdate) {
+          await api.patch(url, payload);
+        } else {
+          await api.post(url, payload);
+        }
+      }
+    } catch (error) {
+      console.error('Failed to save campaign:', error);
+      throw error;
+    }
+  },
+
+  deleteCampaign: async (id: string) => {
+    try {
+      await api.delete(`${API_BASE_URL}/campaign/${id}`);
+    } catch (error) {
+      console.error('Failed to delete campaign:', error);
       throw error;
     }
   },
@@ -393,15 +470,20 @@ export const storageService = {
   saveInquiry: async (inquiry: ContactInquiry) => {
     try {
       await api.post(`${API_BASE_URL}/contact`, {
-        email: inquiry.email,
+        email: inquiry.email.toLowerCase(),
         fullName: inquiry.fullName,
         subject: inquiry.subject,
         message: inquiry.message,
         phone: inquiry.phone ? normalizePhoneNumber(inquiry.phone) : undefined
       });
-    } catch (error) {
+      return { success: true };
+    } catch (error: any) {
       console.error('Failed to save inquiry:', error);
-      throw error;
+      return {
+        success: false,
+        message: error.response?.data?.message || 'Failed to send inquiry',
+        statusCode: error.response?.status
+      };
     }
   },
 

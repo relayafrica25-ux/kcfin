@@ -7,8 +7,14 @@ import { useToast } from './Toast';
 export const NewsletterPopup: React.FC = () => {
   const [isVisible, setIsVisible] = useState(false);
   const [isClosing, setIsClosing] = useState(false);
-  const [hasSubscribed, setHasSubscribed] = useState(false);
-  const [email, setEmail] = useState('');
+  const [hasSubmitted, setHasSubmitted] = useState(false);
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    subject: 'General Inquiry (Digital Terminal)',
+    message: ''
+  });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const { showToast } = useToast();
 
@@ -30,32 +36,60 @@ export const NewsletterPopup: React.FC = () => {
     }, 300);
   };
 
-  const handleSubscribe = async (e: React.FormEvent) => {
+  const normalizePhoneNumber = (phone: string) => {
+    // Remove all non-digit characters
+    let cleaned = ('' + phone).replace(/\D/g, '');
+
+    // If it starts with 0, replace with +234
+    if (cleaned.startsWith('0') && cleaned.length === 11) {
+      cleaned = '+234' + cleaned.substring(1);
+    }
+    // If it starts with 234, add +
+    else if (cleaned.startsWith('234') && cleaned.length === 13) {
+      cleaned = '+' + cleaned;
+    }
+    // If it starts with +, assume it's already in a good format
+    else if (cleaned.startsWith('+')) {
+      // Do nothing, it's already good
+    }
+    // For other cases, just return the cleaned number
+    else if (cleaned.length === 10) { // Assuming 10 digits for US/Canada style without country code
+      cleaned = '+1' + cleaned; // Example: default to +1 if 10 digits
+    }
+
+    return cleaned;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email.trim() || isSubmitting) return;
+    if (!formData.email.trim() || !formData.fullName.trim() || isSubmitting) return;
 
     setIsSubmitting(true);
 
     try {
-      // Persist subscription
-      const result = await storageService.saveNewsletterSubscription(email);
+      const normalizedPhone = normalizePhoneNumber(formData.phone);
+
+      const inquiry = {
+        id: Math.random().toString(36).substr(2, 9),
+        date: new Date().toLocaleString(),
+        ...formData,
+        phone: normalizedPhone, // Use normalized phone number
+        status: 'Unread' as const
+      };
+
+      const result = await storageService.saveInquiry(inquiry);
 
       if (result.success) {
-        setHasSubscribed(true);
-        showToast('Successfully subscribed to newsletter!', 'success');
-        // Close after showing success message for a bit
+        setHasSubmitted(true);
+        showToast('Your inquiry has been successfully transmitted!', 'success');
         setTimeout(() => {
           handleClose();
-        }, 2000);
+        }, 2500);
       } else {
-        // Show error toast
-        const errorMessage = result.statusCode
-          ? `Error ${result.statusCode}: ${result.message}`
-          : result.message || 'Failed to subscribe to newsletter';
-        showToast(errorMessage, 'error');
+        showToast(result.message || 'Transmission error. Please try again.', 'error');
       }
     } catch (error) {
-      showToast('An unexpected error occurred. Please try again.', 'error');
+      showToast('An unexpected uplink error occurred.', 'error');
     } finally {
       setIsSubmitting(false);
     }
@@ -86,41 +120,74 @@ export const NewsletterPopup: React.FC = () => {
         </button>
 
         <div className="p-8 relative z-0">
-          {!hasSubscribed ? (
+          {!hasSubmitted ? (
             <>
               <div className="text-center mb-6">
                 <div className="w-16 h-16 bg-gradient-to-br from-white/10 to-white/5 border border-white/10 rounded-2xl mx-auto flex items-center justify-center mb-4 shadow-[0_0_15px_rgba(79,70,229,0.3)] backdrop-blur-md">
                   <Mail className="text-white h-8 w-8 drop-shadow-[0_0_8px_rgba(255,255,255,0.5)]" />
                 </div>
-                <h2 className="text-2xl font-bold text-white mb-2">Unlock Market Alpha</h2>
+                <h2 className="text-2xl font-bold text-white mb-2 uppercase tracking-tighter italic">Electronic Ingress</h2>
                 <p className="text-gray-400 text-sm">
-                  Join 50,000+ investors receiving exclusive deal flow and rate updates.
+                  Initialize a secure communication link with our specialized advisors.
                 </p>
               </div>
 
-              <form onSubmit={handleSubscribe} className="space-y-4">
+              <form onSubmit={handleSubmit} className="space-y-4">
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="relative group">
+                    <input
+                      type="text"
+                      placeholder="Ident Name"
+                      required
+                      value={formData.fullName}
+                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                      className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none focus:border-nova-400 transition-all text-xs font-bold"
+                    />
+                  </div>
+                  <div className="relative group">
+                    <input
+                      type="email"
+                      placeholder="Corporate Email"
+                      required
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none focus:border-nova-400 transition-all text-xs font-bold"
+                    />
+                  </div>
+                </div>
+
                 <div className="relative group">
                   <input
-                    type="email"
-                    placeholder="Enter your email address"
+                    type="tel"
+                    placeholder="Contact Number (+234...)"
                     required
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3.5 pl-11 text-white placeholder:text-gray-500 focus:outline-none focus:border-nova-400 focus:ring-1 focus:ring-nova-400/50 transition-all"
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    className="w-full bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none focus:border-nova-400 transition-all text-xs font-bold"
                   />
-                  <Zap className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500 group-focus-within:text-nova-400 transition-colors" size={18} />
+                </div>
+
+                <div className="relative group">
+                  <textarea
+                    placeholder="Detailed Brief / Message"
+                    required
+                    value={formData.message}
+                    onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+                    className="w-full h-24 bg-black/20 border border-white/10 rounded-xl px-4 py-3 text-white placeholder:text-gray-600 focus:outline-none focus:border-nova-400 transition-all resize-none text-xs font-medium"
+                  />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full bg-gradient-to-r from-nova-500 to-nova-400 hover:from-nova-400 hover:to-nova-300 text-white font-bold py-3.5 rounded-xl shadow-lg shadow-nova-500/25 hover:shadow-nova-500/40 transition-all transform hover:-translate-y-0.5 active:scale-95"
+                  disabled={isSubmitting}
+                  className="w-full bg-gradient-to-r from-nova-500 to-nova-400 hover:from-nova-400 hover:to-nova-300 text-white font-black py-4 rounded-xl shadow-lg shadow-nova-500/25 hover:shadow-nova-500/40 transition-all transform hover:-translate-y-0.5 active:scale-95 uppercase tracking-[0.2em] text-[10px]"
                 >
-                  Get Access
+                  {isSubmitting ? 'Transmitting...' : 'Initiate Uplink'}
                 </button>
               </form>
 
-              <p className="text-[10px] text-gray-500 mt-4 text-center uppercase tracking-widest">
-                Join the future of funding
+              <p className="text-[9px] text-gray-600 mt-4 text-center uppercase tracking-widest font-black">
+                Institutional Privacy Protocol Protected
               </p>
             </>
           ) : (
@@ -128,8 +195,8 @@ export const NewsletterPopup: React.FC = () => {
               <div className="w-20 h-20 bg-green-500/10 border border-green-500/20 rounded-full mx-auto flex items-center justify-center mb-6 text-green-400 shadow-[0_0_20px_rgba(34,197,94,0.2)]">
                 <CheckCircle2 size={40} />
               </div>
-              <h2 className="text-2xl font-bold text-white mb-2">You're on the list!</h2>
-              <p className="text-gray-400">Keep an eye on your inbox.</p>
+              <h2 className="text-2xl font-bold text-white mb-2 uppercase italic tracking-tight">Transmission Locked</h2>
+              <p className="text-gray-400 font-medium">A specialist will reach out shortly.</p>
             </div>
           )}
         </div>

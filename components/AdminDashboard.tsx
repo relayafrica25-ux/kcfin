@@ -45,7 +45,7 @@ import {
 } from 'lucide-react';
 import { storageService } from '../services/storageService';
 import { generateArticleImage } from '../services/geminiService';
-import { Article, LoanApplication, ContactInquiry, TickerItem, CarouselItem, TeamMember } from '../types';
+import { Article, LoanApplication, ContactInquiry, TickerItem, CarouselItem, TeamMember, Campaign } from '../types';
 import { useToast } from './Toast';
 import { Logo } from './Logo';
 
@@ -69,12 +69,13 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   const [inquiries, setInquiries] = useState<ContactInquiry[]>([]);
   const [tickerItems, setTickerItems] = useState<TickerItem[]>([]);
   const [carouselItems, setCarouselItems] = useState<CarouselItem[]>([]);
+  const [campaigns, setCampaigns] = useState<Campaign[]>([]);
   const [teamMembers, setTeamMembers] = useState<TeamMember[]>([]);
 
   // Modal States
   const [isArticleModalOpen, setIsArticleModalOpen] = useState(false);
   const [isTickerModalOpen, setIsTickerModalOpen] = useState(false);
-  const [isCarouselModalOpen, setIsCarouselModalOpen] = useState(false);
+  const [isCampaignModalOpen, setIsCampaignModalOpen] = useState(false);
   const [isTeamModalOpen, setIsTeamModalOpen] = useState(false);
   const [isGeneratingImage, setIsGeneratingImage] = useState(false);
   const [selectedApplication, setSelectedApplication] = useState<LoanApplication | null>(null);
@@ -87,6 +88,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   const [editingTeamId, setEditingTeamId] = useState<string | null>(null);
   const [articleFile, setArticleFile] = useState<File | null>(null);
   const [teamFile, setTeamFile] = useState<File | null>(null);
+  const [campaignFile, setCampaignFile] = useState<File | null>(null);
 
   const [newArticle, setNewArticle] = useState<Partial<Article>>({
     title: '',
@@ -116,16 +118,12 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     category: 'Market'
   });
 
-  const [newCarousel, setNewCarousel] = useState<Partial<CarouselItem>>({
-    type: 'advert',
-    title: '',
+  const [newCampaign, setNewCampaign] = useState<Partial<Campaign>>({
+    headline: '',
     summary: '',
+    contextType: 'advert',
     tag: 'Active',
-    linkText: 'Learn More',
-    imageGradient: 'from-nova-500 to-purple-600',
-    imageUrl: '',
-    statLabel: 'Priority',
-    statValue: 'High'
+    url: ''
   });
 
   // Session recovery
@@ -147,12 +145,13 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   }, [isAuthenticated]);
 
   const refreshData = async () => {
-    const [arts, apps, inqs, tks, cars, team] = await Promise.all([
+    const [arts, apps, inqs, tks, cars, cams, team] = await Promise.all([
       storageService.getArticles(),
       storageService.getApplications(),
       storageService.getInquiries(),
       storageService.getManualTickerItems(),
       storageService.getCarouselItems(),
+      storageService.getCampaigns(),
       storageService.getTeamMembers()
     ]);
     setArticles(arts);
@@ -160,6 +159,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     setInquiries(inqs);
     setTickerItems(tks);
     setCarouselItems(cars);
+    setCampaigns(cams);
     setTeamMembers(team);
   };
 
@@ -219,7 +219,11 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
   // Helper function to extract error message from server response
   const getErrorMessage = (error: any, fallbackMessage: string = 'An error occurred'): string => {
     if (axios.isAxiosError(error) && error.response?.data?.message) {
-      return error.response.data.message;
+      const message = error.response.data.message;
+      if (Array.isArray(message)) {
+        return message.join(', ');
+      }
+      return message;
     }
     return fallbackMessage;
   };
@@ -236,10 +240,10 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     }
   };
 
-  const handleGenerateAIImage = async (context: 'article' | 'carousel' | 'team') => {
+  const handleGenerateAIImage = async (context: 'article' | 'campaign' | 'team') => {
     const promptMap = {
       article: newArticle.title,
-      carousel: newCarousel.title,
+      campaign: newCampaign.headline,
       team: newTeamMember.name ? `Professional headshot of ${newTeamMember.name}, ${newTeamMember.role}` : null
     };
 
@@ -252,8 +256,8 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     try {
       const generatedUrl = await generateArticleImage(titleToUse);
       if (generatedUrl) {
-        if (context === 'carousel') {
-          setNewCarousel(prev => ({ ...prev, imageUrl: generatedUrl }));
+        if (context === 'campaign') {
+          setNewCampaign(prev => ({ ...prev, image: generatedUrl }));
         } else if (context === 'team') {
           setNewTeamMember(prev => ({ ...prev, imageUrl: generatedUrl }));
         } else {
@@ -269,29 +273,23 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     setIsGeneratingImage(false);
   };
 
-  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: any, fileSetter?: (f: File | null) => void) => {
+  const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>, setter: any, type: 'campaign' | 'article' | 'team', fileSetter?: (f: File | null) => void) => {
     const file = e.target.files?.[0];
     if (file) {
       if (fileSetter) fileSetter(file);
       const reader = new FileReader();
       reader.onloadend = () => {
-        setter((prev: any) => ({ ...prev, imageUrl: reader.result as string }));
+        setter((prev: any) => {
+          if (type === 'campaign') {
+            return { ...prev, image: reader.result as string };
+          }
+          return { ...prev, imageUrl: reader.result as string };
+        });
       };
       reader.readAsDataURL(file);
     }
   };
 
-  const handleArticleFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setArticleFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setNewArticle((prev: any) => ({ ...prev, imageUrl: reader.result as string }));
-      };
-      reader.readAsDataURL(file);
-    }
-  };
 
   const handleEditArticle = (article: Article) => {
     setArticleFile(null);
@@ -371,21 +369,17 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     }
   };
 
-  const handlePostCarousel = async (e: React.FormEvent) => {
+  const handlePostCampaign = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      const item: CarouselItem = {
-        ...(newCarousel as CarouselItem),
-        id: `temp-${Math.random().toString(36).substr(2, 9)}`,
-        type: 'advert'
-      };
-      await storageService.saveCarouselItem(item);
+      await storageService.saveCampaign(newCampaign, campaignFile);
       refreshData();
-      setIsCarouselModalOpen(false);
-      showToast('Campaign item saved.', 'success');
-      setNewCarousel({ type: 'advert', title: '', summary: '', tag: 'Active', linkText: 'Learn More', imageGradient: 'from-nova-500 to-purple-600', imageUrl: '' });
+      setIsCampaignModalOpen(false);
+      setCampaignFile(null);
+      showToast('Campaign successfully initialized.', 'success');
+      setNewCampaign({ headline: '', summary: '', contextType: 'advert', tag: 'Active', url: '' });
     } catch (err) {
-      showToast(getErrorMessage(err, 'Failed to save campaign.'), 'error');
+      showToast(getErrorMessage(err, 'Failed to broadcast campaign.'), 'error');
     }
   };
 
@@ -415,14 +409,14 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
     }
   };
 
-  const handleDeleteCarousel = async (id: string) => {
-    if (window.confirm('Erase this campaign item?')) {
+  const handleDeleteCampaign = async (id: string) => {
+    if (window.confirm('Erase this campaign interactive?')) {
       try {
-        await storageService.deleteCarouselItem(id);
+        await storageService.deleteCampaign(id);
         refreshData();
-        showToast('Campaign item purged.', 'info');
+        showToast('Campaign record purged.', 'info');
       } catch (err) {
-        showToast(getErrorMessage(err, 'Action rejected by system.'), 'error');
+        showToast(getErrorMessage(err, 'Erase operation rejected.'), 'error');
       }
     }
   };
@@ -580,7 +574,6 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
 
       {/* Main Content */}
       <div className="ml-72 p-12 w-full max-w-7xl mx-auto">
-
         {/* TAB: OVERVIEW */}
         {activeTab === 'overview' && (
           <div className="animate-fade-in-up">
@@ -814,35 +807,38 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
           </div>
         )}
 
-        {/* TAB: CAROUSEL */}
+        {/* TAB: CAMPAIGNS */}
         {activeTab === 'carousel' && (
           <div className="animate-fade-in-up">
             <div className="flex justify-between items-center mb-12">
               <div>
-                <h1 className="text-4xl font-black uppercase italic tracking-tighter">Campaigns</h1>
-                <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-1">Visual Storytelling Interface</p>
+                <h1 className="text-4xl font-black uppercase italic tracking-tighter">Strategic Campaigns</h1>
+                <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-1">Institutional Marketing & Client Success</p>
               </div>
-              <button onClick={() => setIsCarouselModalOpen(true)} className="bg-nova-500 hover:bg-nova-400 text-white px-8 py-3 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-xl shadow-nova-500/20">
+              <button onClick={() => setIsCampaignModalOpen(true)} className="bg-nova-500 hover:bg-nova-400 text-white px-8 py-3 rounded-xl font-black uppercase tracking-widest text-[10px] flex items-center gap-2 shadow-xl shadow-nova-500/20">
                 <Megaphone size={16} /> New Campaign
               </button>
             </div>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              {carouselItems.map(item => (
+              {campaigns.map(item => (
                 <div key={item.id} className="group glass-panel rounded-[3rem] border border-white/10 overflow-hidden flex flex-col h-[300px] hover:border-nova-500/30 transition-all">
                   <div className="absolute inset-0 z-0">
-                    {item.imageUrl ? (
-                      <img src={item.imageUrl} className="w-full h-full object-cover opacity-20" alt={item.title} />
+                    {item.image ? (
+                      <img src={item.image} className="w-full h-full object-cover opacity-20" alt={item.headline} />
                     ) : (
-                      <div className={`w-full h-full bg-gradient-to-br ${item.imageGradient} opacity-20`}></div>
+                      <div className="w-full h-full bg-gradient-to-br from-nova-500 to-purple-600 opacity-20"></div>
                     )}
                   </div>
                   <div className="relative z-10 p-10 flex flex-col h-full">
                     <span className="px-3 py-1 bg-nova-500/20 border border-nova-500/30 text-[9px] font-black text-white uppercase tracking-widest rounded-full w-fit mb-6">{item.tag}</span>
-                    <h3 className="text-2xl font-bold text-white mb-2">{item.title}</h3>
+                    <h3 className="text-2xl font-bold text-white mb-2">{item.headline}</h3>
                     <p className="text-gray-400 text-sm font-medium line-clamp-2 mb-8">{item.summary}</p>
                     <div className="mt-auto flex justify-between items-center">
-                      <span className="text-[10px] text-gray-500 font-mono uppercase tracking-widest">{item.type} module active</span>
-                      <button onClick={() => handleDeleteCarousel(item.id)} className="p-3 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl hover:bg-red-500 hover:text-white transition-all"><Trash2 size={16} /></button>
+                      <span className="text-[10px] text-gray-500 font-mono uppercase tracking-widest">{item.contextType} module active</span>
+                      <div className="flex gap-3">
+                        {item.url && <a href={item.url} target="_blank" rel="noreferrer" className="p-3 bg-white/5 text-gray-400 border border-white/10 rounded-xl hover:bg-white/10 hover:text-white transition-all"><ExternalLink size={16} /></a>}
+                        <button onClick={() => handleDeleteCampaign(item.id)} className="p-3 bg-red-500/10 text-red-500 border border-red-500/20 rounded-xl hover:bg-red-500 hover:text-white transition-all"><Trash2 size={16} /></button>
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -934,7 +930,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                       </button>
                       <label className="flex-1 bg-white/5 border border-white/10 text-white font-black text-[10px] uppercase tracking-widest rounded-xl hover:bg-white/10 transition-all flex items-center justify-center gap-2 cursor-pointer">
                         <Upload size={16} /> Manual Upload
-                        <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewArticle, setArticleFile)} className="hidden" />
+                        <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewArticle, 'article', setArticleFile)} className="hidden" />
                       </label>
                       <p className="text-[9px] text-gray-500 italic mt-1 ml-1 font-medium">Recommended: 1200x800px (3:2 ratio)</p>
                     </div>
@@ -949,6 +945,66 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
           </div>
         </div>
       )}
+
+      {/* MODAL: CAMPAIGN ENTRY */}
+      {
+        isCampaignModalOpen && (
+          <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
+            <div className="absolute inset-0 bg-black/80 backdrop-blur-md" onClick={() => setIsCampaignModalOpen(false)}></div>
+            <div className="relative w-full max-w-2xl glass-panel rounded-[3rem] border border-white/10 overflow-hidden shadow-2xl flex flex-col animate-fade-in-up">
+              <div className="p-10 border-b border-white/5 flex justify-between items-center bg-white/5">
+                <h2 className="text-2xl font-black text-white tracking-tighter uppercase italic">Campaign Builder</h2>
+                <button onClick={() => setIsCampaignModalOpen(false)} className="p-2 hover:bg-white/10 rounded-full text-gray-400 transition-colors"><X size={24} /></button>
+              </div>
+              <div className="p-10 overflow-y-auto max-h-[70vh] custom-scrollbar">
+                <form onSubmit={handlePostCampaign} className="space-y-6">
+                  <div className="grid md:grid-cols-2 gap-6">
+                    <div>
+                      <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Context Type*</label>
+                      <select value={newCampaign.contextType} onChange={(e) => setNewCampaign({ ...newCampaign, contextType: e.target.value })} className="w-full bg-nova-800 border border-white/10 rounded-2xl py-4 px-6 text-white outline-none font-bold">
+                        <option value="advert">Institutional Advert</option>
+                        <option value="product">Product Campaign</option>
+                        <option value="customer">Client Success</option>
+                        <option value="news">Market Intelligence</option>
+                      </select>
+                    </div>
+                    <div>
+                      <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Short Tag*</label>
+                      <input required type="text" value={newCampaign.tag} onChange={(e) => setNewCampaign({ ...newCampaign, tag: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white font-bold" placeholder="e.g. Active Campaign" />
+                    </div>
+                  </div>
+                  <div>
+                    <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Headline*</label>
+                    <input required type="text" value={newCampaign.headline} onChange={(e) => setNewCampaign({ ...newCampaign, headline: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white font-bold text-lg" />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Redirection URL</label>
+                    <input type="url" value={newCampaign.url} onChange={(e) => setNewCampaign({ ...newCampaign, url: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white font-bold" placeholder="https://..." />
+                  </div>
+                  <div>
+                    <label className="block text-[10px] text-gray-500 uppercase font-black tracking-widest mb-3 ml-2">Summary*</label>
+                    <textarea required value={newCampaign.summary} onChange={(e) => setNewCampaign({ ...newCampaign, summary: e.target.value })} className="w-full h-24 bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white focus:border-nova-500 outline-none resize-none font-medium italic" />
+                  </div>
+                  <div className="space-y-4 pt-4 border-t border-white/5">
+                    <div className="flex gap-4">
+                      <div className="w-32 h-20 bg-nova-800 rounded-2xl border border-white/10 overflow-hidden flex items-center justify-center relative">
+                        {newCampaign.image ? <img src={newCampaign.image} className="w-full h-full object-cover" alt="Campaign" /> : <ImageIcon className="text-gray-700" size={24} />}
+                        {isGeneratingImage && <div className="absolute inset-0 bg-black/60 flex items-center justify-center"><Loader2 className="animate-spin text-nova-400" size={16} /></div>}
+                      </div>
+                      <div className="flex flex-col gap-2 flex-grow">
+                        <button type="button" onClick={() => handleGenerateAIImage('campaign')} disabled={isGeneratingImage} className="flex-1 bg-nova-500 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2"><BrainCircuit size={14} /> AI Visualization Sync</button>
+                        <label className="flex-1 bg-white/5 border border-white/10 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 cursor-pointer"><Upload size={14} /> Campaign Asset Upload <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewCampaign, 'campaign', setCampaignFile)} className="hidden" /></label>
+                        <p className="text-[9px] text-gray-500 italic mt-1 ml-1 font-medium">Recommended: 1600x800px (2:1 aspect ratio)</p>
+                      </div>
+                    </div>
+                  </div>
+                  <button type="submit" className="w-full py-5 bg-white text-nova-900 font-black text-[10px] uppercase tracking-[0.4em] rounded-2xl hover:bg-nova-500 hover:text-white transition-all shadow-xl active:scale-95">Initiate Campaign</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        )
+      }
 
       {isTeamModalOpen && (
         <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
@@ -991,7 +1047,7 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
                     </div>
                     <div className="flex flex-col gap-2 flex-grow">
                       <button type="button" onClick={() => handleGenerateAIImage('team')} disabled={isGeneratingImage} className="flex-1 bg-nova-500 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2"><BrainCircuit size={14} /> Gemini Portrait Sync</button>
-                      <label className="flex-1 bg-white/5 border border-white/10 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 cursor-pointer"><Upload size={14} /> Headshot Upload <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewTeamMember, setTeamFile)} className="hidden" /></label>
+                      <label className="flex-1 bg-white/5 border border-white/10 text-white font-black text-[9px] uppercase tracking-widest rounded-xl flex items-center justify-center gap-2 cursor-pointer"><Upload size={14} /> Headshot Upload <input type="file" accept="image/*" onChange={(e) => handleFileUpload(e, setNewTeamMember, 'team', setTeamFile)} className="hidden" /></label>
                       <p className="text-[9px] text-gray-500 italic mt-1 ml-1 font-medium">Recommended: 800x800px (Square)</p>
                     </div>
                   </div>

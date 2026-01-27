@@ -48,16 +48,21 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
         status: 'Unread'
       };
 
-      await storageService.saveInquiry(inquiry);
+      const result = await storageService.saveInquiry(inquiry);
 
-      setIsSubmitting(false);
-      setSubmitted(true);
-      showToast('Inquiry sent successfully! We will get back to you soon.', 'success');
-      setContactForm({ fullName: '', email: '', phone: '', subject: '', message: '' });
-      setTimeout(() => setSubmitted(false), 5000);
+      if (result.success) {
+        setIsSubmitting(false);
+        setSubmitted(true);
+        showToast('Inquiry sent successfully! We will get back to you soon.', 'success');
+        setContactForm({ fullName: '', email: '', phone: '', subject: '', message: '' });
+        setTimeout(() => setSubmitted(false), 5000);
+      } else {
+        setIsSubmitting(false);
+        showToast(result.message || 'Failed to send inquiry. Please try again later.', 'error');
+      }
     } catch (error) {
       setIsSubmitting(false);
-      showToast('Failed to send inquiry. Please try again later.', 'error');
+      showToast('An unexpected error occurred. Please check your connection.', 'error');
     }
   };
 
@@ -252,7 +257,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
               </div>
             </div>
 
-            {/* <div className="p-1 bg-gradient-to-br from-white/20 via-transparent to-white/10 rounded-[3rem]">
+            <div className="p-1 bg-gradient-to-br from-white/20 via-transparent to-white/10 rounded-[3rem]">
               <div className="bg-nova-900 rounded-[2.8rem] p-10 md:p-14 shadow-2xl border border-white/5">
                 {submitted ? (
                   <div className="text-center py-16 animate-fade-in-up">
@@ -290,7 +295,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
                   </form>
                 )}
               </div>
-            </div> */}
+            </div>
           </div>
         </div>
       </section>

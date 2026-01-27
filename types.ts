@@ -93,6 +93,16 @@ export interface TeamMember {
   email?: string;
 }
 
+export interface Campaign {
+  id: string;
+  headline: string;
+  summary: string;
+  contextType: string;
+  tag: string;
+  image?: string;
+  url?: string;
+}
+
 export type CarouselItemType = 'news' | 'eco' | 'advert' | 'product' | 'customer';
 
 export interface CarouselItem {
@@ -108,4 +118,5 @@ export interface CarouselItem {
   imageUrl?: string;
   statLabel?: string;
   statValue?: string;
+  url?: string; // Adding url for mapping if needed
 }

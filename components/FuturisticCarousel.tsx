@@ -1,11 +1,11 @@
 
 import React, { useState, useEffect, useRef } from 'react';
 import { storageService } from '../services/storageService';
-import { CarouselItem, CarouselItemType } from '../types';
+import { Campaign, CarouselItemType } from '../types';
 import { ChevronRight, ChevronLeft, Zap, Leaf, Megaphone, ArrowUpRight, Sparkles, Globe, Cpu, Users, ShoppingBag } from 'lucide-react';
 
 export const FuturisticCarousel: React.FC = () => {
-  const [items, setItems] = useState<CarouselItem[]>([]);
+  const [items, setItems] = useState<Campaign[]>([]);
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [loading, setLoading] = useState(true);
@@ -15,8 +15,8 @@ export const FuturisticCarousel: React.FC = () => {
     const loadContent = async () => {
       setLoading(true);
       try {
-        const carouselItems = await storageService.getCarouselItems();
-        setItems(carouselItems);
+        const campaignData = await storageService.getCampaigns();
+        setItems(campaignData);
       } catch (e) {
         console.error("Transmission error:", e);
       }
@@ -102,40 +102,41 @@ export const FuturisticCarousel: React.FC = () => {
       onClick={() => handleManualNav('next')}
     >
       <div className="absolute inset-0 transition-all duration-1000 pointer-events-none">
-        {currentItem.imageUrl ? (
+        {currentItem.image ? (
           <div className="absolute inset-0 z-0">
             <img
-              src={currentItem.imageUrl}
+              src={currentItem.image}
               className="w-full h-full object-cover opacity-30 mix-blend-luminosity transition-transform duration-[5000ms] group-hover:scale-105"
-              alt={currentItem.title}
+              alt={currentItem.headline}
               fetchpriority={activeIndex === 0 ? "high" : "low"}
             />
-            <div className={`absolute inset-0 bg-gradient-to-br ${currentItem.imageGradient} opacity-40`}></div>
+            <div className={`absolute inset-0 bg-gradient-to-br from-nova-500/20 to-purple-500/20 opacity-40`}></div>
           </div>
         ) : (
-          <div className={`absolute inset-0 bg-gradient-to-br ${currentItem.imageGradient} opacity-20`}></div>
+          <div className={`absolute inset-0 bg-gradient-to-br from-nova-900 to-nova-800 opacity-20`}></div>
         )}
       </div>
 
       <div className="relative z-10 grid lg:grid-cols-12 h-full">
         <div className="lg:col-span-7 p-10 md:p-16 flex flex-col justify-center select-none">
           <div className="mb-8 flex items-center gap-4">
-            <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-lg ${getTypeColor(currentItem.type)} text-white`}>
-              {getTypeIcon(currentItem.type)}
+            <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest flex items-center gap-2 shadow-lg ${getTypeColor(currentItem.contextType as CarouselItemType)} text-white`}>
+              {getTypeIcon(currentItem.contextType as CarouselItemType)}
               {currentItem.tag}
             </span>
           </div>
-          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-[1.1] tracking-tighter">{currentItem.title}</h2>
+          <h2 className="text-4xl md:text-6xl font-bold text-white mb-6 leading-[1.1] tracking-tighter">{currentItem.headline}</h2>
           <p className="text-xl text-gray-400 mb-10 max-w-xl font-light leading-relaxed">{currentItem.summary}</p>
           <div className="flex flex-wrap items-center gap-6">
             <div
               onClick={(e) => {
                 e.stopPropagation();
-                if (currentItem.link) window.open(currentItem.link, '_blank');
+                if (currentItem.url) window.open(currentItem.url, '_blank');
+                else if (progressRef.current) handleManualNav('next');
               }}
               className="group/btn flex items-center gap-3 px-10 py-5 rounded-2xl bg-white text-nova-900 font-black uppercase tracking-widest text-[11px] hover:bg-nova-400 hover:text-white transition-all active:scale-95 cursor-pointer shadow-xl shadow-white/5"
             >
-              {currentItem.linkText || 'Learn More'}
+              Learn More
               <ArrowUpRight size={20} />
             </div>
           </div>

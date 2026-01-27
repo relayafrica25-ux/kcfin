@@ -144,7 +144,7 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
   const totalSteps = 5;
 
   return (
-    <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-[2000] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-black/80 backdrop-blur-sm" onClick={onClose}></div>
       <div className="relative w-full max-w-3xl bg-nova-900 border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] animate-fade-in-up font-sans">
 
@@ -290,18 +290,6 @@ export const LoanApplicationModal: React.FC<LoanApplicationModalProps> = ({ isOp
                       </li>
                     ))}
                   </ul>
-                </div>
-
-                <div className="p-6 bg-nova-500/10 border border-nova-500/20 rounded-3xl flex items-start gap-4">
-                  <div className="p-2 bg-nova-500/20 rounded-xl text-nova-400">
-                    <Info size={20} />
-                  </div>
-                  <div>
-                    <h5 className="font-bold text-white mb-1">Fee Disclosure</h5>
-                    <p className="text-xs text-gray-400 leading-relaxed">
-                      An appraisal fee of <span className="text-white font-bold">1% (Flat Rate)</span> shall be charged upfront or deducted from source as a one-off charge based on the approved loan amount. This fee is non-refundable.
-                    </p>
-                  </div>
                 </div>
               </div>
 

@@ -1,5 +1,6 @@
 import React from 'react';
-import { Menu, X, ChevronRight, Wallet, Briefcase, BookOpen, Info, Users, LineChart, Lock } from 'lucide-react';
+import { Menu, X, ChevronRight, Wallet, Briefcase, BookOpen, Info, Users, LineChart } from 'lucide-react';
+import { Logo } from './Logo';
 
 interface NavbarProps {
   onApplyClick: () => void;
@@ -10,134 +11,112 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({ onApplyClick, currentView, onNavigate }) => {
   const [isOpen, setIsOpen] = React.useState(false);
 
-  // Standard public navigation items
   const navItems = [
     { id: 'about', label: 'Company', icon: <Info size={14} /> },
-    { id: 'team', label: 'Leadership', icon: <Users size={14} /> },
+    { id: 'team', label: 'Our Team', icon: <Users size={14} /> },
     { id: 'financial-support', label: 'Capital Solutions', icon: <Wallet size={14} /> },
     { id: 'business-support', label: 'Advisory', icon: <Briefcase size={14} /> },
     { id: 'investment', label: 'Investment', icon: <LineChart size={14} /> },
     { id: 'insights', label: 'Insights', icon: <BookOpen size={14} /> },
   ];
 
+  const handleMobileNavigate = (id: string) => {
+    onNavigate(id);
+    setIsOpen(false);
+  };
+
   return (
-    <nav className="fixed w-full z-50 bg-nova-950/90 backdrop-blur-lg border-b border-white/5 h-20 flex items-center">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center">
-            {/* Logo */}
-            <div 
-              className="flex-shrink-0 flex items-center gap-1 cursor-pointer group" 
-              onClick={() => onNavigate('home')}
-            >
-              <div className="flex flex-col items-start leading-none">
-                <div className="flex items-center gap-1">
-                  <span className="text-2xl font-bold text-white tracking-tighter lowercase group-hover:text-nova-400 transition-colors">
-                    casiec
-                  </span>
-                  <div className="flex flex-col -mb-1 translate-y-[-1px]">
-                     <ChevronRight size={14} className="text-nova-accent -rotate-45" strokeWidth={3} />
-                     <ChevronRight size={14} className="text-nova-accent -rotate-45 -mt-2.5" strokeWidth={3} />
-                  </div>
+    <nav className="fixed w-full top-0 left-0 z-[1000]">
+      <div className="bg-nova-950/95 backdrop-blur-xl border-b border-white/10 h-20 flex items-center relative z-[1010]">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 w-full">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center">
+              <div 
+                className="flex-shrink-0 flex items-center cursor-pointer group pointer-events-auto" 
+                onClick={() => handleMobileNavigate('home')}
+              >
+                <Logo size="sm" className="group-hover:opacity-80 transition-opacity" />
+              </div>
+              
+              <div className="hidden lg:block ml-10">
+                <div className="flex items-center space-x-1">
+                  {navItems.map((item) => (
+                    <button
+                      key={item.id}
+                      type="button"
+                      onClick={() => onNavigate(item.id)}
+                      className={`text-[10px] font-black uppercase tracking-widest transition-all px-4 py-2 rounded-lg flex items-center gap-2 pointer-events-auto ${
+                        currentView === item.id 
+                          ? 'text-white bg-white/10 border border-white/20' 
+                          : 'text-gray-300 hover:text-white hover:bg-white/5'
+                      }`}
+                    >
+                      {item.label}
+                    </button>
+                  ))}
                 </div>
-                <span className="text-[9px] font-black text-nova-accent tracking-[0.25em] lowercase -mt-0.5 opacity-90">
-                  financials
-                </span>
               </div>
             </div>
-            
-            <div className="hidden lg:block ml-10">
-              <div className="flex items-center space-x-1">
-                {navItems.map((item) => (
-                  <button
-                    key={item.id}
-                    onClick={() => onNavigate(item.id)}
-                    className={`text-[10px] font-bold uppercase tracking-widest transition-all px-3 py-2 rounded-lg flex items-center gap-2 ${
-                      currentView === item.id 
-                        ? 'text-white bg-white/5 border border-white/10' 
-                        : 'text-gray-400 hover:text-white hover:bg-white/5'
-                    }`}
-                  >
-                    {item.label}
-                  </button>
-                ))}
-              </div>
+
+            <div className="hidden md:flex items-center gap-4">
+              <button 
+                type="button"
+                onClick={onApplyClick}
+                className="bg-nova-500 text-white px-7 py-3 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-nova-400 transition-all duration-300 flex items-center gap-2 shadow-xl shadow-nova-500/30 pointer-events-auto"
+              >
+                Inquiry <ChevronRight size={14} strokeWidth={3} />
+              </button>
             </div>
-          </div>
 
-          <div className="hidden md:flex items-center gap-4">
-            {/* Staff Terminal Button */}
-            <button 
-              onClick={() => onNavigate('admin')}
-              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border ${
-                currentView === 'admin' 
-                  ? 'bg-nova-accent text-nova-950 border-nova-accent shadow-lg shadow-nova-accent/20' 
-                  : 'text-gray-400 border-white/10 bg-white/5 hover:border-nova-accent/50 hover:text-white'
-              }`}
-            >
-              <Lock size={12} className={currentView === 'admin' ? 'text-nova-950' : 'text-nova-accent'} />
-              Staff Terminal
-            </button>
-
-            {/* Public Inquiry Button */}
-            <button 
-              onClick={onApplyClick}
-              className="bg-nova-500 text-white px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest hover:bg-nova-400 transition-all duration-300 flex items-center gap-2 shadow-lg shadow-nova-500/20"
-            >
-              Inquiry <ChevronRight size={14} />
-            </button>
-          </div>
-
-          <div className="-mr-2 flex lg:hidden">
-            <button
-              onClick={() => setIsOpen(!isOpen)}
-              className="inline-flex items-center justify-center p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 focus:outline-none transition-colors"
-            >
-              {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-            </button>
+            <div className="flex lg:hidden">
+              <button
+                type="button"
+                onClick={() => setIsOpen(!isOpen)}
+                className="inline-flex items-center justify-center p-3 rounded-xl text-gray-200 hover:text-white hover:bg-white/10 focus:outline-none transition-all pointer-events-auto relative z-[1020]"
+              >
+                {isOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
+              </button>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      {isOpen && (
-        <div className="lg:hidden absolute top-20 left-0 w-full bg-nova-950 border-b border-white/10 p-6 animate-fade-in-up shadow-2xl overflow-y-auto max-h-[calc(100vh-80px)]">
-          <div className="space-y-3">
+      <div 
+        className={`lg:hidden fixed inset-0 z-[1005] bg-nova-950 transition-all duration-500 ease-in-out ${
+          isOpen ? 'opacity-100 translate-x-0' : 'opacity-0 translate-x-full pointer-events-none'
+        }`}
+      >
+        <div className="flex flex-col h-full pt-28 pb-10 px-6">
+          <div className="flex flex-col space-y-2 overflow-y-auto no-scrollbar">
             {navItems.map((item) => (
               <button
                 key={item.id}
-                onClick={() => {
-                  onNavigate(item.id);
-                  setIsOpen(false);
-                }}
-                className={`flex items-center gap-4 w-full p-4 rounded-xl text-xs font-bold uppercase tracking-widest border transition-all ${
-                   currentView === item.id ? 'bg-nova-500 text-white border-nova-500 shadow-lg' : 'text-gray-400 border-white/5 hover:bg-white/5'
+                type="button"
+                onClick={() => handleMobileNavigate(item.id)}
+                className={`flex items-center gap-4 w-full p-5 rounded-2xl text-sm font-black uppercase tracking-widest border transition-all pointer-events-auto ${
+                   currentView === item.id 
+                    ? 'bg-nova-500 text-white border-nova-500 shadow-xl' 
+                    : 'text-gray-200 border-white/10 bg-white/5'
                 }`}
               >
-                {item.icon}
+                <span className={currentView === item.id ? 'text-white' : 'text-nova-500'}>
+                  {item.icon}
+                </span>
                 {item.label}
               </button>
             ))}
-
-            <div className="pt-4 grid grid-cols-1 gap-4 border-t border-white/5 mt-4">
-                <button 
-                  onClick={() => { setIsOpen(false); onNavigate('admin'); }}
-                  className={`w-full py-4 rounded-xl text-xs font-black uppercase tracking-widest transition-all flex items-center justify-center gap-3 border ${
-                    currentView === 'admin' ? 'bg-nova-accent text-nova-950 border-nova-accent' : 'bg-white/5 text-nova-accent border-nova-accent/30'
-                  }`}
-                >
-                  <Lock size={16} /> Staff Terminal
-                </button>
-                <button 
-                  onClick={() => { setIsOpen(false); onApplyClick(); }}
-                  className="w-full py-4 bg-white text-nova-950 font-black text-xs uppercase tracking-widest rounded-xl text-center shadow-xl"
-                >
-                  Initiate Inquiry
-                </button>
-            </div>
+          </div>
+          <div className="mt-auto pt-8 border-t border-white/10">
+              <button 
+                type="button"
+                onClick={() => { setIsOpen(false); onApplyClick(); }}
+                className="w-full py-5 bg-white text-nova-950 font-black text-xs uppercase tracking-[0.3em] rounded-2xl text-center shadow-2xl pointer-events-auto"
+              >
+                Initiate Inquiry
+              </button>
           </div>
         </div>
-      )}
+      </div>
     </nav>
   );
 };

@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { storageService } from '../services/storageService';
 import { TickerItem } from '../types';
@@ -49,7 +48,7 @@ export const NewsTicker: React.FC = () => {
             <span className={`text-[9px] font-black uppercase tracking-widest px-2 py-0.5 rounded border border-white/5 bg-white/5 ${getCategoryColor(item.category)}`}>
               {item.category}
             </span>
-            <span className="text-[11px] text-white font-bold tracking-tight uppercase group-hover:text-nova-400 transition-colors">
+            <span className="text-[11px] text-white font-bold tracking-tight group-hover:text-nova-400 transition-colors">
               {item.text}
             </span>
             <span className="text-white/10 mx-2 font-light">///</span>

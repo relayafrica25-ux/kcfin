@@ -28,20 +28,20 @@ export const TeamPage: React.FC = () => {
         <div className="absolute top-0 right-0 w-[800px] h-[400px] bg-nova-500/5 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h1 className="text-5xl md:text-8xl font-bold mb-8 tracking-tighter text-white">
-            The <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-nova-400 to-purple-400 uppercase italic">Architects.</span>
+            Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-nova-400 to-purple-400 uppercase italic">Team.</span>
           </h1>
           <p className="text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed font-light">
-            A diverse collective of financial engineers, strategic advisors, and market specialists dedicated to driving continental success and economic advancement.
+            A diverse collective of financial engineers, strategic advisors, and market specialists dedicated to ‘unlocking value across enterprises’
           </p>
         </div>
       </div>
 
-      {/* Leadership Grid */}
+      {/* Team Grid */}
       <section className="py-24 relative bg-black/20">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center gap-4 mb-16">
             <div className="h-px flex-grow bg-white/10"></div>
-            <h2 className="text-xs font-black uppercase tracking-[0.5em] text-nova-400">Executive Leadership</h2>
+            <h2 className="text-xs font-black uppercase tracking-[0.5em] text-nova-400">Our Team</h2>
             <div className="h-px flex-grow bg-white/10"></div>
           </div>
 

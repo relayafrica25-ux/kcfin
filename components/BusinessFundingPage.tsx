@@ -1,5 +1,6 @@
 import React from 'react';
 import { Rocket, Zap, Clock, ArrowRight, ShieldCheck, PieChart, Landmark, Coins, TrendingUp, HandCoins, Building, Palette, Users, Layers, Briefcase, FileCheck, Leaf } from 'lucide-react';
+import { Logo } from './Logo';
 
 interface BusinessFundingPageProps {
   onApplyClick: () => void;
@@ -55,9 +56,8 @@ export const BusinessFundingPage: React.FC<BusinessFundingPageProps> = ({ onAppl
       <div className="relative py-24 md:py-32 overflow-hidden border-b border-white/5">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-nova-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-nova-500/10 border border-nova-500/30 text-nova-400 text-[10px] font-black uppercase tracking-[0.4em] mb-12 animate-fade-in-up">
-            <Landmark size={14} />
-            <span>The Capital Mandate</span>
+          <div className="flex justify-center mb-12 animate-fade-in-up">
+            <Logo size="md" />
           </div>
           
           <h1 className="text-5xl md:text-7xl font-black mb-10 tracking-tighter text-white animate-fade-in-up uppercase italic leading-[0.95]">
@@ -66,7 +66,7 @@ export const BusinessFundingPage: React.FC<BusinessFundingPageProps> = ({ onAppl
           
           <div className="max-w-5xl mx-auto px-4">
             <p className="text-2xl md:text-4xl text-white leading-[1.2] animate-fade-in-up font-black uppercase tracking-tighter italic">
-              From Asset finance, Gender Credit, Creative Support loan to Consumer Credit, Casiec’s bespoke funding + business support solutions drive scalable business growth in partnership with GSI Strategic Alliances (Broastreet DyDX)
+              Casiec’s bespoke financing options + business support solutions in partnership with GSI Strategic Alliances (Broastreet DyDX) drives scalable business growth.
             </p>
           </div>
 

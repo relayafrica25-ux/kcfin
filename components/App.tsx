@@ -57,6 +57,7 @@ const App: React.FC = () => {
           article={selectedArticle} 
           onBack={() => handleNavigate('insights')} 
           onOpenArticle={handleOpenArticle}
+          onNavigate={handleNavigate}
         />
       );
     }
@@ -125,7 +126,7 @@ const App: React.FC = () => {
               <div className="lg:col-span-5">
                 <div className="flex flex-col items-start mb-10">
                    <div className="flex items-center gap-1 group cursor-pointer" onClick={() => handleNavigate('home')}>
-                     <span className="text-4xl font-black text-white tracking-tighter lowercase group-hover:text-nova-500 transition-colors">casiec financial</span>
+                     <span className="text-4xl font-black text-white tracking-tighter group-hover:text-nova-500 transition-colors">Casiec financial</span>
                      <div className="flex flex-col -mb-1 translate-y-[-1px]">
                         <ChevronRight size={22} className="text-nova-accent -rotate-45" strokeWidth={3} />
                         <ChevronRight size={22} className="text-nova-accent -rotate-45 -mt-4" strokeWidth={3} />
@@ -133,9 +134,8 @@ const App: React.FC = () => {
                    </div>
                    
                    <div className="mt-8">
-                      <h5 className="text-white font-black text-xl mb-4 uppercase italic">CASIEC</h5>
                       <p className="text-gray-400 text-sm leading-relaxed font-medium">
-                        Casiec provides credit solutions through lending, while GSI deliver business support solutions, and in partnership the two firms promote the concept of sustainable enterprise.
+                        Casiec Financials provides credit solutions through lending, while GSI deliver business support solutions, and in partnership the two firms promote the concept of sustainable enterprise.
                       </p>
                    </div>
                 </div>
@@ -147,7 +147,7 @@ const App: React.FC = () => {
                   <ul className="space-y-4">
                     <li><button onClick={() => handleNavigate('home')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium">Homepage</button></li>
                     <li><button onClick={() => handleNavigate('insights')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium">Insights</button></li>
-                    <li><button onClick={() => handleNavigate('team')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium">Our Leadership</button></li>
+                    <li><button onClick={() => handleNavigate('team')} className="text-gray-400 hover:text-white transition-colors text-sm font-medium">Our Team</button></li>
                   </ul>
                 </div>
 

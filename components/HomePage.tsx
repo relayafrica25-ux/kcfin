@@ -182,7 +182,7 @@ export const HomePage: React.FC<HomePageProps> = ({ onApplyClick, onNavigate, on
               <h2 className="text-4xl font-black text-white mb-4 tracking-tighter uppercase italic">GSI Alliances</h2>
               <p className="text-gray-200 mb-8 leading-relaxed font-medium">Global Strategic Alliances powered by Broastreet DyDX, delivering corporate research and logistics architecture.</p>
               <ul className="space-y-4 mb-12 flex-grow">
-                {["Corporate Finance Research", "Market Entry Intelligence", "Commodity Trading Distribution", "Logistics Architecture"].map((item, i) => (
+                {["Business Development", "Strategic Outsourcing", "Coperate finance & Advisory"].map((item, i) => (
                   <li key={i} className="flex items-center gap-4 text-sm font-bold text-gray-300">
                     <div className="w-2 h-2 rounded-full bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.5)]"></div>
                     {item}

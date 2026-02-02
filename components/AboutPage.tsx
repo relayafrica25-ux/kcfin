@@ -13,7 +13,7 @@ export const AboutPage: React.FC = () => {
           <h1 className="text-6xl md:text-8xl font-black mb-12 tracking-tighter text-white animate-fade-in-up uppercase italic leading-[0.85]">
             Our <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-nova-400 to-nova-500">story.</span>
           </h1>
-          
+
           <div className="max-w-4xl mx-auto px-4">
             <p className="text-2xl md:text-5xl text-white leading-[1.2] animate-fade-in-up font-black uppercase tracking-tighter italic">
               At <span className="text-nova-400">Casiec</span>, we align finance with <br className="hidden md:block" />
@@ -30,7 +30,7 @@ export const AboutPage: React.FC = () => {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="glass-panel p-10 md:p-16 rounded-[3rem] border border-white/5 relative overflow-hidden group">
             <div className="absolute top-0 right-0 w-64 h-64 bg-nova-500/5 rounded-full blur-[80px] -z-10 group-hover:bg-nova-500/10 transition-colors"></div>
-            
+
             <div className="flex flex-col md:flex-row gap-12 items-start">
               <div className="flex-grow">
                 <h2 className="text-3xl font-bold text-white mb-8 border-l-4 border-nova-500 pl-6 uppercase tracking-tighter italic">Corporate Narrative</h2>
@@ -40,7 +40,7 @@ export const AboutPage: React.FC = () => {
                     <p className="text-lg leading-relaxed text-gray-300">
                       CASIEC Financials is a dynamic financial services company specializing in providing tailored credit solutions to Nano, Micro, Small, and Medium-sized Enterprises (NMSMEs) and consumer lending, driving financial inclusion. Our comprehensive offerings include, but not limited to;
                     </p>
-                    
+
                     <ul className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-6">
                       {[
                         "Asset financing",
@@ -59,11 +59,11 @@ export const AboutPage: React.FC = () => {
                   </div>
 
                   <p className="text-lg leading-relaxed text-gray-300">
-                    In strategic partnership with <span className="text-orange-400 font-black">GSI Strategic Alliances (proprietors of BROASTREET DyDX)</span>, we deliver integrated business support services to drive enterprise innovation, growth & sustainability. 
+                    In strategic partnership with <span className="text-orange-400 font-black">GSI Strategic Alliances (proprietors of BROASTREET DyDX)</span>, we deliver integrated business support services to drive enterprise innovation, growth & sustainability.
                   </p>
                 </div>
               </div>
-              
+
               <div className="w-full md:w-72 flex-shrink-0 space-y-6 sticky top-32">
                 <div className="p-8 bg-white/5 rounded-3xl border border-white/5 shadow-2xl backdrop-blur-md flex flex-col items-center text-center group hover:bg-white/10 transition-all">
                   <Logo size="sm" className="mb-4 transform group-hover:scale-105 transition-transform" />
@@ -92,7 +92,7 @@ export const AboutPage: React.FC = () => {
                 To be the leading story and benchmark in finance & business support, setting the standard for excellence.
               </p>
             </article>
-            
+
             <article className="p-8 rounded-[2.5rem] bg-nova-800/60 border border-purple-500/20 hover:border-purple-500 transition-all group hover:translate-y-[-10px] shadow-2xl flex flex-col">
               <div className="w-14 h-14 bg-purple-500/20 rounded-2xl flex items-center justify-center text-purple-400 mb-8 group-hover:scale-110 transition-transform">
                 <Compass size={28} />
@@ -102,14 +102,14 @@ export const AboutPage: React.FC = () => {
                 Delivering credit, capital and enterprise support to stimulate business growth and drive sustainable impact.
               </p>
             </article>
-            
+
             <article className="p-8 rounded-[2.5rem] bg-nova-800/60 border border-nova-accent/20 hover:border-nova-accent transition-all group hover:translate-y-[-10px] shadow-2xl flex flex-col">
               <div className="w-14 h-14 bg-nova-accent/20 rounded-2xl flex items-center justify-center text-nova-accent mb-8 group-hover:scale-110 transition-transform">
                 <Zap size={28} />
               </div>
               <h3 className="text-2xl font-black text-white mb-4 uppercase italic tracking-tighter">Our Mandate</h3>
               <p className="text-white leading-relaxed text-lg font-bold">
-                Fostering economic advancement through financial inclusion across the continent and beyond.
+                Fostering economic advancement through financial inclusion.
               </p>
             </article>
 
@@ -119,7 +119,11 @@ export const AboutPage: React.FC = () => {
               </div>
               <h3 className="text-2xl font-black text-white mb-4 uppercase italic tracking-tighter">The GOI Factor</h3>
               <p className="text-emerald-400 leading-tight text-2xl font-black italic tracking-tight">
-                God’s Own Institution <br/>
+                God’s Own Institution <br />
+                <span className="text-white/60 text-lg font-bold not-italic">(GOI factor)</span>
+              </p>
+              <p className="text-emerald-400 leading-tight text-2xl font-black italic tracking-tight">
+                Words On The Marble<br />
                 <span className="text-white/60 text-lg font-bold not-italic">(GOI factor)</span>
               </p>
             </article>

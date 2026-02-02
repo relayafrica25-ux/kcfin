@@ -519,8 +519,8 @@ export const AdminDashboard: React.FC<{ onBack: () => void }> = ({ onBack }) => 
               {loginPhase === 'credentials' ? (
                 <form onSubmit={handleLogin} className="space-y-6">
                   <div className="space-y-4">
-                    <input type="text" value={staffId} onChange={(e) => setStaffId(e.target.value)} placeholder="Authorized ID (Optional)" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white text-lg focus:border-nova-500 outline-none placeholder:text-gray-600 transition-all" />
-                    <input type="password" value={loginPass} onChange={(e) => setLoginPass(e.target.value)} placeholder="Access Key (Optional)" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white text-lg focus:border-nova-500 outline-none placeholder:text-gray-600 transition-all" />
+                    <input type="text" value={staffId} onChange={(e) => setStaffId(e.target.value)} placeholder="Authorized ID" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white text-lg focus:border-nova-500 outline-none placeholder:text-gray-600 transition-all" />
+                    <input type="password" value={loginPass} onChange={(e) => setLoginPass(e.target.value)} placeholder="Access Key" className="w-full bg-white/5 border border-white/10 rounded-2xl py-4 px-6 text-white text-lg focus:border-nova-500 outline-none placeholder:text-gray-600 transition-all" />
                   </div>
                   <button type="submit" disabled={isScanning} className="w-full py-5 bg-nova-500 hover:bg-nova-400 text-white font-black uppercase tracking-[0.4em] text-[10px] rounded-2xl transition-all shadow-xl shadow-nova-500/20 active:scale-95">
                     {isScanning ? 'Synchronizing Node...' : 'Initiate Open Access'}

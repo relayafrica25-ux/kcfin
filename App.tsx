@@ -237,7 +237,9 @@ const App: React.FC = () => {
           </footer>
         )}
 
-        {!isDashboard && <ChatWidget />}
+        {!isDashboard &&
+          <ChatWidget />
+        }
       </div>
     </ToastProvider>
   );

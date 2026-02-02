@@ -51,7 +51,7 @@ export const BusinessFundingPage: React.FC<BusinessFundingPageProps> = ({ onAppl
   ];
 
   return (
-    <div className="pt-24 min-h-screen bg-nova-900">
+    <div className="pt-32 min-h-screen bg-nova-900">
       {/* Hero */}
       <div className="relative py-24 md:py-32 overflow-hidden border-b border-white/5">
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[800px] h-[400px] bg-nova-500/10 rounded-full blur-[120px] -z-10 animate-pulse-slow"></div>
@@ -59,11 +59,11 @@ export const BusinessFundingPage: React.FC<BusinessFundingPageProps> = ({ onAppl
           <div className="flex justify-center mb-12 animate-fade-in-up">
             <Logo size="md" />
           </div>
-          
+
           <h1 className="text-5xl md:text-7xl font-black mb-10 tracking-tighter text-white animate-fade-in-up uppercase italic leading-[0.95]">
             Capital that <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-nova-400 to-nova-500">Empowers Change.</span>
           </h1>
-          
+
           <div className="max-w-5xl mx-auto px-4">
             <p className="text-2xl md:text-4xl text-white leading-[1.2] animate-fade-in-up font-black uppercase tracking-tighter italic">
               Casiec’s bespoke financing options + business support solutions in partnership with GSI Strategic Alliances (Broastreet DyDX) drives scalable business growth.
@@ -71,7 +71,7 @@ export const BusinessFundingPage: React.FC<BusinessFundingPageProps> = ({ onAppl
           </div>
 
           <div className="mt-16 animate-fade-in-up" style={{ animationDelay: '0.2s' }}>
-            <button 
+            <button
               onClick={onApplyClick}
               className="bg-white text-black px-12 py-5 rounded-2xl font-black text-xs uppercase tracking-[0.2em] hover:bg-nova-500 hover:text-white transition-all shadow-2xl active:scale-95"
             >
@@ -97,18 +97,18 @@ export const BusinessFundingPage: React.FC<BusinessFundingPageProps> = ({ onAppl
 
       {/* Featured Highlight */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-24">
-         <div className="relative rounded-[3rem] overflow-hidden bg-gradient-to-r from-nova-900 to-indigo-900 border border-white/10 p-12 lg:p-20 text-center">
-            <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/hexellence.png')] opacity-10"></div>
-            <div className="relative z-10">
-                <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Inclusive Credit Mandate</h2>
-                <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10 leading-relaxed font-light">
-                  Our diverse credit products are designed to stimulate every sector of the market economy
-                </p>
-                <button onClick={onApplyClick} className="text-nova-400 font-bold flex items-center gap-2 mx-auto hover:text-white transition-colors">
-                  Consult a Specialist <ArrowRight size={20} />
-                </button>
-            </div>
-         </div>
+        <div className="relative rounded-[3rem] overflow-hidden bg-gradient-to-r from-nova-900 to-indigo-900 border border-white/10 p-12 lg:p-20 text-center">
+          <div className="absolute inset-0 bg-[url('https://www.transparenttextures.com/patterns/hexellence.png')] opacity-10"></div>
+          <div className="relative z-10">
+            <h2 className="text-3xl md:text-5xl font-bold text-white mb-6">Inclusive Credit Mandate</h2>
+            <p className="text-gray-400 text-lg max-w-2xl mx-auto mb-10 leading-relaxed font-light">
+              Our diverse credit products are designed to stimulate every sector of the market economy
+            </p>
+            <button onClick={onApplyClick} className="text-nova-400 font-bold flex items-center gap-2 mx-auto hover:text-white transition-colors">
+              Consult a Specialist <ArrowRight size={20} />
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

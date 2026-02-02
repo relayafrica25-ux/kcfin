@@ -78,8 +78,8 @@ export const ChatWidget: React.FC = () => {
   if (isMaximized) return null;
 
   return (
-    <div className="fixed bottom-6 right-6 z-[90] flex flex-col items-end pointer-events-auto">
-      <div className="relative flex items-center">
+    <div className="fixed bottom-6 right-6 z-[90] flex flex-col items-end pointer-events-none">
+      <div className="relative flex items-center pointer-events-auto">
         {/* Tooltip/Bubble Label */}
         <div
           className="absolute right-full mr-5 bg-white text-nova-900 px-5 py-3 rounded-xl shadow-2xl font-bold text-sm whitespace-nowrap transition-all duration-500 origin-right cursor-pointer hover:bg-gray-100 opacity-100 scale-100"
